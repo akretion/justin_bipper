@@ -1,0 +1,50 @@
+[
+  { "name": "SO0021",
+    "transferts": [
+      {"name": "WH/OUT03480",
+       "lines": [
+         { "name": "DEV-302-121" },
+         { "name": "DEV-302-121-c" },
+         { "name": "DEV-432-032" }
+       ],
+       "packs": []
+      },
+      {"name": "WH/OUT03481",
+       "lines": [
+        { "name": "DEV-432-032" },
+        { "name": "DEV-432-033" }
+        ],
+       "packs": []
+      }
+    ]
+  },
+  { "name": "SO0044",
+    "transferts": [
+      {"name": "WH/OUT/03509",
+       "lines": [
+          {"name": "DEV-293-129", "state": "receptionné"},
+          {"name": "DEV-293-127", "state": "receptionné"},
+          {"name": "DEV-293-129", "state": "colisé", "pack": "PACK2308"},
+          {"name": "DEV-293-128", "state": "colisé", "pack": "PACK2308"}
+       ],
+       "packs": [
+        {"name": "PACK2308", "weight": 2, "state": "crée"}
+      ]
+     }
+    ]
+  },
+  {
+    "name": "Facile",
+    "transferts": [
+       {
+        "name": "WH/OU/3029",
+        "lines":[
+          { "name": "a", "state": "receptionné"},
+          { "name": "a", "state": "receptionné"},
+          { "name": "b", "state": "receptionné"}
+        ],
+        "packs": []
+      }
+    ]
+  }
+]

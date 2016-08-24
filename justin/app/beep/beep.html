@@ -3,12 +3,12 @@
     <ion-title>
       Beeper
     </ion-title>
-</ion-navbar>
+    <button menuToggle>Toggle Menu</button>
+  </ion-navbar>
 </ion-header>
 
 
 <ion-content padding>
-  {{ model }}
   <form (ngSubmit)="addIt(model)">
     <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
   </form>
