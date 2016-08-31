@@ -2,43 +2,44 @@ import {Component} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
-
+import {nextAppComponent} from '../models/actionFor.component';
 
 @Component({
   templateUrl: 'build/search/search.html',
-  providers: [],
+  directives: [nextAppComponent]
 })
 export class SearchPage {
   scans:any = [];
   model = {};
-  search: {products: any, packs: any, shipment: any};
+  thing = null;
+  search: {products: any, packs: any, shipment: any, terms: string};
   constructor(
       public navCtrl: NavController,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
       private productsProvider: ProductsProvider
 ) {
+    console.log('constructeur de search');
     this.model = {};
     this.scans = [];
-    this.search = {products: [], packs: new Set(), shipment: new Set()};
+    this.search = {products: [], packs: new Set(), shipment: new Set(), terms:""};
   }
   addIt(model) {
     console.log('addit', model);
     var packs = new Set();
     var prods = [];
     var ship = new Set();
-    console.log('im so lucky', model.scanned);
 
     let p = this.productsProvider.getPack(model.scanned);
     let s = this.productsProvider.lookupShipment(model.scanned);
     let lk = this.productsProvider.lookupProduct(model.scanned);
-    console.log(`p {p}, s: {s}, lk: {lk}`, p, s, lk);
     if (p) {
       //on a cherché un pack
       packs.add(p);
       prods = p.products;
       ship.add(p.shipment);
       model.searched = "pack";
+      console.log('next step', p.nextSteps())
     } else if (s) {
       // on a cherché un shipment
       s.packs.forEach( aPack => packs.add(aPack) );
@@ -54,8 +55,11 @@ export class SearchPage {
       model.searched = "product";
     }
 
-    this.search = {products: prods, packs: Array.from(packs), shipment: Array.from(ship)};
+    this.search = {products: prods, packs: Array.from(packs), shipment: Array.from(ship), terms: model.scanned};
+    this.thing = this.search.packs[0];
+    model.scanned = "";
     console.log('searched', this.search)
+
   }
   openPack(pack) {
     this.model["scanned"] = pack.name; //because of fucking typescript

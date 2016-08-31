@@ -14,7 +14,15 @@
   </form>
   <ion-list>
     <ion-item *ngFor="let scan of scans">
-      <ion-badge>{{ scan.qty }}</ion-badge>
+      <span *ngIf="scan.qty == scan.expected">
+        <ion-badge secondary>{{ scan.qty }}</ion-badge> of <ion-badge secondary>{{ scan.expected }}</ion-badge>
+      </span>
+      <span *ngIf="scan.qty > scan.expected">
+        <ion-badge danger>{{ scan.qty }}</ion-badge> of <ion-badge danger>{{ scan.expected }}</ion-badge>
+      </span>
+      <span *ngIf="scan.qty < scan.expected">
+        <ion-badge>{{ scan.qty }}</ion-badge> of <ion-badge>{{ scan.expected }}</ion-badge>
+      </span>
       {{scan.barcode}}
       <button item-right outline danger (click)="removeOne(scan)">-1</button>
     </ion-item>

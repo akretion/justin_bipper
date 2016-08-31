@@ -42,28 +42,38 @@
     </ion-buttons>
   </ion-item>
 
-  <p>Next step : <button outline>{{ nextStep }}</button>
-
-  </p>
  <ion-list *ngIf="pack.shipment">
-  <p>Shiment : {{ pack.shipment.name }} - {{ pack.shipment.stateMachine.state }}
-      <ion-icon name="hand" *ngIf="pack.shipment.stateMachine.state == 'en attente'">waiting</ion-icon>
-    </p>
-    <ion-item *ngFor="let aProduct of pack.shipment.products">
-      <ion-row>
-        <ion-col>Prod : {{ aProduct.name }}</ion-col>
-        <ion-col>{{aProduct.stateMachine.state}}
-          <span *ngIf="aProduct.stateMachine.state == 'crée'">waiting</span>
-          <span *ngIf="aProduct.stateMachine.state == 'colisé'">waiting</span>
-          <span *ngIf="aProduct.stateMachine.state == 'receptionné'">ready</span>
-        </ion-col>
-        <ion-col>{{ aProduct.pack?.name }}</ion-col>
-      </ion-row>
-    </ion-item>
-    <ion-item *ngFor="let aPack of pack.shipment.packs">
-      {{aPack.name }} State : {{ aPack.stateMachine.state}} {{ aPack.products.length}} - {{ aPack.weight }} - Location : {{aPack.locationSM.state}}
-    </ion-item>
-  </ion-list>
+      <p>Next step for {{ pack.shipment.name }} : <button outline>{{ nextStep }}</button></p>
+        <ion-card>
+          <ion-item>
+            Products
+            <ion-icon></ion-icon>
+          </ion-item>
+          <ion-card-content>
+            <ion-item *ngFor="let product of pack.shipment.products">
+              {{ product.name }}
+               - <span [ngSwitch]="product.stateMachine.state">
+                 <span *ngSwitchCase="'colisé'">√</span>
+                 <span *ngSwitchCase="'init'">?</span>
+                 <span *ngSwitchCase="'receptionné'">?</span>
+               </span>
+               - <button outline>{{ product.nextSteps() }}</button>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card>
+          <ion-item>
+            Packs
+          </ion-item>
+          <ion-card-content>
+            <ion-item *ngFor="let pack of pack.shipment.packs">
+              <a href="#" (click)="openPack(pack)">{{ pack.name }}</a> - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - <button outline>{{ pack.nextSteps() }}</button>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+
+</ion-list>
  <div *ngIf="!pack.shipment">
     Pas de shipment for pack
   </div>

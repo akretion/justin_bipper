@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Assemblage
+    </ion-title>
+    <button menuToggle>Toggle Menu</button>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <form (ngSubmit)="addIt(model)">
+    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
+    <ion-buttons end>
+      <button primary>Validate<ion-icon name="send"></ion-icon></button>
+    </ion-buttons>
+
+  </form>
+
+<ion-list *ngIf="model.shipment">
+     <p>Next step for {{ model.shipment.name }} : <button outline>{{ model.nextStep }}</button>
+       <button *ngIf="model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)">Assembler</button>
+     </p>
+       <ion-card>
+         <ion-item>
+           Packs
+         </ion-item>
+         <ion-card-content>
+           <ion-item *ngFor="let pack of model.shipment.packs">
+             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - <button outline>{{ pack.nextSteps() }}</button>
+             <span *ngIf="model.packs[pack.name]">Good ! </span>
+           </ion-item>
+         </ion-card-content>
+       </ion-card>
+</ion-list>
+</ion-content>

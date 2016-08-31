@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Destockage
+    </ion-title>
+    <button menuToggle>Toggle Menu</button>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <form (ngSubmit)="addIt(model)">
+    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
+    <ion-buttons end>
+      <button primary>Validate<ion-icon name="send"></ion-icon></button>
+    </ion-buttons>
+
+  </form>
+
+<ion-list>
+       <ion-card>
+         <ion-item>
+           Packs
+         </ion-item>
+         <ion-card-content>
+           <ion-item *ngFor="let pack of listeDeCourses">
+             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }}
+             <span *ngIf="model.packs[pack.name]" primary>√</span>
+           </ion-item>
+         </ion-card-content>
+       </ion-card>
+</ion-list>
+</ion-content>

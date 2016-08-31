@@ -66,8 +66,14 @@ class Shipment {
                     function tousLesProduitsSontColisés(shipment) {
                         return shipment.products.every((product) => product.stateMachine.state == 'colisé');
                     }
+                    function tousLesPacksSontEnTransit(shipment) {
+                        return shipment.packs.every((pack) => pack.locationSM.state == 'transit');
+                    }
                     if (tousLesProduitsSontColisés(this)) {
-                        return nextStep.add("update");
+                        if (tousLesPacksSontEnTransit(this)) {
+                            return nextStep.add("assembler");
+                        }
+                        return nextStep.add("destocker");
                     }
                     else {
                         return nextStep.add("setPack");
@@ -108,8 +114,10 @@ class Shipment {
     }
     nextSteps() {
         var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state);
-        if (!stateAction)
+        if (!stateAction) {
+            console.info('stateAction introuvable', this.stateMachine.state, this.statesAction);
             return [];
+        }
         return Array.from(stateAction.action());
     }
 }

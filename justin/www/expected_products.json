@@ -1,20 +1,28 @@
 [
   { "name": "SO0021",
+    "state": "en attente",
     "transferts": [
       {"name": "WH/OUT03480",
        "lines": [
-         { "name": "DEV-302-121" },
-         { "name": "DEV-302-121-c" },
-         { "name": "DEV-432-032" }
+         { "name": "DEV-302-121", "state": "colisé", "pack": "PACK2309"},
+         { "name": "DEV-302-121-c", "state": "colisé", "pack": "PACK2309"},
+         { "name": "DEV-432-032","state": "colisé", "pack": "PACK2310"},
+         { "name": "DEV-432-032","state": "colisé", "pack": "PACK2310"}
        ],
-       "packs": []
+       "packs": [
+         {"name": "PACK2309", "weight": 1, "state": "colisé", "location": "transit"},
+         {"name": "PACK2310", "weight": 3, "state": "colisé", "location": "stock"}
+       ]
       },
       {"name": "WH/OUT03481",
        "lines": [
-        { "name": "DEV-432-032" },
-        { "name": "DEV-432-033" }
+        { "name": "DEV-432-032","state": "colisé", "pack": "PACK2311"},
+        { "name": "DEV-432-033","state": "colisé", "pack": "PACK2311"},
+        { "name": "DEV-432-034","state": "receptionné"}
         ],
-       "packs": []
+       "packs": [
+         {"name": "PACK2311", "weight": 4, "state": "colisé", "location": "stock"}
+       ]
       }
     ]
   },
@@ -22,13 +30,19 @@
     "transferts": [
       {"name": "WH/OUT/03509",
        "lines": [
+          {"name": "9791090085039", "state": "init"},
+          {"name": "9791090085039", "state": "init"},
+          {"name": "9791090085039", "state": "init"},
+          {"name": "9782960087628", "state": "init"},
+          {"name": "9782960087628", "state": "receptionné"},
+          {"name": "3781506606503", "state": "receptionné"},
           {"name": "DEV-293-129", "state": "receptionné"},
           {"name": "DEV-293-127", "state": "receptionné"},
           {"name": "DEV-293-129", "state": "colisé", "pack": "PACK2308"},
           {"name": "DEV-293-128", "state": "colisé", "pack": "PACK2308"}
        ],
        "packs": [
-        {"name": "PACK2308", "weight": 2, "state": "crée"}
+        {"name": "PACK2308", "weight": 2, "state": "created"}
       ]
      }
     ]
@@ -41,6 +55,7 @@
         "lines":[
           { "name": "a", "state": "receptionné"},
           { "name": "a", "state": "receptionné"},
+          { "name": "a", "state": "init"},
           { "name": "b", "state": "receptionné"}
         ],
         "packs": []

@@ -48,7 +48,7 @@ export class ColisagePage {
       () => this.colisageProvider.addPack(p)
     ).then(
       () => {
-        p.shipment.nextStep().then( (nextStep) => self.nextStep = nextStep )
+        self.nextStep = p.shipment.nextSteps();
       }
     ).then(
       () => {

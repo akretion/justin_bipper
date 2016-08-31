@@ -31,6 +31,7 @@ export class BeepPage {
       message: 'Saved',
       duration: 2000
     }).present();
+    this.scansProvider.validate();
     this.reset();
   }
   reset() {
