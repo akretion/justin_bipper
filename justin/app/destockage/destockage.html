@@ -9,15 +9,8 @@
 
 
 <ion-content padding>
-  <form (ngSubmit)="addIt(model)">
-    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
-    <ion-buttons end>
-      <button primary>Validate<ion-icon name="send"></ion-icon></button>
-    </ion-buttons>
-
-  </form>
-
-<ion-list>
+  <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  <ion-list>
        <ion-card>
          <ion-item>
            Packs
@@ -29,5 +22,5 @@
            </ion-item>
          </ion-card-content>
        </ion-card>
-</ion-list>
+  </ion-list>
 </ion-content>

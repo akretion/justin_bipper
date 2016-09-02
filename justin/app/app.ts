@@ -11,7 +11,6 @@ import {SearchPage} from './search/Search.page';
 import {AssemblagePage} from './assemblage/assemblage.page';
 import {DestockagePage} from './destockage/destockage.page';
 
-
 @Component({
   templateUrl: 'build/menu/menu.html',
   providers: [ProductsProvider],

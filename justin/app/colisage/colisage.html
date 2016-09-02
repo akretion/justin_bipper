@@ -9,16 +9,7 @@
 
 
 <ion-content padding>
-
-
-
-  <form (ngSubmit)="addIt(model)">
-    <ion-item>
-      <ion-label>Scan</ion-label>
-      <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
-    </ion-item>
-  </form>
-
+  <input-bar (cb)="addIt($event)">Search bar</input-bar>
     <ion-list>
       <ion-item *ngFor="let product of pack.products">
         <ion-badge>{{ product.stateMachine.state }}</ion-badge>

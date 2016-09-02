@@ -2,10 +2,12 @@ import {Component} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
+import {inputBarComponent} from '../models/inputBar.component';
 
 @Component({
   templateUrl: 'build/destockage/destockage.html',
-  providers: []
+  providers: [],
+  directives: [inputBarComponent],
 })
 export class DestockagePage {
   pack: any = {};
@@ -30,10 +32,8 @@ export class DestockagePage {
       console.log('liste', this.listeDeCourses);
 
   }
-  addIt(model) {
-    if (!model.scanned)
-      return;
-    let p = this.listeDeCourses.find( a => a.name == model.scanned);
+  addIt(scanned) {
+    let p = this.listeDeCourses.find( a => a.name == scanned);
     console.log('on a trouvé ! ', p);
     if (!p)
       return;//TODO toast that !
@@ -43,7 +43,6 @@ export class DestockagePage {
     this.model.packs[p.name] = true;
     p.destocker();
     console.log(this.model);
-
   }
   reset() {
     this.model = { packs: {}};

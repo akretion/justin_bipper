@@ -4,7 +4,6 @@
   </ion-toolbar>
   <ion-content>
     <ion-list>
-      pages : {{ appRoutes.length }}
       <button ion-item menuClose *ngFor="let page of appRoutes"
          (click)="openPage(page.component)">{{page.data.title}}</button>
     </ion-list>

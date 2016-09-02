@@ -9,10 +9,7 @@
 
 
 <ion-content padding>
-  <form (ngSubmit)="addIt(model)">
-    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
-    <button>J'ai de la chance</button>
-  </form>
+  <input-bar (cb)="addIt($event)">Search bar</input-bar>
   <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
 
   <ion-card *ngIf="search.shipment.length">

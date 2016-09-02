@@ -3,10 +3,12 @@ import {NavController, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
+import {inputBarComponent} from '../models/inputBar.component';
 
 @Component({
   templateUrl: 'build/colisage/colisage.html',
-  providers: [ColisageProvider]
+  providers: [ColisageProvider],
+  directives: [inputBarComponent]
 })
 export class ColisagePage {
   pack: any = {};
@@ -21,10 +23,10 @@ export class ColisagePage {
     this.model = {};
     this.pack = this.colisageProvider.get();
   }
-  addIt(model) {
-    if (!model.scanned)
-      return;
-  this.colisageProvider.addOne(model.scanned).then(null,
+  addIt(scanned) {
+    console.log('dans addit', scanned);
+
+    this.colisageProvider.addOne(scanned).then(null,
       (reason) => {
           let toast = this.toastCtrl.create({
           message: reason,
@@ -34,7 +36,6 @@ export class ColisagePage {
         console.log('toasted');
       }
     );
-    model.scanned = null;
   }
   validate() {
     var self = this;
