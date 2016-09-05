@@ -6,7 +6,7 @@ import { RouteService } from './routeService';
 @Component({
   selector: 'nextApp',
   template: `
-  <span *ngIf="thing">
+  <span *ngIf="step">
     <button outline (click)="open(thing)">{{ step }}</button>
   </span>`,
   //providers: [RouteService]
@@ -27,7 +27,7 @@ export class nextAppComponent implements OnChanges {
     console.log('dans le on Change', a);
     let thing = a.thing.currentValue
     if (thing)
-      this.step = thing.nextSteps();
+      this.step = thing.nextSteps().join("");
     console.log(this.step, thing);
   }
 }

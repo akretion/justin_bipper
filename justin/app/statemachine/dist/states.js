@@ -282,7 +282,7 @@ class Product {
             nextSteps = "coliser";
         if (this.stateMachine.state == "colisé")
             nextSteps = null;
-        return nextSteps;
+        return [nextSteps];
     }
 }
 class StateEvent {
