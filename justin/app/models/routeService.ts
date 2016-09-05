@@ -19,6 +19,8 @@ export class RouteService {
     let page = this.appRoutes.find(
       (r) => r.action == action
     );
+    if (!page)
+      return console.error("No route found", action);
     this.subject.next(page);
   }
   setRoutes(routes) {
