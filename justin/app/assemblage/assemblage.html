@@ -1,25 +1,24 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Assemblage
-    </ion-title>
-    <button menuToggle>Toggle Menu</button>
-  </ion-navbar>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Assemblage
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding>
-  <form (ngSubmit)="addIt(model)">
-    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
-    <ion-buttons end>
-      <button primary>Validate<ion-icon name="send"></ion-icon></button>
-    </ion-buttons>
-
-  </form>
 
 <ion-list *ngIf="model.shipment">
      <p>Next step for {{ model.shipment.name }} : <button outline>{{ model.nextStep }}</button>
        <button *ngIf="model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)">Assembler</button>
+       <ion-badge *ngIf="model.ready == false " danger>Not ready : waiting another action</ion-badge>
+
      </p>
        <ion-card>
          <ion-item>

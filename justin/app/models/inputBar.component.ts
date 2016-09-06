@@ -4,15 +4,23 @@ import { OnChanges } from '@angular/core';
 @Component({
   selector: 'input-bar',
   styles: [`
-      input {
-        box-shadow:none;
+      .inputBar {
+        padding: 8px;
       }
+
   `],
   template: `
   <form (ngSubmit)="addIt(model)" #f="ngForm">
-    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something" required></ion-input>
-    <button type="submit" [disabled]="!f.valid">Validate</button>
-  </form>`,
+    <div class="inputBar" style="">
+      <div class="searchbar-input-container">
+        <div class="searchbar-search-icon"></div>
+        <input class="searchbar-input" [(ngModel)]="model.scanned" type="search" name="scanned" placeholder="Scan something"  autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="searchbar-clear-icon button button-clear" clear="" ng-reflect-clear=""><span class="button-inner"></span><ion-button-effect></ion-button-effect></button>
+      </div>
+    </div>
+  </form>
+  `,
+
 })
 export class inputBarComponent {
   @Output() cb = new EventEmitter();

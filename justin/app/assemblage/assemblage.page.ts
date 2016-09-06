@@ -2,9 +2,12 @@ import {Component} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
+import {nextAppComponent} from '../models/actionFor.component';
+import {inputBarComponent} from '../models/inputBar.component';
 
 @Component({
   templateUrl: 'build/assemblage/assemblage.html',
+  directives: [nextAppComponent, inputBarComponent],
   providers: []
 })
 export class AssemblagePage {
