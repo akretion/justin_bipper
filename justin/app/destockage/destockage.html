@@ -1,15 +1,18 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Destockage
-    </ion-title>
-    <button menuToggle>Toggle Menu</button>
-  </ion-navbar>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Déstockage
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding>
-  <input-bar (cb)="addIt($event)">Search bar</input-bar>
   <ion-list>
        <ion-card>
          <ion-item>

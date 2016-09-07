@@ -3,6 +3,7 @@ import {NavController, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {inputBarComponent} from '../models/inputBar.component';
+import {nextAppComponent} from '../models/actionFor.component';
 
 @Component({
   templateUrl: 'build/destockage/destockage.html',
