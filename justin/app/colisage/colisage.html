@@ -1,29 +1,32 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Colisage
-    </ion-title>
-    <button menuToggle>Toggle Menu</button>
-  </ion-navbar>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Colisage
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content padding>
-  <input-bar (cb)="addIt($event)">Search bar</input-bar>
     <ion-list>
-      <ion-item *ngFor="let product of pack.products">
+      <ion-item *ngFor="let product of model.pack.products">
         <ion-badge>{{ product.stateMachine.state }}</ion-badge>
         {{product.name}}
       </ion-item>
     </ion-list>
   <ion-item>
     <ion-label>Weight</ion-label>
-    <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" required></ion-input>
+    <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any" required></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-buttons start>
-      <button (click)="reset()" danger>Reset</button>
+      <button (click)="reset(true)" danger>Reset</button>
     </ion-buttons>
 
     <ion-buttons end>
@@ -33,22 +36,22 @@
     </ion-buttons>
   </ion-item>
 
- <ion-list *ngIf="pack.shipment">
-      <p>Next step for {{ pack.shipment.name }} : <button outline>{{ nextStep }}</button></p>
+ <ion-list *ngIf="shipment">
+      <p>Next step for {{ shipment.name }} : <button outline>{{ nextStep }}</button></p>
         <ion-card>
           <ion-item>
             Products
             <ion-icon></ion-icon>
           </ion-item>
           <ion-card-content>
-            <ion-item *ngFor="let product of pack.shipment.products">
+            <ion-item *ngFor="let product of shipment.products">
               {{ product.name }}
                - <span [ngSwitch]="product.stateMachine.state">
                  <span *ngSwitchCase="'colisé'">√</span>
                  <span *ngSwitchCase="'init'">?</span>
                  <span *ngSwitchCase="'receptionné'">?</span>
                </span>
-               - <button outline>{{ product.nextSteps() }}</button>
+               <nextApp [thing]="product">dns nextapp</nextApp>
             </ion-item>
           </ion-card-content>
         </ion-card>
@@ -58,14 +61,14 @@
             Packs
           </ion-item>
           <ion-card-content>
-            <ion-item *ngFor="let pack of pack.shipment.packs">
-              <a href="#" (click)="openPack(pack)">{{ pack.name }}</a> - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - <button outline>{{ pack.nextSteps() }}</button>
+            <ion-item *ngFor="let pack of shipment.packs">
+              {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.weight }} - <nextApp [thing]="pack">dns nextapp</nextApp>
             </ion-item>
           </ion-card-content>
         </ion-card>
 
 </ion-list>
- <div *ngIf="!pack.shipment">
+ <div *ngIf="!shipment">
     Pas de shipment for pack
   </div>
 

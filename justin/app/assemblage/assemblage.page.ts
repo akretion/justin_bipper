@@ -29,7 +29,7 @@ export class AssemblagePage {
     console.log('on a trouvé ! ', p);
     if (!p)
       return;
-    if (this.model.packs[p.name])
+    if (this.model.packs[p.name] && this.model.packs[p.name].done)
       return console.log('already scanned');
 
     if (!this.model.shipment) {
@@ -44,12 +44,14 @@ export class AssemblagePage {
         };
         this.model.ready = this.model.ready && ready;
       });
-    }  else {
+      console.log('ship set');
+    } else {
       if (this.model.shipment != p.shipment) {
-          console.log('on reset');
-          this.reset();
-          return;
-        }
+        console.log('on reset');
+        this.reset();
+        return;
+      }
+      console.log('ship already set normal pour un deuximee prod');
     }
     this.model.nextStep = "";
     this.model.toBeScanned--;

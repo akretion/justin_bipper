@@ -6,9 +6,8 @@ import { RouteService } from './routeService';
 @Component({
   selector: 'nextApp',
   template: `
-  <span *ngIf="step">
-    <button outline (click)="open(thing)">{{ step }}</button>
-  </span>`,
+    <button *ngIf="step" outline (click)="open(thing)" class="item-button">{{ step }}</button>
+  `,
   //providers: [RouteService]
 })
 export class nextAppComponent implements OnChanges {

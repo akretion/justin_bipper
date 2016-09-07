@@ -30,19 +30,13 @@
     "transferts": [
       {"name": "WH/OUT/03509",
        "lines": [
-          {"name": "9791090085039", "state": "init"},
-          {"name": "9791090085039", "state": "init"},
-          {"name": "9791090085039", "state": "init"},
-          {"name": "9782960087628", "state": "init"},
-          {"name": "9782960087628", "state": "receptionné"},
-          {"name": "3781506606503", "state": "receptionné"},
-          {"name": "dev)293)129", "state": "receptionné"},
+          {"name": "dev)293)129", "state": "init"},
           {"name": "dev)293)127", "state": "receptionné"},
           {"name": "dev)293)129", "state": "colisé", "pack": "pqck2308"},
           {"name": "dev)293)128", "state": "colisé", "pack": "pqck2308"}
        ],
        "packs": [
-        {"name": "pqck2308", "weight": 2, "state": "created"}
+        {"name": "pqck2308", "weight": 2, "state": "colisé", "location": "transit"}
       ]
      }
     ]
@@ -57,6 +51,21 @@
           { "name": "a", "state": "receptionné"},
           { "name": "a", "state": "init"},
           { "name": "b", "state": "receptionné"}
+        ],
+        "packs": []
+      }
+    ]
+  },
+  {
+    "name": "Facile2",
+    "transferts": [
+       {
+        "name": "WH/OU/3044",
+        "lines":[
+          { "name": "e", "state": "init"},
+          { "name": "e", "state": "init"},
+          { "name": "f", "state": "init"},
+          { "name": "g", "state": "init"}
         ],
         "packs": []
       }

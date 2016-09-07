@@ -24,14 +24,15 @@ export class ColisageProvider {
     if (!pack.shipment) {
       pack.shipment = this.productsProvider.getShipment(barcode);
       if (!pack.shipment)
-        return null;
+        return Promise.reject(`No shipment found for ${barcode}`);
       pack.shipment.setPack(pack); //faut le faire ici ?
     }
     console.log('on est dans le ship', pack.shipment);
     var nextAvailableProduct = this.productsProvider
     .getProducts(barcode)
     .find( (l) => l.stateMachine.state ==  'receptionné');
-
+    if (!nextAvailableProduct)
+      return Promise.reject(`No product available for ${barcode}`);
     pack.setProduct(nextAvailableProduct);
     return Promise.resolve();
   }
@@ -40,6 +41,7 @@ export class ColisageProvider {
   }
   reset() {
     this.pack = new Pack();
+    this.pack.name = "PACK" + parseInt( (Math.random()*10000)  + "" );
     this.pack.créer(); //attention devrait être une promesse
     return this.pack;
   }

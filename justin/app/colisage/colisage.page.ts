@@ -4,14 +4,16 @@ import {AlertController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
 import {inputBarComponent} from '../models/inputBar.component';
+import {nextAppComponent} from '../models/actionFor.component';
 
 @Component({
   templateUrl: 'build/colisage/colisage.html',
   providers: [ColisageProvider],
-  directives: [inputBarComponent]
+  directives: [inputBarComponent, nextAppComponent]
 })
 export class ColisagePage {
   pack: any = {};
+  shipment: any;
   model: any = {};
   nextStep: string = '';
   constructor(
@@ -20,13 +22,14 @@ export class ColisagePage {
       private toastCtrl: ToastController,
       private colisageProvider: ColisageProvider
     ) {
-    this.model = {};
-    this.pack = this.colisageProvider.get();
+      this.reset(true);
+      console.log('this', this);
   }
   addIt(scanned) {
     console.log('dans addit', scanned);
 
-    this.colisageProvider.addOne(scanned).then(null,
+    this.colisageProvider.addOne(scanned).then(
+      () => this.shipment = this.model.pack.shipment,
       (reason) => {
           let toast = this.toastCtrl.create({
           message: reason,
@@ -50,6 +53,7 @@ export class ColisagePage {
     ).then(
       () => {
         self.nextStep = p.shipment.nextSteps();
+        self.shipment = p.shipment;
       }
     ).then(
       () => {
@@ -59,9 +63,14 @@ export class ColisagePage {
         }).present();
       }
     );
+    this.reset(false);
   }
-  reset() {
+  reset(withShipment) {
     this.pack = this.colisageProvider.reset();
     this.model = {};
+    this.model.pack = this.pack;
+    if (withShipment)
+      this.shipment = null;
+
   }
 }

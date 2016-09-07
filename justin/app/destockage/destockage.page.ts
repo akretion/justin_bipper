@@ -8,7 +8,7 @@ import {nextAppComponent} from '../models/actionFor.component';
 @Component({
   templateUrl: 'build/destockage/destockage.html',
   providers: [],
-  directives: [inputBarComponent],
+  directives: [inputBarComponent, nextAppComponent],
 })
 export class DestockagePage {
   pack: any = {};
