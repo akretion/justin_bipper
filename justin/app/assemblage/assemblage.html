@@ -26,8 +26,10 @@
          </ion-item>
          <ion-card-content>
            <ion-item *ngFor="let pack of model.shipment.packs">
-             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - <button outline>{{ pack.nextSteps() }}</button>
-             <span *ngIf="model.packs[pack.name]">Good ! </span>
+             <!-- utilité d'avoir les state ? -->
+             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} <nextApp [thing]="pack">dns nextapp</nextApp>
+             <span *ngIf="model.packs[pack.name].done">Good ! </span>
+             <ion-badge *ngIf="model.packs[pack.name].ready == false " danger>Not ready</ion-badge>
            </ion-item>
          </ion-card-content>
        </ion-card>

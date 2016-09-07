@@ -22,10 +22,10 @@ export class AssemblagePage {
     ) {
       this.reset();
   }
-  addIt(model) {
-    if (!model.scanned)
+  addIt(scanned) {
+    if (!scanned)
       return;
-    let p = this.productsProvider.getPack(model.scanned);
+    let p = this.productsProvider.getPack(scanned);
     console.log('on a trouvé ! ', p);
     if (!p)
       return;
@@ -35,6 +35,15 @@ export class AssemblagePage {
     if (!this.model.shipment) {
       this.model.shipment = p.shipment;
       this.model.toBeScanned = p.shipment.packs.length;
+      this.model.ready = true;
+      p.shipment.packs.forEach((p) => {
+        let ready = (p.nextSteps().indexOf('assembler') !== -1);
+        this.model.packs[p.name] = {
+          ready: ready,
+          done: false,
+        };
+        this.model.ready = this.model.ready && ready;
+      });
     }  else {
       if (this.model.shipment != p.shipment) {
           console.log('on reset');
@@ -44,10 +53,10 @@ export class AssemblagePage {
     }
     this.model.nextStep = "";
     this.model.toBeScanned--;
-    this.model.packs[p.name] = true;
+    this.model.packs[p.name].done = true;
 
     if (this.model.toBeScanned == 0) {
-      this.model.nextStep = "Assemble"
+      this.model.nextStep = "Assemble";
     } else {
       this.model.nextStep = `${this.model.toBeScanned} of ${this.model.shipment.packs.length} to scan`;
     }
