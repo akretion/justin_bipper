@@ -38,7 +38,8 @@ export class ProductsProvider {
             pack.name = packname.name;
             pack.weight = packname.weight;
             pack.shipment = ship;
-            pack.locationSM.state =  packname.location;
+            pack.locationSM.state = packname.location;
+            pack.place = packname.place;
             ship.packs.push(pack);
             this.packsLookup.set(packname.name, pack);
           });

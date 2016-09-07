@@ -11,7 +11,7 @@
        ],
        "packs": [
          {"name": "pqck2309", "weight": 1, "state": "colisé", "location": "transit"},
-         {"name": "pqck2310", "weight": 3, "state": "colisé", "location": "stock"}
+         {"name": "pqck2310", "weight": 3, "state": "colisé", "location": "stock",  "place":"A23"}
        ]
       },
       {"name": "WH/OUT03481",
@@ -21,7 +21,7 @@
         { "name": "dev)432)034","state": "receptionné"}
         ],
        "packs": [
-         {"name": "pqck2311", "weight": 4, "state": "colisé", "location": "stock"}
+         {"name": "pqck2311", "weight": 4, "state": "colisé", "location": "stock", "place":"A23"}
        ]
       }
     ]
