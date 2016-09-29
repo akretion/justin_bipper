@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Beeper
+    </ion-title>
+    <button ion-button menuToggle>Toggle Menu</button>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <form (ngSubmit)="addIt(model)">
+    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
+  </form>
+  <ion-list>
+    <ion-item *ngFor="let scan of scans">
+      <span *ngIf="scan.qty == scan.expected">
+        <ion-badge secondary>{{ scan.qty }}</ion-badge> of <ion-badge secondary>{{ scan.expected }}</ion-badge>
+      </span>
+      <span *ngIf="scan.qty > scan.expected">
+        <ion-badge danger>{{ scan.qty }}</ion-badge> of <ion-badge danger>{{ scan.expected }}</ion-badge>
+      </span>
+      <span *ngIf="scan.qty < scan.expected">
+        <ion-badge>{{ scan.qty }}</ion-badge> of <ion-badge>{{ scan.expected }}</ion-badge>
+      </span>
+      {{scan.barcode}}
+      <button ion-button item-right outline danger (click)="removeOne(scan)">-1</button>
+    </ion-item>
+  </ion-list>
+
+  <ion-toolbar position="bottom">
+    <ion-buttons start>
+      <button ion-button (click)="showConfirm()" danger>Reset</button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button (click)="validate()" color="primary">Validate<ion-icon name="send"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-content>

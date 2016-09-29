@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Search
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
+
+  <ion-card *ngIf="search.shipment.length">
+    <ion-item>
+      Shipment
+      <ion-icon name="search" *ngIf="model.searched == 'shipment'"></ion-icon>
+    </ion-item>
+    <ion-card-content>
+      <ion-item *ngFor="let ship of search.shipment">
+        <a href="#" (click)="openPack(ship)">{{ ship.name }}</a> {{ ship.stateMachine?.state }} - <nextApp [thing]="ship">dns nextapp</nextApp>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="search.packs.length">
+    <ion-item>
+      Pack
+      <ion-icon name="search" *ngIf="model.searched == 'pack'"></ion-icon>
+    </ion-item>
+    <ion-card-content>
+      <ion-item *ngFor="let pack of search.packs">
+        <a href="#" (click)="openPack(pack)">{{ pack.name }}</a> {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} <nextApp [thing]="pack">dns nextapp</nextApp>
+
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="search.products.length">
+    <ion-item>
+      Products
+      <ion-icon name="search" *ngIf="model.searched == 'product'"></ion-icon>
+    </ion-item>
+    <ion-card-content>
+      <ion-item *ngFor="let product of search.products">
+        <a href="#" (click)="openPack(product)">{{ product.name }}</a> {{ product.stateMachine?.state }} -     <nextApp [thing]="product">dns nextapp</nextApp>
+        </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

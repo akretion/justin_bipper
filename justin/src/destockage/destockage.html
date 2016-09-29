@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Déstockage
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+     <ion-card>
+       <ion-item>
+         Packs
+       </ion-item>
+       <ion-card-content>
+         <ion-item *ngFor="let pack of listeDeCourses">
+           {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }}
+           <span *ngIf="model.packs[pack.name]" color="primary">√</span>
+         </ion-item>
+       </ion-card-content>
+     </ion-card>
+  </ion-list>
+</ion-content>
