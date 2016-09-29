@@ -10,7 +10,7 @@ import { OnChanges } from '@angular/core';
 
   `],
   template: `
-  <form (ngSubmit)="addIt(model)" #f="ngForm">
+  <form (ngSubmit)="addIt()" #f="ngForm">
     <div class="inputBar" style="">
       <div class="searchbar-input-container">
         <div class="searchbar-search-icon"></div>
@@ -23,7 +23,7 @@ import { OnChanges } from '@angular/core';
 
 })
 export class inputBarComponent {
-  @Output() cb = new EventEmitter();
+  @Output() cb: EventEmitter<any> = new EventEmitter();
   model: any;
   constructor() {
     this.reset();

@@ -9,7 +9,7 @@ import {ScansProvider} from './Scans.provider';
 })
 export class BeepPage {
   scans: Array<Scan> = [];
-  model = {};
+  model: any = {};
   constructor(
       public navCtrl: NavController,
       public alertCtrl: AlertController,
