@@ -1,14 +1,5 @@
-class Order {
-  shipments: Array<Shipment> = [];
-  name = 'SO0001';
-  state = {
-    //completement expediee
-    //partiellement expediee
-    //pas expediee
-  };
-}
 
-class Shipment {
+export class Shipment {
   packs: Array<Pack> = [];
   name = 'WH/OUT102';
   address = {};
@@ -180,9 +171,8 @@ class Shipment {
   }
 };
 
-class Pack { //carton
+export class Pack { //carton
   products: Array<Product> = [];//contien des doublons
-  order: Order;
   shipment: Shipment;
   name = 'PACK0001';
   weight = 0;
@@ -319,7 +309,7 @@ class Pack { //carton
   }
 }
 
- class Product { //chaque produit est unique
+ export class Product { //chaque produit est unique
   name = 'DEV-98083-23';
   order = 'SO0001'; //on connait cette info dès le début
   shipment: Shipment;
@@ -364,14 +354,14 @@ class Pack { //carton
 }
 
 
-class StateEvent {
+export class StateEvent {
   name: string;
   from: string;
   to: string;
   conditions: Array<any> = [];
   actions: Array<any> = [];
 }
-class StateMachine {
+export class StateMachine {
   events: Array<StateEvent>;
   state: string = 'init';
   public availableState() {

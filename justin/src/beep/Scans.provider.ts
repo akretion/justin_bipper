@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Scan} from './Scan.model';
 import {ProductsProvider} from './../models/Products.provider';
 
-declare var Product: any;
+import {Product} from '../statemachine/src/states';
 
 @Injectable()
 export class ScansProvider {

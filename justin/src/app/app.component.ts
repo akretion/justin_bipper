@@ -10,6 +10,7 @@ import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
 
+import { Product } from '../statemachine/src/states';
 
 @Component({
   templateUrl: '../menu/menu.html',
