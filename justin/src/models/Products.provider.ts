@@ -1,6 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Http} from '@angular/http';
 //import {Product} from '../statemachine/src/states.js';
+import {odooService} from '../angular-odoo/odoo';
+
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 
@@ -13,12 +15,16 @@ export class ProductsProvider {
   productsLookup: Map<any, any>;
   packsLookup: Map<any, any>;
   shipsLookup: Map<any, any>;
-  constructor(public http: Http) {
+  constructor(public http: Http, public odoo: odooService) {
     console.log('Dans products provider');
     this.packsLookup = new Map();
     this.shipsLookup = new Map();
     this.productsLookup = new Map();
-    http.get('expected_products.json').map(res => {
+
+    odoo.getServerInfo().then( (e) => console.log('et biiimm', e));
+
+
+    /*http.get('expected_products.json').map(res => {
       let body = res.json();
 
       body.forEach((s) => {
@@ -69,7 +75,7 @@ export class ProductsProvider {
       });
       console.log('products', this.productsLookup);
     }).subscribe();
-    console.log('juste après');
+    console.log('juste après');*/
   }
   lookupProduct(barcode) {
     return this.productsLookup.get(barcode);
@@ -99,6 +105,17 @@ export class ProductsProvider {
   getReserved() {
     return Array.from(this.packsLookup.values()).filter(
       (p) => p.locationSM.state == 'stock'
+    );
+  }
+  doReception(list) {
+    /* receptionne la liste */
+    console.log('list', list);
+    var payload = {}
+    list.forEach(l => {
+      payload[l.barcode] =l.qty
+    });
+    return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {}).then(
+      null, x => Promise.reject(x.title)
     );
   }
 }

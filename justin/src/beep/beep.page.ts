@@ -26,11 +26,21 @@ export class BeepPage {
   }
   validate() {
     console.log('send this to the server');
-    this.toastCtrl.create({
-      message: 'Saved',
-      duration: 2000
-    }).present();
-    this.scansProvider.validate();
+
+    this.scansProvider.validate().then(
+      () => {
+        this.toastCtrl.create({
+          message: 'Saved',
+          duration: 2000
+        }).present();
+      },
+      (y) => {
+        this.toastCtrl.create({
+          message: 'Error ! ' + y,
+          duration: 10000
+        }).present();
+      }
+    );
     this.reset();
   }
   reset() {

@@ -18,6 +18,7 @@ import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/actionFor.component';
 import {inputBarComponent} from '../models/inputBar.component';
 
+import { odooService } from '../angular-odoo/odoo';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import {inputBarComponent} from '../models/inputBar.component';
       ScansProvider,
       ColisageProvider,
       RouteService,
+      odooService,
   ]
 })
 export class AppModule{}

@@ -49,13 +49,15 @@ export class ScansProvider {
     return this.list;
   }
   validate() {
-    this.list.forEach( scan => {
-      if (!scan.products)
-        return;
-      for (let i = Math.min(scan.qty, scan.expected) - 1; i >= 0; i = i-1) {
-          scan.products[i].receptionner();
-          console.log('on receptionne', scan.products[i].name);
-      }
+    return this.productsProvider.doReception(this.list).then(
+      () => {
+      this.list.forEach( scan => {
+        if (!scan.products)
+          return;
+        for (let i = Math.min(scan.qty, scan.expected) - 1; i >= 0; i = i-1) {
+            scan.products[i].receptionner();
+        }
+      });
     });
   }
 };
