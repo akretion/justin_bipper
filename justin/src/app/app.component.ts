@@ -10,6 +10,7 @@ import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
 
+import { LoginPage} from '../login/login';
 import { Product } from '../statemachine/src/states';
 
 @Component({
@@ -34,6 +35,7 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
       routeService.goTo('receptionner');
+      this.nav.push(LoginPage);
     });
     watcher = routeService.get();
     watcher.subscribe(i => {
@@ -46,4 +48,3 @@ export class MyApp {
     //this.menu.close();
   }
 }
-
