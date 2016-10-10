@@ -115,7 +115,7 @@ export class ProductsProvider {
       payload[l.barcode] =l.qty
     });
     return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {}).then(
-      null, x => Promise.reject(x.title)
+      null, x => Promise.reject(x.message)
     );
   }
 }

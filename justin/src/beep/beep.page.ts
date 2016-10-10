@@ -33,6 +33,7 @@ export class BeepPage {
           message: 'Saved',
           duration: 2000
         }).present();
+        this.reset();
       },
       (y) => {
         this.toastCtrl.create({
@@ -41,7 +42,6 @@ export class BeepPage {
         }).present();
       }
     );
-    this.reset();
   }
   reset() {
     this.scans = this.scansProvider.reset();
