@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ProductsProvider} from '../models/Products.provider';
 
-declare var Pack:any;
-declare var Shipment:any;
+import {Pack, Shipment} from '../statemachine/src/states';
 
 @Injectable()
 export class ColisageProvider {
