@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, ToastController} from 'ionic-angular';
+import {NavController, ToastController, LoadingController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {Scan} from './Scan.model';
 import {ScansProvider} from './Scans.provider';
@@ -14,6 +14,7 @@ export class BeepPage {
       public navCtrl: NavController,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
+      public loadingCtrl: LoadingController,
       public scansProvider: ScansProvider) {
     this.model = {};
     this.scans = this.scansProvider.get();
@@ -27,8 +28,16 @@ export class BeepPage {
   validate() {
     console.log('send this to the server');
 
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
+
+
     this.scansProvider.validate().then(
       () => {
+        loader.dismissAll()
         this.toastCtrl.create({
           message: 'Saved',
           duration: 2000
@@ -36,6 +45,7 @@ export class BeepPage {
         this.reset();
       },
       (y) => {
+        loader.dismissAll()
         this.toastCtrl.create({
           message: 'Error ! ' + y,
           duration: 10000
