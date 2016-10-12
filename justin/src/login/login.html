@@ -9,7 +9,7 @@
 
 <ion-content>
   <ion-list>
-    <form #loginForm="ngForm" novalidate>
+    <form #loginForm="ngForm" novalidate (submit)="onLogin(loginForm)">
       <ion-item>
         <ion-label floating color="primary">Username and password</ion-label>
         <ion-input [(ngModel)]="login.userpass" name="userpass" type="password" #username="ngModel" spellcheck="false" autocapitalize="off" required>
@@ -26,7 +26,7 @@
 
       <ion-row responsive-sm>
         <ion-col>
-          <button ion-button (click)="onLogin(loginForm)" type="submit" color="primary" block>Login</button>
+          <button ion-button type="submit" color="primary" block>Login</button>
         </ion-col>
       </ion-row>
     </form>
