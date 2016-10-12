@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { ToastController, LoadingController} from 'ionic-angular';
+
 import { odooService } from '../angular-odoo/odoo';
 import { RouteService } from '../models/route.Service';
 
@@ -11,11 +13,26 @@ export class LoginPage {
   dbs = [];
   submitted = false;
   separator = ' ';
+  handleError = null;
 
-  constructor(public route: RouteService, public odoo: odooService) {
+  constructor(
+      public route: RouteService,
+      public odoo: odooService,
+      public toastCtrl: ToastController,
+      public loadingCtrl: LoadingController) {
     console.log('login page ctrl');
     var defaultDb = null;
-    odoo.getSessionInfo().then( x => defaultDb = x.db)
+
+    this.handleError = (err) => {
+      console.log('yeah ! une erreur', err);
+      this.toastCtrl.create({
+        message: err.title,
+        duration: 3000
+      }).present();
+    }
+
+    odoo.getSessionInfo()
+    .then( x => defaultDb = x.db)
     .then( () => odoo.isLoggedIn().then(
         isLogged => {
           if (isLogged)
@@ -29,7 +46,7 @@ export class LoginPage {
             this.login.db = defaultDb;
         }
       )
-    );
+    ).then(null, this.handleError);
   }
 
   onLogin(form) {
@@ -47,8 +64,16 @@ export class LoginPage {
         login = 'based_on_token';
         password = userpass;
       }
+
+      var loader = this.loadingCtrl.create({
+        content:'Please wait',
+        duration: 3000
+      });
+      loader.present();
       this.odoo.login(db, login, password).then(
         () => this.loginSuccess()
+      , this.handleError).then(
+        () => loader.dismissAll()
       );
 
       console.log(form);
