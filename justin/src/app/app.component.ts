@@ -27,7 +27,8 @@ export class MyApp {
   ];
 
   @ViewChild(Nav) nav;
-  constructor(platform: Platform, public routeService: RouteService) {
+  constructor(platform: Platform, public routeService: RouteService,
+  public menuCtrl: MenuController) {
     routeService.setRoutes(this.appRoutes);
     var watcher;
     platform.ready().then(() => {
@@ -43,8 +44,8 @@ export class MyApp {
     });
   }
   openPage(x) {
-    //this.menu.enable(true);
+    this.menuCtrl.enable(true);
     this.nav.setRoot(x);
-    //this.menu.close();
+    this.menuCtrl.close();
   }
 }
