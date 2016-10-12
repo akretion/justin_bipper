@@ -22,16 +22,23 @@ export class ColisageProvider {
     if (!pack.shipment) {
       pack.shipment = this.productsProvider.getShipment(barcode);
       if (!pack.shipment)
-        return Promise.reject(`No shipment found for ${barcode}`);
-      pack.shipment.setPack(pack); //faut le faire ici ?
+        console.log('No shipment. Continue in degraded mode')
+      else
+        pack.shipment.setPack(pack); //faut le faire ici ?
     }
-    console.log('on est dans le ship', pack.shipment);
+
     var nextAvailableProduct = this.productsProvider
     .getProducts(barcode)
     .find( (l) => l.stateMachine.state ==  'receptionné');
-    if (!nextAvailableProduct)
-      return Promise.reject(`No product available for ${barcode}`);
-    pack.setProduct(nextAvailableProduct);
+    if (nextAvailableProduct)
+      pack.setProduct(nextAvailableProduct);
+    else {
+      console.log('No products. Continue in degraded mode');
+      let newProd = this.productsProvider.newProduct(barcode);
+      newProd.receptionner().then(
+        () => pack.setProduct(newProd)
+      );
+    }
     return Promise.resolve();
   }
   addPack(pack) {
