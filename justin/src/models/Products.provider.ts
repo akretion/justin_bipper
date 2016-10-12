@@ -1,14 +1,10 @@
 import {Injectable} from "@angular/core";
 import {Http} from '@angular/http';
-//import {Product} from '../statemachine/src/states.js';
+import {Product, Pack, Shipment} from '../statemachine/src/states.js';
 import {odooService} from '../angular-odoo/odoo';
 
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
-
-declare var Product:any;
-declare var Shipment:any;
-declare var Pack:any;
 
 @Injectable()
 export class ProductsProvider {
@@ -106,6 +102,11 @@ export class ProductsProvider {
     return Array.from(this.packsLookup.values()).filter(
       (p) => p.locationSM.state == 'stock'
     );
+  }
+  newProduct(barcode) {
+    let product = new Product();
+    product.name = barcode;
+    return product;
   }
   doReception(list) {
     /* receptionne la liste */

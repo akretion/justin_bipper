@@ -2,8 +2,6 @@ import {Injectable} from '@angular/core';
 import {Scan} from './Scan.model';
 import {ProductsProvider} from './../models/Products.provider';
 
-import {Product} from '../statemachine/src/states';
-
 @Injectable()
 export class ScansProvider {
   list: Array<Scan> = [];
@@ -21,9 +19,7 @@ export class ScansProvider {
       });
       /* because we no longer expect a list from the server, we create a product for everyone */
       if (products.length == 0) {
-        let product = new Product();
-        product.name = barcode;
-        products.push(product);
+        products.push(this.productsProvider.newProduct(barcode));
       }
       scan = new Scan(barcode, 0, products);
     }

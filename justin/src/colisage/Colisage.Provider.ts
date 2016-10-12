@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ProductsProvider} from '../models/Products.provider';
 
-import {Pack, Shipment} from '../statemachine/src/states';
+import {Pack, Shipment, Product } from '../statemachine/src/states';
 
 @Injectable()
 export class ColisageProvider {
@@ -10,7 +10,6 @@ export class ColisageProvider {
   constructor(
     private productsProvider: ProductsProvider
     ) {
-      console.log('très sale');
       this.reset();
   }
 
