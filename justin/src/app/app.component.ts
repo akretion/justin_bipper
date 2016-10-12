@@ -19,11 +19,11 @@ import { Product } from '../statemachine/src/states';
 export class MyApp {
   rootPage: any;
   appRoutes = [
-    {data: {title: 'Reception' }, component: BeepPage, path:'beep', action:'receptionner'},
-    {data: {title: 'Colisage' }, component: ColisagePage, path: 'colisage', action:'coliser'},
-    {data: {title: "Déstockage"}, component: DestockagePage, path:'destockage', action:'destocker'},
-    {data: {title: "Assemblage"}, component: AssemblagePage, path:'assemblage', action: 'assembler'},
-    {data: {title: "J'ai de la chance" }, component: SearchPage, path: 'search', action:'rechercher'}
+    {data: {title: 'Receipt' }, component: BeepPage, path:'beep', action:'receptionner'},
+    {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser'},
+    {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker'},
+    {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler'},
+    {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher'}
   ];
 
   @ViewChild(Nav) nav;
