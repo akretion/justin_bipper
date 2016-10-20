@@ -2,7 +2,6 @@
 export class Shipment {
   packs: Array<Pack> = [];
   name = 'WH/OUT102';
-  address = {};
   carrier = '';
   products = [];
   emplacement = {
@@ -106,7 +105,6 @@ export class Shipment {
       evt.conditions = conda.conditions;
       evt.actions = conda.actions;
     });
-    console.log('condaAction', this.stateMachine);
   }
   créer(){
     return this.stateMachine.go('créer');
@@ -310,8 +308,7 @@ export class Pack { //carton
 }
 
  export class Product { //chaque produit est unique
-  name = 'DEV-98083-23';
-  order = 'SO0001'; //on connait cette info dès le début
+  name = '';
   shipment: Shipment;
   pack: Pack;
   stateMachine: StateMachine;
