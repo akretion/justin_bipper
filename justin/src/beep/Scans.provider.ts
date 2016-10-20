@@ -19,7 +19,7 @@ export class ScansProvider {
       });
       /* because we no longer expect a list from the server, we create a product for everyone */
       if (products.length == 0) {
-        products.push(this.productsProvider.newProduct(barcode));
+        this.productsProvider.newProduct(barcode)
       }
       scan = new Scan(barcode, 0, products);
     }
