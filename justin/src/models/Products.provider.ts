@@ -17,9 +17,36 @@ export class ProductsProvider {
     this.shipsLookup = new Map();
     this.productsLookup = new Map();
 
-    odoo.getServerInfo().then( (e) => console.log('et biiimm', e));
+    odoo.call('bipper.webservice', 'get_all_receptions', [], {}).then(
+      x => {
+        console.log('all receptions are belong to us', x)
+        x.forEach(
+          s => {
+            let ship = new Shipment();
+            ship.créer();
+            ship.name = s.name;
+            this.shipsLookup.set(ship.name, ship)
 
+            s.lines.forEach(
+              p => {
+                let prod = new Product();
+                prod.name = p.name;
+                prod.stateMachine.state = p.state;
 
+                if (!this.productsLookup.has(p.name)) {
+                  this.productsLookup.set(p.name, {'ship': null, packs: new Map(), products: []});
+                }
+                let lk = this.productsLookup.get(p.name);
+                lk.ship = ship;
+                lk.products.push(prod);
+
+                ship.products.push(prod);
+                
+              }
+            );
+          });
+        }
+    );
     /*http.get('expected_products.json').map(res => {
       let body = res.json();
 
