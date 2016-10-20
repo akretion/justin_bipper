@@ -19,11 +19,11 @@ export class BeepPage {
     this.model = {};
     this.scans = this.scansProvider.get();
   }
-  addIt(model) {
-    if (!model.scanned)
+  addIt(scanned) {
+    console.log('dans addit', scanned);
+    if (!scanned)
       return;
-    this.scansProvider.addOne(model.scanned);
-    model.scanned = null;
+    this.scansProvider.addOne(scanned);
   }
   validate() {
     console.log('send this to the server');

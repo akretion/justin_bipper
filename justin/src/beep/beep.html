@@ -1,17 +1,18 @@
+
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Beeper
-    </ion-title>
-    <button ion-button menuToggle>Toggle Menu</button>
-  </ion-navbar>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Bip
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
 </ion-header>
 
-
 <ion-content padding>
-  <form (ngSubmit)="addIt(model)">
-    <ion-input [(ngModel)]="model.scanned" name="scanned" placeholder="Scan something"></ion-input>
-  </form>
   <ion-list>
     <ion-item *ngFor="let scan of scans">
       <span *ngIf="scan.qty == scan.expected">
