@@ -23,17 +23,6 @@ var cookies = (function() {
 	};
 }());
 
-console.log('baam');
-/*ng.core.NgModule(
-{
-	//imports: [],
-	bootstrap: [],
-	imports: [ ng.http.HttpModule]
-}).Class({
-	constructor: function() {
-	}
-});
-*/
 @Injectable()
 export class odooService {
 	preflightPromise : any;
