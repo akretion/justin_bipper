@@ -310,6 +310,7 @@ export class Pack { //carton
  export class Product { //chaque produit est unique
   name = '';
   shipment: Shipment;
+  isExpected = true;
   pack: Pack;
   stateMachine: StateMachine;
   constructor() {

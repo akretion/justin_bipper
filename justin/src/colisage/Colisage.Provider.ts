@@ -35,14 +35,24 @@ export class ColisageProvider {
     else {
       console.log('No products. Continue in degraded mode');
       let newProd = this.productsProvider.newProduct(barcode);
+      newProd.isExpected = false;
       newProd.receptionner().then(
         () => pack.setProduct(newProd)
       );
     }
     return Promise.resolve();
   }
-  addPack(pack) {
-    this.productsProvider.addPack(pack);
+  validatePack(pack) {
+    var payload = {
+      'weight': pack.weight,
+      'products': pack.products.map( x => x.name)
+    };
+    console.log('on envoi payload', payload);
+    return this.odoo.call('bipper.webservice','do_packing', [payload], {})
+    .then(x=>{
+      console.log("c'est good", x);
+      this.productsProvider.addPack(pack)
+    }, (x) => console.log('on leve pas',x));
   }
   reset() {
     this.pack = new Pack();
