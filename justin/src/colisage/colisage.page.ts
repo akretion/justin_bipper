@@ -47,12 +47,12 @@ export class ColisagePage {
     p.setWeight(this.model.weight).then(
       () => p.coliser()
     ).then(
-      () => this.colisageProvider.addPack(p)
+      () => this.colisageProvider.validatePack(p)
     ).then(
       () => {
         if (p.shipment) {
           self.nextStep = p.shipment.nextSteps();
-          self.shipment = p.shipment;          
+          self.shipment = p.shipment;
         }
       }
     ).then(
