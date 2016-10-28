@@ -10,6 +10,7 @@ import {ColisagePage} from '../colisage/colisage.page';
 import {SearchPage} from '../search/Search.page';
 import {AssemblagePage} from '../assemblage/assemblage.page';
 import {DestockagePage} from '../destockage/destockage.page';
+import {DebugPage} from '../debug/debug.page';
 import {LoginPage} from '../login/login';
 
 import {ScansProvider} from '../beep/Scans.provider';
@@ -30,6 +31,7 @@ import { odooService } from '../angular-odoo/odoo';
     AssemblagePage,
     DestockagePage,
     LoginPage,
+    DebugPage,
     nextAppComponent,
     inputBarComponent,
   ],
@@ -46,6 +48,7 @@ import { odooService } from '../angular-odoo/odoo';
     AssemblagePage,
     DestockagePage,
     LoginPage,
+    DebugPage,
   ],
   providers: [
       ProductsProvider,

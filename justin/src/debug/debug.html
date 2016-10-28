@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Debug
+      </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+    <button (click)="refresh()">Refresh</button>
+    <table>
+      <tr><th>Shipments</th><td>{{ shipQty }}</td></tr>
+      <tr><th>Products</th><td>{{ prodQty }}</td></tr>
+      <tr><th>Packs</th><td>{{ packQty }}</td></tr>
+      <tr><th>LastUpdate</th><td>{{ lastUpdate | async }}</td></tr>
+    </table>
+
+</ion-content>

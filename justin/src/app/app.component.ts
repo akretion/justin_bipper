@@ -9,6 +9,7 @@ import {ColisagePage} from './../colisage/colisage.page';
 import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
+import {DebugPage} from './../debug/debug.page';
 
 import { LoginPage} from '../login/login';
 import { Product } from '../statemachine/src/states';
@@ -23,7 +24,8 @@ export class MyApp {
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser'},
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker'},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler'},
-    {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher'}
+    {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher'},
+    {data: {title: "Debug" }, component: DebugPage, path: 'debug', action:'debug'}
   ];
 
   @ViewChild(Nav) nav;
