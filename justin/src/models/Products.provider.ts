@@ -3,102 +3,128 @@ import {Http} from '@angular/http';
 import {Product, Pack, Shipment} from '../statemachine/src/states.js';
 import {odooService} from '../angular-odoo/odoo';
 
+import {Observable} from 'rxjs/Observable';
+import {Subject} from 'rxjs/Subject';
+
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/never';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/observable/interval';
+
 
 @Injectable()
 export class ProductsProvider {
   productsLookup: Map<any, any>;
   packsLookup: Map<any, any>;
   shipsLookup: Map<any, any>;
+  lastUpdate: any;
+  pauser: any;
   constructor(public http: Http, public odoo: odooService) {
     console.log('Dans products provider');
+
     this.packsLookup = new Map();
     this.shipsLookup = new Map();
     this.productsLookup = new Map();
 
-    odoo.call('bipper.webservice', 'get_all_receptions', [], {}).then(
-      x => {
-        console.log('all receptions are belong to us', x)
-        x.forEach(
-          s => {
-            let ship = new Shipment();
-            ship.créer();
-            ship.name = s.name;
-            this.shipsLookup.set(ship.name, ship)
+    this.lastUpdate = new Subject();
+    this.pauser = new Subject();
 
-            s.lines.forEach(
-              p => {
-                let prod = new Product();
-                prod.name = p.name;
-                prod.stateMachine.state = p.state;
+    var concurrent = 0;
 
-                if (!this.productsLookup.has(p.name)) {
-                  this.productsLookup.set(p.name, {'ship': null, packs: new Map(), products: []});
+    var odooFetch = (sub) => {
+      concurrent++;
+      if (concurrent > 8) {
+        this.pauser.next(true);
+        throw "To many concurrent requests";
+      }
+
+      console.log('call bipper.webservice', sub);
+      return odoo.call('bipper.webservice', 'get_all_receptions', [], {}).then(
+        x => {
+          concurrent--;
+          this.packsLookup = new Map();
+          this.shipsLookup = new Map();
+          this.productsLookup = new Map();
+
+          console.log('all receptions are belong to us');
+          this.lastUpdate.next(Date());
+          x.forEach(
+            s => {
+              var ship = buildShip(s);
+              this.shipsLookup.set(ship.name, ship)
+
+
+              s.packs.forEach(
+                p => {
+                  var pack = buildPack(p, ship);
+                  this.packsLookup.set(pack.name, pack);
+                  ship.packs.push(pack);
+                  console.log('on emballe', pack.name)
+                  //PACK0000003
                 }
-                let lk = this.productsLookup.get(p.name);
-                lk.ship = ship;
-                lk.products.push(prod);
+              );
+              s.lines.forEach(
+                p => {
+                  var prod = buildProduct(p);
 
-                ship.products.push(prod);
-                
-              }
-            );
-          });
-        }
-    );
-    /*http.get('expected_products.json').map(res => {
-      let body = res.json();
+                  if (!this.productsLookup.has(p.name)) {
+                    this.productsLookup.set(p.name, {'ship': null, packs: new Map(), products: []});
+                  }
+                  let lk = this.productsLookup.get(p.name);
+                  lk.ship = ship;
+                  lk.products.push(prod);
+                  ship.products.push(prod);
+                  let pack = this.packsLookup.get(p.pack);
+                  if (pack) {
+                    lk.packs.set(pack.name, pack);
+                    pack.products.push(prod);
+                  }
+                }
+              );
 
-      body.forEach((s) => {
+            });
+          }, (err) => {
+            concurrent--;
+            this.pauser.next(true);
+          }
+      );
+    };
 
-        s.transferts.map( t => { //faudrait qu'on sérialise tout l'arbre
-          let ship = new Shipment();
-          ship.créer();
-          ship.name = t.name;
-          if (t.state)
-            ship.stateMachine.state = t.state;
-          this.shipsLookup.set(t.name, ship);
+    this.pauser
+      .switchMap((paused) => paused ? Observable.never(): Observable.interval(20000).startWith(0))
+      .subscribe(odooFetch)
 
+    this.pauser.next(false);
 
-          t.packs.map((packname) => {
-            let pack = new Pack();
-            pack.stateMachine.state = packname.state;
-            pack.name = packname.name;
-            pack.weight = packname.weight;
-            pack.shipment = ship;
-            pack.locationSM.state = packname.location;
-            pack.place = packname.place;
-            ship.packs.push(pack);
-            this.packsLookup.set(packname.name, pack);
-          });
+    function buildShip(s) {
+      var ship = new Shipment();
+      ship.créer();
+      ship.name = s.name;
+      return ship;
+    }
 
-          t.lines.map( (l) => {
-            let p = new Product();
-            p.name = l.name;
-            if (!this.productsLookup.has(l.name)) {
-              this.productsLookup.set(l.name, {'ship': null, packs: new Map(), products: []});
-            }
-            let lk = this.productsLookup.get(l.name);
-            lk.ship = ship;
-            lk.products.push(p);
-
-            ship.products.push(p);
-            if (l.state)
-              p.stateMachine.state = l.state;
-
-            if (l.pack) {
-              let pack = this.packsLookup.get(l.pack);
-              p.pack = pack;
-              pack.products.push(p);
-              lk.packs.set(pack.name, pack);
-            }
-          });
-        });
-      });
-      console.log('products', this.productsLookup);
-    }).subscribe();
-    console.log('juste après');*/
+    function buildProduct(p) {
+      var prod = new Product();
+      prod.name = p.name;
+      prod.stateMachine.state = p.state;
+      return prod;
+    }
+    function buildPack(p, shipment) {
+      var pack = new Pack();
+      pack.name = p.name;
+      pack.weight = p.weight;
+      pack.shipment = shipment;
+      pack.stateMachine.state = p.state;
+      return pack;
+    }
+  }
+  explicitRefresh() {
+    this.pauser.next(false);
   }
   lookupProduct(barcode) {
     return this.productsLookup.get(barcode);
