@@ -21,6 +21,7 @@ import {nextAppComponent} from '../models/actionFor.component';
 import {inputBarComponent} from '../models/inputBar.component';
 
 import { odooService } from '../angular-odoo/odoo';
+import { errorComponent } from '../models/error.handler';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { odooService } from '../angular-odoo/odoo';
     DebugPage,
     nextAppComponent,
     inputBarComponent,
+    errorComponent,
   ],
   imports: [
     IonicModule.forRoot(MyApp),

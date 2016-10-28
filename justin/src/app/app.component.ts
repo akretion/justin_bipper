@@ -14,6 +14,8 @@ import {DebugPage} from './../debug/debug.page';
 import { LoginPage} from '../login/login';
 import { Product } from '../statemachine/src/states';
 
+import { errorComponent } from '../models/error.handler';
+
 @Component({
   templateUrl: '../menu/menu.html',
 })
