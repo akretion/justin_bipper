@@ -19,7 +19,7 @@ import { Product } from '../statemachine/src/states';
 export class MyApp {
   rootPage: any;
   appRoutes = [
-    {data: {title: 'Receipt' }, component: BeepPage, path:'beep', action:'receptionner'},
+    {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner'},
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser'},
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker'},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler'},
