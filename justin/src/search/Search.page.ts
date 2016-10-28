@@ -12,7 +12,7 @@ export class SearchPage {
   scans:any = [];
   model:any = {};
   thing = null;
-  search: {products: any, packs: any, shipment: any, terms: string};
+  search: any= {};
   constructor(
       public navCtrl: NavController,
       private alertCtrl: AlertController,
@@ -29,6 +29,7 @@ export class SearchPage {
     var packs = new Set();
     var prods = [];
     var ship = new Set();
+    var notFound = false;
 
     let p = this.productsProvider.getPack(scanned);
     let s = this.productsProvider.lookupShipment(scanned);
@@ -53,9 +54,17 @@ export class SearchPage {
       packs = new Set(lk.packs.values());
       prods = lk.products;
       this.model.searched = "product";
+    } else {
+      notFound = true;
     }
 
-    this.search = {products: prods, packs: Array.from(packs), shipment: Array.from(ship), terms: scanned};
+    this.search = {
+      products: prods,
+      packs: Array.from(packs),
+      shipment: Array.from(ship),
+      terms: scanned,
+      notFound: notFound
+    };
     console.log('searched', this.search);
   }
   openPack(pack) {
