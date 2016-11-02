@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ProductsProvider} from '../models/Products.provider';
+import {odooService} from '../angular-odoo/odoo';
 
 import {Pack, Shipment, Product } from '../statemachine/src/states';
 
@@ -8,7 +9,8 @@ export class ColisageProvider {
   pack: any;
   ship: any;
   constructor(
-    private productsProvider: ProductsProvider
+    private productsProvider: ProductsProvider,
+    private odoo: odooService
     ) {
       this.reset();
   }
