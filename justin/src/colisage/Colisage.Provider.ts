@@ -53,13 +53,12 @@ export class ColisageProvider {
     return this.odoo.call('bipper.webservice','do_packing', [payload], {})
     .then(x=>{
       console.log("c'est good", x);
+      pack.créer();
       this.productsProvider.addPack(pack)
     }, (x) => console.log('on leve pas',x));
   }
   reset() {
-    this.pack = new Pack();
-    this.pack.name = "PACK" + parseInt( (Math.random()*10000)  + "" );
-    this.pack.créer(); //attention devrait être une promesse
+    this.pack = this.productsProvider.newPack();
     return this.pack;
   }
 };

@@ -168,7 +168,12 @@ export class ProductsProvider {
   newProduct(barcode) {
     let product = new Product();
     product.name = barcode;
+    product.isExpected = false;
     return product;
+  }
+  newPack() {
+    let pack = new Pack();
+    return pack;
   }
   doReception(list) {
     /* receptionne la liste */
