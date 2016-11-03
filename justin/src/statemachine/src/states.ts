@@ -172,7 +172,8 @@ export class Shipment {
 export class Pack { //carton
   products: Array<Product> = [];//contien des doublons
   shipment: Shipment;
-  name = 'PACK0001';
+  name: String;
+  place: String;
   weight = 0;
   locationSM: StateMachine;
   stateMachine: StateMachine;
@@ -182,7 +183,11 @@ export class Pack { //carton
     this.locationSM.state = 'init';
     this.locationSM.events = <Array<StateEvent>>([
       {name:'créer', from: 'init', to:'transit', conditions: [], actions:[]},
-      {name:'stocker', from: 'transit', to:'stock', conditions: [], actions:[]},
+      {name:'stocker', from: 'transit', to:'stock', conditions: [], actions: [
+        (args) => {
+          this.place = args.place;
+        }
+      ]},
       {name:'destocker', from: 'stock', to:'transit', conditions: [], actions:[]},
       {name:'assembler', from: 'transit', to:'transit', conditions: [], actions:[]},
       {name:'expedier', from: 'transit', to:'terminé', conditions: [], actions:[]},
@@ -192,19 +197,19 @@ export class Pack { //carton
     this.stateMachine.state = 'init';
     this.stateMachine.events = <Array<StateEvent>>([
       {name:'créer', from: 'init', to: 'created', conditions: [], actions:[]},
-      {name:'setWeight', from: 'created', to: 'created', conditions: [], actions:[]},
-      {name:'setProduct', from: 'created', to: 'created', conditions: [], actions:[]},
-      {name:'coliser', from: 'created', to: 'colisé', conditions: [], actions:[]},
-      {name:'assembler', from: 'colisé', to: 'assemblé', conditions: [], actions:[]},
-    ]);
-
-    var condActions = [
-      {name: 'setProduct', conditions: [
+      {name:'setWeight', from: 'created', to: 'created', conditions: [], actions:[
+        (args) => {
+          let weight = args.weight;
+          weight = parseInt(weight);
+          this.weight = weight;
+        }
+      ]},
+      {name:'setProduct', from: 'created', to: 'created', conditions: [
         (args) => {
           let product = args.product;
           if (product)
             product.stateMachine.can('coliser');
-        }
+          }
       ], actions:[
         (args) => {
           let product = args.product;
@@ -215,34 +220,26 @@ export class Pack { //carton
           this.products.push(product)
         }
       ]},
-      { name: 'setWeight', conditions: [],
-        actions: [
-           (args) => {
-             let weight = args.weight;
-             weight = parseInt(weight);
-             this.weight = weight;
-           }
-        ]},
-      { name: 'coliser', conditions: [
-          () => {
-            if (!this.weight)
-              return Promise.reject("pas de poids");
-          },
-          () => {
-            if (!this.products.length)
-              return Promise.reject('Pas de produits');
-          },
-          () => {
-            if (!this.products.every( (p) => p.stateMachine.state == 'colisé'))
-              return Promise.reject("Tous les colis ne sont pas colisés");
-          }
-        ], actions: [
-          () => this.locationSM.go('créer')
+      {name:'coliser', from: 'created', to: 'colisé', conditions: [
+        () => {
+          if (!this.weight)
+            return Promise.reject("pas de poids");
+        },
+        () => {
+          if (!this.products.length)
+            return Promise.reject('Pas de produits');
+        },
+        () => {
+          if (!this.products.every( (p) => p.stateMachine.state == 'colisé'))
+            return Promise.reject("Tous les colis ne sont pas colisés");
+        }
+      ], actions:[
+        () => this.locationSM.go('créer')
       ]},
-      { name:'assembler', conditions: [
+      {name:'assembler', from: 'colisé', to: 'assemblé', conditions: [
         () => this.locationSM.can('assembler'),
-      ], actions: []}
-    ];
+      ], actions:[]},
+    ]);
 
     this.statesAction = [
       { name:'init', action: () => { return "créer" } },
@@ -268,12 +265,6 @@ export class Pack { //carton
       }}
     ];
 
-    condActions.forEach( (conda) => {
-      let evt = (this.stateMachine.events as any).find(
-        (e) => e.name == conda.name)
-      evt.conditions = conda.conditions;
-      evt.actions = conda.actions;
-    });
   }
   créer() {
     return this.stateMachine.go('créer');
@@ -292,8 +283,8 @@ export class Pack { //carton
   assembler() {
     return this.stateMachine.go('assembler');
   }
-  stocker() {
-    return this.locationSM.go('stocker')
+  stocker(place) {
+    return this.locationSM.go('stocker', { place: place});
   }
   destocker() {
     return this.locationSM.go('destocker');
