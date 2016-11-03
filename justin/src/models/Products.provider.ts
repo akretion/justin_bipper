@@ -120,6 +120,15 @@ export class ProductsProvider {
       pack.weight = p.weight;
       pack.shipment = shipment;
       pack.stateMachine.state = p.state;
+      if (!p.state){
+        console.log('init state par défaut')
+        pack.stateMachine.state = 'colisé';
+      }
+      if (!p.location) {
+        console.log('c pas bien ca');
+        //a virer quand le state sera fourni par odoo
+        pack.locationSM.state = 'transit';
+      }
       return pack;
     }
   }
