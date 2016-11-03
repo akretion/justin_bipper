@@ -96,7 +96,7 @@ export class ProductsProvider {
     };
 
     this.pauser
-      .switchMap((paused) => paused ? Observable.never(): Observable.interval(20000).startWith(0))
+      .switchMap((paused) => paused ? Observable.never(): Observable.interval(40000).startWith(0))
       .subscribe(odooFetch)
 
     this.pauser.next(false);
