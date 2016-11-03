@@ -186,4 +186,10 @@ export class ProductsProvider {
       null, x => Promise.reject(x.message)
     );
   }
+  stock(pack) {
+    var payload = { name: pack.name, place: pack.place};
+    return this.odoo.call('bipper.webservice', 'set_package_place', [payload], {}).then(
+      x=> console.log('ayé on stacké', pack)
+    )
+  }
 }
