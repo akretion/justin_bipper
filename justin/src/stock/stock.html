@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Stock
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+
+<ion-list>
+  <ion-card *ngIf="!model.pack && model.scanned">
+   <ion-card-content>
+    <p>No pack found for {{model.scanned}}</p>
+   </ion-card-content>
+ </ion-card>
+
+ <ion-card *ngIf="model.pack">
+    <ion-card-content>
+      <ion-item>
+        <p>{{ model.pack.name }}</p>
+      </ion-item>
+      <ion-item>
+        <ion-label>Place</ion-label>
+        <ion-input [(ngModel)]="model.place" name="Place" placeholder="Place in shelf" required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-buttons start>
+          <button ion-button (click)="reset(true)" danger>Reset</button>
+        </ion-buttons>
+
+        <ion-buttons end>
+          <button ion-button (click)="validate(model.pack)" color="primary">Save
+              <ion-icon name="send"></ion-icon>
+            </button>
+        </ion-buttons>
+      </ion-item>
+     </ion-card-content>
+   </ion-card>
+</ion-list>
+</ion-content>

@@ -10,6 +10,7 @@ import {ColisagePage} from '../colisage/colisage.page';
 import {SearchPage} from '../search/Search.page';
 import {AssemblagePage} from '../assemblage/assemblage.page';
 import {DestockagePage} from '../destockage/destockage.page';
+import {StockPage} from './../stock/stock.page';
 import {DebugPage} from '../debug/debug.page';
 import {LoginPage} from '../login/login';
 
@@ -31,6 +32,7 @@ import { errorComponent } from '../models/error.handler';
     SearchPage,
     AssemblagePage,
     DestockagePage,
+    StockPage,
     LoginPage,
     DebugPage,
     nextAppComponent,
@@ -49,6 +51,7 @@ import { errorComponent } from '../models/error.handler';
     SearchPage,
     AssemblagePage,
     DestockagePage,
+    StockPage,
     LoginPage,
     DebugPage,
   ],
