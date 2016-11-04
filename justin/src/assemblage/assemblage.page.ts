@@ -23,18 +23,19 @@ export class AssemblagePage {
   addIt(scanned) {
     if (!scanned)
       return;
-    let p = this.productsProvider.getPack(scanned);
-    console.log('on a trouvé ! ', p);
-    if (!p)
+    let pack = this.productsProvider.getPack(scanned);
+    console.log('on a trouvé ! ', pack);
+    if (!pack)
       return;
-    if (this.model.packs[p.name] && this.model.packs[p.name].done)
+    if (this.model.packs[pack.name] && this.model.packs[pack.name].done)
       return console.log('already scanned');
 
     if (!this.model.shipment) {
-      this.model.shipment = p.shipment;
-      this.model.toBeScanned = p.shipment.packs.length;
+      let shipment = pack.shipment
+      this.model.shipment = shipment;
+      this.model.toBeScanned = shipment.packs.length;
       this.model.ready = true;
-      p.shipment.packs.forEach((p) => {
+      shipment.packs.forEach((p) => {
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,
@@ -44,7 +45,7 @@ export class AssemblagePage {
       });
       console.log('ship set');
     } else {
-      if (this.model.shipment != p.shipment) {
+      if (this.model.shipment != pack.shipment) {
         console.log('on reset');
         this.reset();
         return;
@@ -53,7 +54,7 @@ export class AssemblagePage {
     }
     this.model.nextStep = "";
     this.model.toBeScanned--;
-    this.model.packs[p.name].done = true;
+    this.model.packs[pack.name].done = true;
 
     if (this.model.toBeScanned == 0) {
       this.model.nextStep = "Assemble";

@@ -23,12 +23,12 @@ export class StockPage {
   addIt(scanned) {
     if (!scanned)
       return;
-    let p = this.productsProvider.getPack(scanned);
-    console.log('on a trouvé ! ', p);
-    if (!p)
+    let pack = this.productsProvider.getPack(scanned);
+    console.log('on a trouvé ! ', pack);
+    if (!pack)
       return this.reset();
     this.model.scanned = scanned;
-    this.model.pack = p;
+    this.model.pack = pack;
 
   }
   reset() {

@@ -51,39 +51,25 @@ export class ProductsProvider {
           this.shipsLookup = new Map();
           this.productsLookup = new Map();
 
-          console.log('all receptions are belong to us');
           this.lastUpdate.next(Date());
           x.forEach(
             s => {
               var ship = buildShip(s);
               this.shipsLookup.set(ship.name, ship)
 
-
               s.packs.forEach(
                 p => {
                   var pack = buildPack(p, ship);
                   this.packsLookup.set(pack.name, pack);
-                  ship.packs.push(pack);
-                  console.log('on emballe', pack.name)
-                  //PACK0000003
                 }
               );
               s.lines.forEach(
                 p => {
-                  var prod = buildProduct(p);
-
-                  if (!this.productsLookup.has(p.name)) {
-                    this.productsLookup.set(p.name, {'ship': null, packs: new Map(), products: []});
-                  }
-                  let lk = this.productsLookup.get(p.name);
-                  lk.ship = ship;
-                  lk.products.push(prod);
-                  ship.products.push(prod);
+                  if (!this.productsLookup.has(p.name))
+                    this.productsLookup.set(p.name, []);
                   let pack = this.packsLookup.get(p.pack);
-                  if (pack) {
-                    lk.packs.set(pack.name, pack);
-                    pack.products.push(prod);
-                  }
+                  let prod = buildProduct(p, pack, ship);
+                  this.productsLookup.get(p.name).push(prod);
                 }
               );
 
@@ -108,17 +94,22 @@ export class ProductsProvider {
       return ship;
     }
 
-    function buildProduct(p) {
+    function buildProduct(p, pack, shipment) {
       var prod = new Product();
       prod.name = p.name;
       prod.stateMachine.state = p.state;
+      prod.shipment = shipment;
+      shipment.products.push(prod);
+      if (pack) {
+        pack.products.push(prod);
+        prod.pack = pack;
+      }
       return prod;
     }
     function buildPack(p, shipment) {
       var pack = new Pack();
       pack.name = p.name;
       pack.weight = p.weight;
-      pack.shipment = shipment;
       pack.stateMachine.state = p.state;
       if (!p.state){
         console.log('init state par défaut')
@@ -129,33 +120,23 @@ export class ProductsProvider {
         //a virer quand le state sera fourni par odoo
         pack.locationSM.state = 'transit';
       }
+      pack.shipment = shipment;
+      shipment.packs.push(pack);
       return pack;
     }
   }
   explicitRefresh() {
     this.pauser.next(false);
   }
-  lookupProduct(barcode) {
-    return this.productsLookup.get(barcode);
+  getProducts(prodBarcode) {
+    console.log('dans get product', prodBarcode);
+    return this.productsLookup.get(prodBarcode) || [];
   }
-  lookupShipment(barcode) {
-    return this.shipsLookup.get(barcode);
+  getShipment(shipBarcode) {
+    return this.shipsLookup.get(shipBarcode);
   }
-  getProducts(barcode) {
-    console.log('get product', barcode, this.productsLookup.get(barcode))
-    var ship = this.getShipment(barcode);
-    if (!ship)
-      return [];
-    return ship.products.filter( (l) => l.name == barcode);
-  }
-  getShipment(barcode) {
-    let lk = this.productsLookup.get(barcode);
-    if (!lk)
-      return null; //TODO rejeter une promesse
-    return lk.ship
-  }
-  getPack(barcode) {
-    return this.packsLookup.get(barcode);
+  getPack(packBarcode) {
+    return this.packsLookup.get(packBarcode);
   }
   addPack(pack) {
     return this.packsLookup.set(pack.name, pack);

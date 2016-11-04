@@ -22,37 +22,37 @@ export class SearchPage {
     console.log('constructeur de search');
     this.model = {};
     this.scans = [];
-    this.search = {products: [], packs: new Set(), shipment: new Set(), terms:""};
+    this.search = {products: [], packs: [], shipments: [], terms:""};
   }
   addIt(scanned) {
     console.log('addit', scanned);
-    var packs = new Set();
+    var packs = [];
     var prods = [];
-    var ship = new Set();
+    var ships = [];
     var notFound = false;
 
-    let p = this.productsProvider.getPack(scanned);
-    let s = this.productsProvider.lookupShipment(scanned);
-    let lk = this.productsProvider.lookupProduct(scanned);
-    if (p) {
-      //on a cherché un pack
-      packs.add(p);
-      prods = p.products;
-      ship.add(p.shipment);
+    let pack = this.productsProvider.getPack(scanned);
+    let ship = this.productsProvider.getShipment(scanned);
+    let prod = this.productsProvider.getProducts(scanned);
+    if (pack) {
+      //on a trouvé un pack
+      ships = [pack.shipment];
+      packs = [pack];
+      prods = pack.products;
       this.model.searched = "pack";
-      console.log('next step', p.nextSteps())
-    } else if (s) {
-      // on a cherché un shipment
-      s.packs.forEach( aPack => packs.add(aPack) );
-      ship.add(s);
-      prods = s.products;
+      console.log('next step', pack.nextSteps())
+    } else if (ship) {
+      // on a trouvé un shipment
+      ships = [ship];
+      packs = ship.packs;
+      prods = ship.products;
       this.model.searched = "shipment";
-    } else if (lk) {
-      // on a cherché un produit
-      console.log(lk);
-      ship.add(lk.ship);
-      packs = new Set(lk.packs.values());
-      prods = lk.products;
+    } else if (prod.length) {
+      // on a trouve un produit
+      console.log(prod);
+      ships = [prod[0].shipment];
+      packs = (prod[0].pack) ? [prod[0].pack]: [];
+      prods = [prod[0]];
       this.model.searched = "product";
     } else {
       notFound = true;
@@ -60,8 +60,8 @@ export class SearchPage {
 
     this.search = {
       products: prods,
-      packs: Array.from(packs),
-      shipment: Array.from(ship),
+      packs: packs,
+      shipments: ships,
       terms: scanned,
       notFound: notFound
     };

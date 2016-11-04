@@ -21,28 +21,45 @@ export class ColisageProvider {
   addOne(barcode) {
     //TODO vérifier que le produit fait parti de cet shipment?
     var pack = this.pack;
-    if (!pack.shipment) {
-      pack.shipment = this.productsProvider.getShipment(barcode);
-      if (!pack.shipment)
-        console.log('No shipment. Continue in degraded mode')
-      else
-        pack.shipment.setPack(pack); //faut le faire ici ?
+    var productsProvider = this.productsProvider;
+    var products = productsProvider.getProducts(barcode);
+
+    function getProduct(barcode) {
+      var nextAvailableProduct = products
+        .find( (l) => l.stateMachine.state ==  'receptionné');
+
+      if (nextAvailableProduct)
+        return Promise.resolve(nextAvailableProduct);
+
+      console.log('degraded mode: we create a product on the fly');
+      let newProd = productsProvider.newProduct(barcode);
+      newProd.isExpected = false;
+      return newProd.receptionner().then( () => newProd);
     }
 
-    var nextAvailableProduct = this.productsProvider
-    .getProducts(barcode)
-    .find( (l) => l.stateMachine.state ==  'receptionné');
-    if (nextAvailableProduct)
-      pack.setProduct(nextAvailableProduct);
-    else {
-      console.log('No products. Continue in degraded mode');
-      let newProd = this.productsProvider.newProduct(barcode);
-      newProd.isExpected = false;
-      newProd.receptionner().then(
-        () => pack.setProduct(newProd)
-      );
+    function ensureShipment(pack, product) {
+      if (!pack.products.length) // first one
+        pack.shipment = product.shipment;
+
+      if (pack.shipment && product.shipment
+        && pack.shipment != product.shipment)
+        return Promise.reject('Shipment not equal');
+
+      console.log('continue in degraded mode');
+      return Promise.resolve(product);
     }
-    return Promise.resolve();
+
+    function setProduct(pack, product) {
+      console.log('setProduct', pack, product);
+      if (pack.shipment)
+        pack.shipment.setPack(pack);
+      pack.setProduct(product);
+      return Promise.resolve(product);
+    }
+
+    return getProduct(barcode)
+      .then(prod => ensureShipment(pack, prod))
+      .then(prod => setProduct(pack, prod));
   }
   validatePack(pack) {
     var payload = {
@@ -53,12 +70,15 @@ export class ColisageProvider {
     return this.odoo.call('bipper.webservice','do_packing', [payload], {})
     .then(x=>{
       console.log("c'est good", x);
-      pack.créer();
+      pack.name = x[0];
+      console.log('normalement on imprime ici');
+      pack.coliser();
       this.productsProvider.addPack(pack)
     }, (x) => console.log('on leve pas',x));
   }
   reset() {
     this.pack = this.productsProvider.newPack();
+    this.pack.créer();
     return this.pack;
   }
 };

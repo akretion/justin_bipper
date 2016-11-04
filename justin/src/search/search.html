@@ -16,13 +16,13 @@
   <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
   <ion-item *ngIf="search.notFound">No result found !</ion-item>
 
-  <ion-card *ngIf="search.shipment.length">
+  <ion-card *ngIf="search.shipments.length">
     <ion-item>
       Shipment
       <ion-icon name="search" *ngIf="model.searched == 'shipment'"></ion-icon>
     </ion-item>
     <ion-card-content>
-      <ion-item *ngFor="let ship of search.shipment">
+      <ion-item *ngFor="let ship of search.shipments">
         <a href="#" (click)="openPack(ship)">{{ ship.name }}</a> {{ ship.stateMachine?.state }} - <nextApp [thing]="ship">dns nextapp</nextApp>
       </ion-item>
     </ion-card-content>
