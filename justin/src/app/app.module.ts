@@ -20,6 +20,7 @@ import {ColisageProvider} from '../colisage/Colisage.Provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/actionFor.component';
 import {inputBarComponent} from '../models/inputBar.component';
+import {PrintServices} from './../models/PrintServices';
 
 import { odooService } from '../angular-odoo/odoo';
 import { errorComponent } from '../models/error.handler';
@@ -61,6 +62,7 @@ import { errorComponent } from '../models/error.handler';
       ColisageProvider,
       RouteService,
       odooService,
+      PrintServices,
   ]
 })
 export class AppModule{}

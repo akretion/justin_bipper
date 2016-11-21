@@ -20,4 +20,23 @@
       <tr><th>LastUpdate</th><td>{{ lastUpdate | async }}</td></tr>
     </table>
 
+
+    <hr>
+    <ion-card>
+      <form (ngSubmit)="saveSettings(settings)">
+        <ion-card-header>Printing setup</ion-card-header>
+        <p>- {{ settings }}</p>
+        <ion-item>
+          <ion-label fixed>Zebra printer</ion-label>
+          <ion-input name="zebra" type="url" [(ngModel)]="settings.zebra" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>Dymo Printer</ion-label>
+          <ion-input name="dymo" type="url" [(ngModel)]="settings.dymo" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <button ion-button>Save</button>
+        </ion-item>
+      </form>
+    </ion-card>
 </ion-content>
