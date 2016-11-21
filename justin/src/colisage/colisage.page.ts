@@ -5,6 +5,7 @@ import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
 import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/actionFor.component';
+import {PrintServices} from '../models/PrintServices';
 
 @Component({
   templateUrl: 'colisage.html',
@@ -18,7 +19,8 @@ export class ColisagePage {
       public navCtrl: NavController,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
-      private colisageProvider: ColisageProvider
+      private colisageProvider: ColisageProvider,
+      public printServices: PrintServices
     ) {
       this.reset(true);
       console.log('this', this);
@@ -61,6 +63,8 @@ export class ColisagePage {
           message: 'Saved',
           duration: 2000
         }).present();
+        console.log('on print là');
+        
       }
     );
     this.reset(false);
