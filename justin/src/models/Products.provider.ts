@@ -115,9 +115,10 @@ export class ProductsProvider {
         console.log('init state par défaut')
         pack.stateMachine.state = 'init';
       }
-      if (!p.location) {
-        console.log('c pas bien ca');
-        //a virer quand le state sera fourni par odoo
+      if (p.place) {
+        pack.locationSM.state = 'stock';
+        pack.place = p.place;
+      } else {
         pack.locationSM.state = 'transit';
       }
       pack.shipment = shipment;
