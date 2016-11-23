@@ -113,7 +113,7 @@ export class ProductsProvider {
       pack.stateMachine.state = p.state;
       if (!p.state){
         console.log('init state par défaut')
-        pack.stateMachine.state = 'colisé';
+        pack.stateMachine.state = 'init';
       }
       if (!p.location) {
         console.log('c pas bien ca');

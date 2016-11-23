@@ -162,15 +162,15 @@ export class Pack { //carton
     this.stateMachine = new StateMachine();
     this.stateMachine.state = 'init';
     this.stateMachine.events = <Array<StateEvent>>([
-      {name:'créer', from: 'init', to: 'created', conditions: [], actions:[]},
-      {name:'setWeight', from: 'created', to: 'created', conditions: [], actions:[
+      {name:'créer', from: 'init', to: 'init', conditions: [], actions:[]},
+      {name:'setWeight', from: 'init', to: 'init', conditions: [], actions:[
         (args) => {
           let weight = args.weight;
           weight = parseInt(weight);
           this.weight = weight;
         }
       ]},
-      {name:'setProduct', from: 'created', to: 'created', conditions: [
+      {name:'setProduct', from: 'init', to: 'init', conditions: [
         (args) => {
           let product = args.product;
           if (product)
@@ -186,7 +186,7 @@ export class Pack { //carton
           this.products.push(product)
         }
       ]},
-      {name:'coliser', from: 'created', to: 'colisé', conditions: [
+      {name:'coliser', from: 'init', to: 'created', conditions: [
         () => {
           if (!this.weight)
             return Promise.reject("pas de poids");
@@ -202,14 +202,13 @@ export class Pack { //carton
       ], actions:[
         () => this.locationSM.go('créer')
       ]},
-      {name:'assembler', from: 'colisé', to: 'assemblé', conditions: [
+      {name:'assembler', from: 'created', to: 'assemblé', conditions: [
         () => this.locationSM.can('assembler'),
       ], actions:[]},
     ]);
 
     this.statesAction = [
-      { name:'init', action: () => { return "créer" } },
-      { name:'created', action: () => {
+      { name:'init', action: () => {
         var steps = new Set()
         if (!this.weight)
           steps.add('setWeight')
@@ -221,7 +220,7 @@ export class Pack { //carton
           steps.add('coliser');
         return steps;
       }},
-      { name:'colisé', action: () => {
+      { name:'created', action: () => {
         var steps = new Set();
         if (this.locationSM.state == 'transit')
           steps.add('assembler');
