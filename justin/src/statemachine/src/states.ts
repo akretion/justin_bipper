@@ -307,7 +307,8 @@ export class Pack { //carton
   constructor() {
     this.stateMachine = new StateMachine();
     this.stateMachine.events = <Array<StateEvent>>[
-      { name:'receptionner', from: 'init', to: 'receptionné', conditions: [], actions:[]},
+      { name:'produire', from: 'init', to: 'available', conditions: [], actions:[]}, //produire is done on odoo
+      { name:'receptionner', from: 'available', to: 'receptionné', conditions: [], actions:[]},
       { name:'coliser', from: 'receptionné', to: 'colisé', conditions: [], actions:[]}
     ];
   }
@@ -332,7 +333,7 @@ export class Pack { //carton
   }
   nextSteps() {
     var nextSteps = ""
-    if (this.stateMachine.state == 'init')
+    if (this.stateMachine.state == 'available')
         nextSteps = "receptionner"
     if (this.stateMachine.state == 'receptionné')
         nextSteps = "coliser"
