@@ -5,7 +5,7 @@
       </ion-buttons>
 
       <ion-title>
-        Déstockage
+        Unstock
       </ion-title>
       <input-bar (cb)="addIt($event)">Search bar</input-bar>
   </ion-toolbar>
@@ -21,9 +21,20 @@
        <ion-card-content>
          <ion-item *ngFor="let pack of listeDeCourses">
            {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }}
-           <span *ngIf="model.packs[pack.name]" color="primary">√</span>
+           <span *ngIf="model.packs.has(pack.name)" color="primary">√</span>
          </ion-item>
        </ion-card-content>
      </ion-card>
+     <ion-item>
+       <ion-buttons start>
+         <button ion-button (click)="reset(true)" danger>Reset</button>
+       </ion-buttons>
+
+       <ion-buttons end>
+         <button ion-button (click)="validate()" color="primary">Validate
+             <ion-icon name="send"></ion-icon>
+           </button>
+       </ion-buttons>
+     </ion-item>
   </ion-list>
 </ion-content>

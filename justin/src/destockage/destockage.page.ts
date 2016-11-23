@@ -10,7 +10,7 @@ import {nextAppComponent} from '../models/actionFor.component';
 })
 export class DestockagePage {
   pack: any = {};
-  model: any = { packs: []};
+  model: any = { packs: null};
   nextStep: string = '';
   listeDeCourses= [];
   constructor(
@@ -29,21 +29,29 @@ export class DestockagePage {
       this.listeDeCourses = r;
       //trouver que les commandes bloquées
       console.log('liste', this.listeDeCourses);
-
+      this.reset();
   }
   addIt(scanned) {
     let p = this.listeDeCourses.find( a => a.name == scanned);
     console.log('on a trouvé ! ', p);
     if (!p)
       return;//TODO toast that !
-    if (this.model.packs[p.name])
+    if (this.model.packs.has(p.name))
       return console.log('already scanned'); //TODO toast that !
 
-    this.model.packs[p.name] = true;
-    p.destocker();
+    this.model.packs.set(p.name, p);
     console.log(this.model);
   }
   reset() {
-    this.model = { packs: {}};
+    this.model = { packs: new Map()};
+  }
+  validate() {
+    var packs = Array.from(this.model.packs.values());
+    this.productsProvider.unstock(packs).then(
+      () => packs.forEach( p => {
+        (p as any).destocker()
+      })
+    );
+
   }
 }

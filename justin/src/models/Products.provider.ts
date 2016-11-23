@@ -174,4 +174,11 @@ export class ProductsProvider {
       x=> console.log('ayé on stacké', pack)
     )
   }
+  unstock(packs) {
+    var payload = packs.map(p =>{ return {name: p.name }});
+
+    return this.odoo.call('bipper.webservice', 'unset_package_place', payload, {}).then(
+      x=> console.log('ayé on a unstocké', payload)
+    );
+  }
 }
