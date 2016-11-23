@@ -46,25 +46,18 @@ export class ColisagePage {
     //TODO deplacer ça dans Colisage.Provider
     var p = this.pack; //obligatoire à cause de this pourquoi ?
     console.log('validate', p);
-    p.setWeight(this.model.weight).then(
-      () => p.coliser()
-    ).then(
-      () => this.colisageProvider.validatePack(p)
-    ).then(
+    this.colisageProvider.validatePack(p, this.model.weight)
+    .then(
       () => {
         if (p.shipment) {
           self.nextStep = p.shipment.nextSteps();
           self.shipment = p.shipment;
         }
-      }
-    ).then(
-      () => {
         this.toastCtrl.create({
           message: 'Saved',
           duration: 2000
         }).present();
         console.log('on print là');
-        
       }
     );
     this.reset(false);

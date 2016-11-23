@@ -61,20 +61,22 @@ export class ColisageProvider {
       .then(prod => ensureShipment(pack, prod))
       .then(prod => setProduct(pack, prod));
   }
-  validatePack(pack) {
+  validatePack(pack, weight) {
     var payload = {
       'weight': pack.weight,
       'products': pack.products.map( x => x.name)
     };
-    console.log('on envoi payload', payload);
-    return this.odoo.call('bipper.webservice','do_packing', [payload], {})
-    .then(x=>{
+    return pack.setWeight(weight).then(() => {
+      console.log('on envoi payload', payload);
+      return this.odoo.call('bipper.webservice','do_packing', [payload], {})
+    }).then(x => {
       console.log("c'est good", x);
       pack.name = x[0];
-      console.log('normalement on imprime ici');
       pack.coliser();
-      this.productsProvider.addPack(pack)
-    }, (x) => console.log('on leve pas',x));
+      return this.productsProvider.addPack(pack)
+    }).then( () => {
+      return pack;
+    }).then(null, (x) => console.log('on leve pas',x));
   }
   reset() {
     this.pack = this.productsProvider.newPack();
