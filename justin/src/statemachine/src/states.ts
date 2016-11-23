@@ -132,40 +132,6 @@ export class Shipment {
       return [];
     }
     return Array.from(stateAction.action());
-
-/*
-    var ship = this;
-    function ilAPasDeCopains(ship) {
-      return ship.packs.length == 1;
-    }
-    function lesCopainsSontDispos(ship) {
-      return ship.packs.every(
-      (unCopain) => unCopain.locationSM.state == 'transit' );
-    }
-
-    function onEstSurLeDernier() {
-      if (ilAPasDeCopains(ship)) {
-        console.log('nextStep : expedier'); //print etiquette verte ?
-        nextStep = 'expedier';
-      } else {
-        if (lesCopainsSontDispos(ship)) {
-          console.log('nextStep: assembler les copains');
-          nextStep = 'assembler';
-        } else {
-          console.log('nextStep: récuperer de la resver');
-          nextStep = 'unstock';
-        }
-      }
-    }
-
-    function ilEnResteEncore() {
-      console.log('nextStep: on attend le colisage des copains')
-      nextStep = 'mettre en attente';
-    }
-    return this.stateMachine.can('update')
-      .then(onEstSurLeDernier, ilEnResteEncore)
-      .then(() => nextStep);
-*/
   }
 };
 
