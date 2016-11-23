@@ -15,7 +15,7 @@ export class DebugPage {
   packQty: number;
   prodQty: number;
   lastUpdate : any;
-  settings: {};
+  settings: any;
   constructor(
       public navCtrl: NavController,
       public productsProvider: ProductsProvider,
