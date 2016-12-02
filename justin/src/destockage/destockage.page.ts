@@ -20,13 +20,7 @@ export class DestockagePage {
       private productsProvider: ProductsProvider
     ) {
       console.log('dans le consturteur de destockage');
-      let r = this.productsProvider.getReserved().filter(
-        p =>  {
-          return p.shipment.nextSteps().indexOf('destocker') !== -1;
-          }
-      );
-      console.log('resultats :', r);
-      this.listeDeCourses = r;
+
       //trouver que les commandes bloquées
       console.log('liste', this.listeDeCourses);
       this.reset();
@@ -44,6 +38,11 @@ export class DestockagePage {
   }
   reset() {
     this.model = { packs: new Map()};
+    this.listeDeCourses = this.productsProvider.getReserved().filter(
+      p =>  {
+        return p.shipment.nextSteps().indexOf('destocker') !== -1;
+        }
+    );
   }
   validate() {
     var packs = Array.from(this.model.packs.values());
@@ -51,7 +50,6 @@ export class DestockagePage {
       () => packs.forEach( p => {
         (p as any).destocker()
       })
-    );
-
+    ).then( () => this.reset() );
   }
 }
