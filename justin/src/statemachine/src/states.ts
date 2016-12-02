@@ -41,7 +41,7 @@ export class Shipment {
           },
           () => {
             console.log('on check que tout soit bien colise');
-            if (!this.packs.every( (pack) => pack.stateMachine.state === 'colisé'))
+            if (!this.packs.every( (pack) => pack.stateMachine.state === 'created'))
               return Promise.reject('Tous les colis ne sont pas colisés');
            },
           () => {
