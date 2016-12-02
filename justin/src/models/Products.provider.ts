@@ -181,4 +181,14 @@ export class ProductsProvider {
       x=> console.log('ayé on a unstocké', payload)
     );
   }
+  ship(shipment) {
+    console.log('on envoi ', shipment);
+    var payload = [
+      shipment.name,
+      shipment.packs.map( x => x.name)
+    ];
+    return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
+      x=> console.log('bim ce partit, on imprime lettiquette', payload)
+    );
+  }
 }

@@ -71,7 +71,9 @@ export class AssemblagePage {
   assembler(shipment) {
     console.log('assemblage', shipment);
     //il faut update avant
-    shipment.update().then( () => shipment.assembler());
+    shipment.update()
+      .then( () => shipment.assembler())
+      .then( () => this.productsProvider.ship(shipment));
     this.model.nextStep = 'Expedier';
   }
 }
