@@ -62,11 +62,11 @@ export class ColisageProvider {
       .then(prod => setProduct(pack, prod));
   }
   validatePack(pack, weight) {
-    var payload = {
-      'weight': pack.weight,
-      'products': pack.products.map( x => x.name)
-    };
     return pack.setWeight(weight).then(() => {
+      var payload = {
+        'weight': pack.weight,
+        'products': pack.products.map( x => x.name)
+      };
       console.log('on envoi payload', payload);
       return this.odoo.call('bipper.webservice','do_packing', [payload], {})
     }).then(x => {
