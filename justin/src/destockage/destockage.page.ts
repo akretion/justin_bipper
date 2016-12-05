@@ -25,13 +25,19 @@ export class DestockagePage {
       console.log('liste', this.listeDeCourses);
       this.reset();
   }
+  displayWarning(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).present();
+  }
   addIt(scanned) {
     let p = this.listeDeCourses.find( a => a.name == scanned);
     console.log('on a trouvé ! ', p);
     if (!p)
-      return;//TODO toast that !
+      return this.displayWarning(`${scanned} not in the list`);
     if (this.model.packs.has(p.name))
-      return console.log('already scanned'); //TODO toast that !
+      return this.displayWarning(`${scanned} already scanned`);
 
     this.model.packs.set(p.name, p);
     console.log(this.model);

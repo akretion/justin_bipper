@@ -20,13 +20,21 @@ export class StockPage {
     ) {
       this.reset();
   }
+  displayWarning(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).present();
+  }
   addIt(scanned) {
     if (!scanned)
       return;
     let pack = this.productsProvider.getPack(scanned);
     console.log('on a trouvé ! ', pack);
-    if (!pack)
+    if (!pack){
+      this.displayWarning(`${scanned} not found`)
       return this.reset();
+    }
     this.model.scanned = scanned;
     this.model.pack = pack;
 
@@ -38,6 +46,9 @@ export class StockPage {
     console.log('stockage de', pack);
     //il faut update avant
     pack.place = this.model.place;
-    this.productsProvider.stock(pack);
+    this.productsProvider.stock(pack).then(function() {
+      this.displayWarning(`Saved!`)
+      this.reset();
+    });
   }
 }

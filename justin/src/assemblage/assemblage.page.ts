@@ -20,15 +20,21 @@ export class AssemblagePage {
     ) {
       this.reset();
   }
+  displayWarning(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).present();
+  }
   addIt(scanned) {
     if (!scanned)
       return;
     let pack = this.productsProvider.getPack(scanned);
-    console.log('on a trouvé ! ', pack);
+
     if (!pack)
-      return;
+      return this.displayWarning(`${scanned} not found`);
     if (this.model.packs[pack.name] && this.model.packs[pack.name].done)
-      return console.log('already scanned');
+      return this.displayWarning(`${scanned} already scanned`);
 
     if (!this.model.shipment) {
       let shipment = pack.shipment
@@ -46,9 +52,9 @@ export class AssemblagePage {
       console.log('ship set');
     } else {
       if (this.model.shipment != pack.shipment) {
-        console.log('on reset');
+        console.log('on reset car ', this.model.shipment,'!=', pack.shipment);
         this.reset();
-        return;
+        return this.displayWarning(`${scanned} is not from the same shipment`);
       }
       console.log('ship already set normal pour un deuximee prod');
     }

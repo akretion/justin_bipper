@@ -25,17 +25,19 @@ export class ColisagePage {
       this.reset(true);
       console.log('this', this);
   }
+  displayWarning(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).present();
+  }
   addIt(scanned) {
     console.log('dans addit', scanned);
 
     this.colisageProvider.addOne(scanned).then(
       () => this.shipment = this.model.pack.shipment,
       (reason) => {
-          let toast = this.toastCtrl.create({
-          message: reason,
-          duration: 3000
-        });
-        toast.present();
+        this.displayWarning(reason);
         console.log('toasted');
       }
     );
@@ -53,10 +55,7 @@ export class ColisagePage {
           self.nextStep = p.shipment.nextSteps();
           self.shipment = p.shipment;
         }
-        this.toastCtrl.create({
-          message: 'Saved',
-          duration: 2000
-        }).present();
+        this.displayWarning(`Saved`);
         console.log('on print là');
       }
     );
