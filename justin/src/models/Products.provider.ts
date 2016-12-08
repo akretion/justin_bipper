@@ -91,6 +91,7 @@ export class ProductsProvider {
       var ship = new Shipment();
       ship.créer();
       ship.name = s.name;
+      ship.carrier = s.carrier;
       return ship;
     }
 
