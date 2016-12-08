@@ -31,7 +31,7 @@
          <ion-card-content>
            <ion-item *ngFor="let pack of model.shipment.packs">
              <!-- utilité d'avoir les state ? -->
-             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} {{ pack.nextSteps() != 'assembler' }}<nextApp [thing]="pack" *ngIf="pack.nextSteps() != 'assembler'">dns nextapp</nextApp>
+             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} <span *ngIf="pack.nextSteps() != 'assembler' "><nextApp [thing]="pack">dns nextapp</nextApp></span>
              <span *ngIf="model.packs[pack.name].done" color="primary">√</span>
 
              <ion-badge *ngIf="model.packs[pack.name].ready == false " danger>Not ready</ion-badge>
