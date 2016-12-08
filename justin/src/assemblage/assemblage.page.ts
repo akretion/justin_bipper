@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, ToastController} from 'ionic-angular';
+import {NavController, ToastController, ModalController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/actionFor.component';
@@ -16,6 +16,7 @@ export class AssemblagePage {
       public navCtrl: NavController,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
+      public modalCtrl: ModalController,
       public productsProvider: ProductsProvider
     ) {
       this.reset();
@@ -25,6 +26,9 @@ export class AssemblagePage {
       message: msg,
       duration: 2000
     }).present();
+  }
+  showModal(shipment) {
+    console.log('ici on show la modal');
   }
   addIt(scanned) {
     if (!scanned)

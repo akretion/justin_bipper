@@ -17,7 +17,9 @@
 <ion-list *ngIf="model.shipment">
   <ion-card>
     <ion-item>
-       {{ model.shipment.name }}
+       <p>{{ model.shipment.name }}</p>
+       <p>With carrier: {{ model.shipment.carrier }} <button ion-button (click)="showModal(model.shipment)">Change Carrier</button>
+       </p>
        <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)">Assembler</button>
        <ion-badge *ngIf="model.ready == false " danger>Not ready : waiting another action</ion-badge>
    </ion-item>
