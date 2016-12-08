@@ -192,4 +192,13 @@ export class ProductsProvider {
       x=> console.log('bim ce partit, on imprime lettiquette', payload)
     );
   }
+  get_carriers(shipment) {
+    console.log('get carrier');
+    var payload = {
+      'name': shipment.name
+    };
+    return this.odoo.call('bipper.webservice', 'get_carrier', [payload], {}).then(
+      x=>{ console.log('carreiers', x); return x; }
+    );
+  }
 }
