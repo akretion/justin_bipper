@@ -82,20 +82,4 @@ export class SearchPage {
   reset() {
     this.scans = {}
   }
-  showConfirm() {
-    var confirm = this.alertCtrl.create({
-      title: "Confirmation",
-      message: "Are you sure you to delete the list of scans ?",
-      buttons: [{
-        text: 'Cancel'
-      }, {
-        text:'Delete',
-        handler: () => {
-          console.log('delete');
-          this.reset();
-        }
-      }]
-    });
-    confirm.present();
-  }
 }
