@@ -4,7 +4,9 @@ import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/actionFor.component';
 import {inputBarComponent} from '../models/inputBar.component';
+import {CarrierPage} from './carrier.page';
 
+console.log('dans assemblage1');
 @Component({
   templateUrl: 'assemblage.html',
 })
@@ -29,6 +31,7 @@ export class AssemblagePage {
   }
   showModal(shipment) {
     console.log('ici on show la modal');
+    this.modalCtrl.create(CarrierPage, {shipment: shipment}).present()
   }
   addIt(scanned) {
     if (!scanned)

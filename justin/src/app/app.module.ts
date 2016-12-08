@@ -13,6 +13,7 @@ import {DestockagePage} from '../destockage/destockage.page';
 import {StockPage} from './../stock/stock.page';
 import {DebugPage} from '../debug/debug.page';
 import {LoginPage} from '../login/login';
+import {CarrierPage} from '../assemblage/carrier.page';
 
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
@@ -32,6 +33,7 @@ import { errorComponent } from '../models/error.handler';
     ColisagePage,
     SearchPage,
     AssemblagePage,
+    CarrierPage,
     DestockagePage,
     StockPage,
     LoginPage,
@@ -51,6 +53,7 @@ import { errorComponent } from '../models/error.handler';
     ColisagePage,
     SearchPage,
     AssemblagePage,
+    CarrierPage,
     DestockagePage,
     StockPage,
     LoginPage,
