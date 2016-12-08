@@ -1,3 +1,8 @@
-  <ul>
-    <li>Je suis un carrier</li>
-  </ul>
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let carrier of carriers">{{ carrier}}Je suis un carrier</ion-item>
+  </ion-list>
+  <ion-card>
+    <button (click)="close()">Ok</button>
+  </ion-card>
+</ion-content>
