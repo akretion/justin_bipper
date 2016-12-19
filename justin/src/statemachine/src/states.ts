@@ -139,6 +139,7 @@ export class Pack { //carton
   products: Array<Product> = [];//contien des doublons
   shipment: Shipment;
   name: String;
+  label: String;
   place: String;
   weight = 0;
   locationSM: StateMachine;

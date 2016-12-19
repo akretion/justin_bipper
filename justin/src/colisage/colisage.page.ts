@@ -20,7 +20,7 @@ export class ColisagePage {
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
       private colisageProvider: ColisageProvider,
-      public printServices: PrintServices
+      private printServices: PrintServices
     ) {
       this.reset(true);
       console.log('this', this);
@@ -56,7 +56,8 @@ export class ColisagePage {
           self.shipment = p.shipment;
         }
         this.displayWarning(`Saved`);
-        console.log('on print là');
+        console.log('on print là', p);
+        this.printServices.printDymo(p.label);
       }
     );
     this.reset(false);

@@ -6,24 +6,25 @@ import {Observable} from "rxjs/Observable";
 export class PrintServices {
   printers = ['dymo', 'zebra'];
   constructor(public http: Http) {
+    window['http'] = this.http;
   }
   setSettings(settings) {
     console.log('dans set settings', settings);
     this.printers.forEach( p => {
       if (settings[p])
-        this.setUrl(p, settings[p])
+        this.persist(p, settings[p])
     });
   }
   getSettings() {
       var out = {}
-      this.printers.forEach( p => out[p]= this.getUrl(p))
+      this.printers.forEach( p => out[p]= this.load(p))
       return out;
   }
-  setUrl(key, val) {
-    localStorage.setItem(key, val);
+  persist(key, val) {
+    localStorage.setItem(key, JSON.stringify(val));
   }
-  getUrl(key) {
-    return localStorage.getItem(key);
+  load(key) {
+    return JSON.parse(localStorage.getItem(key)) || {name: null, url: null};
   }
   printZebra(payload) {
     return this.print('zebra', payload);
@@ -32,15 +33,19 @@ export class PrintServices {
     return this.print('dymo', payload);
   }
   print(printer, payload) {
-    var url = this.getUrl(printer);
+    var config = this.load(printer);
 		var req = {
-			args: ['label', payload],
+			args: [config['name'], payload],
 			kwargs: { options: {
-				'raw': true,
 				'copies': 1
 				}
 			}
 		};
-		return this.http.post(url+'cups/printData', JSON.stringify(req));
+    if (printer == 'zebra')
+      req.kwargs.options['raw'] = true;
+      //pywebdriver rale si raw = false !
+
+    console.log('on va print', req);
+		return this.http.post(config['url']+'/cups/printData', req).toPromise();
 	}
 }

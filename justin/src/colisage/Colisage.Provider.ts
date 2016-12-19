@@ -72,6 +72,7 @@ export class ColisageProvider {
     }).then(x => {
       console.log("c'est good", x);
       pack.name = x[0];
+      pack.label = x[1];
       pack.coliser();
       return this.productsProvider.addPack(pack)
     }).then( () => {

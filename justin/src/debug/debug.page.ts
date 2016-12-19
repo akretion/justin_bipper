@@ -25,10 +25,6 @@ export class DebugPage {
     this.model='bim'
     this.lastUpdate = this.productsProvider.lastUpdate;
     this.refresh()
-    this.settings= {
-      zebra: null,
-      dymo: null
-    };
     this.settings = printServices.getSettings();
     console.log('voici settings', this.settings);
   }

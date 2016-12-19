@@ -25,14 +25,21 @@
     <ion-card>
       <form (ngSubmit)="saveSettings(settings)">
         <ion-card-header>Printing setup</ion-card-header>
-        <p>- {{ settings }}</p>
         <ion-item>
-          <ion-label fixed>Zebra printer</ion-label>
-          <ion-input name="zebra" type="url" [(ngModel)]="settings.zebra" placeholder="network address"></ion-input>
+          <ion-label fixed>Zebra Server</ion-label>
+          <ion-input name="zebra_url" type="url" [(ngModel)]="settings.zebra.url" placeholder="network address"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label fixed>Dymo Printer</ion-label>
-          <ion-input name="dymo" type="url" [(ngModel)]="settings.dymo" placeholder="network address"></ion-input>
+          <ion-label fixed>Zebra name</ion-label>
+          <ion-input name="zebra_name" type="text" [(ngModel)]="settings.zebra.name" placeholder="System name on the host"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>Dymo Server</ion-label>
+          <ion-input name="dymo_url" type="url" [(ngModel)]="settings.dymo.url" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>Dymo Name</ion-label>
+          <ion-input name="dymo_name" type="txt" [(ngModel)]="settings.dymo.name" placeholder="System name on the host"></ion-input>
         </ion-item>
         <ion-item>
           <button ion-button>Save</button>
