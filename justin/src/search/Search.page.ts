@@ -4,6 +4,7 @@ import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/actionFor.component';
 import {inputBarComponent} from '../models/inputBar.component';
+import {PrintServices} from '../models/PrintServices';
 
 @Component({
   templateUrl: 'search.html',
@@ -17,7 +18,8 @@ export class SearchPage {
       public navCtrl: NavController,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
-      private productsProvider: ProductsProvider
+      private productsProvider: ProductsProvider,
+      private printServices: PrintServices
 ) {
     console.log('constructeur de search');
     this.model = {};
@@ -81,5 +83,10 @@ export class SearchPage {
   }
   reset() {
     this.scans = {}
+  }
+  print(pack) {
+    console.log('on va printer du pack', pack);
+    var payload = {'name': pack.name }
+    //this.printServices.printDymo();
   }
 }
