@@ -1,8 +1,12 @@
 <ion-content padding>
-  <ion-list>
-    <ion-item *ngFor="let carrier of carriers">{{ carrier}}Je suis un carrier</ion-item>
+  <ion-list radio-group (ionChange)="onChange($event)">
+    <ion-item>current carrier : {{currentCarrier}} </ion-item>
+    <ion-item *ngFor="let carrier of carriers">
+      <ion-label>{{ carrier.name }}</ion-label>
+      <ion-radio [value]="carrier"></ion-radio>
+    </ion-item>
   </ion-list>
   <ion-card>
-    <button (click)="close()">Ok</button>
+    <button (click)="close()" ion-button>Ok</button>
   </ion-card>
 </ion-content>

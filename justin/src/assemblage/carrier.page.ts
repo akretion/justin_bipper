@@ -7,17 +7,31 @@ import {ProductsProvider} from '../models/Products.provider';
 })
 export class CarrierPage {
   carriers = [];
+  shipment = null;
+  currentCarrier = null;
   constructor(
     public params: NavParams,
     public view: ViewController,
     public productsProvider: ProductsProvider
 )
   {
-      console.log('je suis carrier page constructor', params);
-      this.carriers = this.productsProvider.get_carriers(params['data']['shipment']);
+      this.shipment = params['data']['shipment'];
+      this.currentCarrier = this.shipment.carrier;
+      this.productsProvider.get_carrier(this.shipment).then(
+        carriers => this.carriers = carriers
+      );
+  }
+  onChange(carrier) {
+    //TODO gerer en cas d'exception
+    return this.productsProvider.set_carrier(this.shipment, carrier).then(
+      (x) => {
+        this.shipment.carrier = carrier.name
+      }
+    ).then(
+      () => this.close()
+    );
   }
   close() {
-    console.log('on ferme');
     this.view.dismiss();
   }
 }
