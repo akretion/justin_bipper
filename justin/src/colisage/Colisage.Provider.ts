@@ -32,6 +32,9 @@ export class ColisageProvider {
       if (nextAvailableProduct)
         return Promise.resolve(nextAvailableProduct);
 
+      if (products.length) //all products packed
+        return Promise.reject('Product already packed');
+
       console.log('degraded mode: we create a product on the fly');
       let newProd = productsProvider.newProduct(barcode);
       newProd.isExpected = false;
