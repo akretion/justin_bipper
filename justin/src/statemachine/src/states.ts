@@ -167,7 +167,7 @@ export class Pack { //carton
       {name:'setWeight', from: 'init', to: 'init', conditions: [], actions:[
         (args) => {
           let weight = args.weight;
-          weight = parseInt(weight);
+          weight = parseFloat(weight);
           this.weight = weight;
         }
       ]},
