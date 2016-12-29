@@ -35,8 +35,8 @@
     </ion-item>
     <ion-card-content>
       <ion-item *ngFor="let pack of search.packs">
-        <a href="#" (click)="openPack(pack)">{{ pack.name }}</a> {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} <nextApp [thing]="pack">dns nextapp</nextApp>
-        <button ion-button (click)="print(pack)">Print</button>
+        <a href="#" (click)="openPack(pack)">{{ pack.name }}</a> {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }} <nextApp [thing]="pack">dns nextapp</nextApp>
+        <button ion-button (click)="print(pack)" disabled>Print</button>
       </ion-item>
     </ion-card-content>
   </ion-card>
