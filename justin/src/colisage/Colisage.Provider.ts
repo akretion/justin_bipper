@@ -23,6 +23,7 @@ export class ColisageProvider {
     var pack = this.pack;
     var productsProvider = this.productsProvider;
     var products = productsProvider.getProducts(barcode);
+    //products may contain duplicate keys
 
     function getProduct(barcode) {
       var nextAvailableProduct = products

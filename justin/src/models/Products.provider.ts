@@ -152,6 +152,7 @@ export class ProductsProvider {
     let product = new Product();
     product.name = barcode;
     product.isExpected = false;
+    product.stateMachine.state = 'available';
     return product;
   }
   newPack() {
