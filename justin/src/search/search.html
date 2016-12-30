@@ -13,44 +13,46 @@
 
 
 <ion-content padding>
-  <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
   <ion-item *ngIf="search.notFound">No result found !</ion-item>
+  <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
 
-  <ion-card *ngIf="search.shipments.length">
-    <ion-item>
+  <ion-item-group *ngIf="search.shipments.length">
+    <ion-item-divider>
       Shipment
       <ion-icon name="search" *ngIf="model.searched == 'shipment'"></ion-icon>
+    </ion-item-divider>
+    <ion-item *ngFor="let ship of search.shipments">
+      <h2><a href="#" (click)="openPack(ship)">{{ ship.name }}</a></h2>
+      <p>{{ ship.stateMachine?.state }}<br />
+      {{ ship.carrier }}</p>
+      <nextApp [thing]="ship" item-right>dns nextapp</nextApp>
     </ion-item>
-    <ion-card-content>
-      <ion-item *ngFor="let ship of search.shipments">
-        <a href="#" (click)="openPack(ship)">{{ ship.name }}</a> {{ ship.stateMachine?.state }} - {{ ship.carrier }} <nextApp [thing]="ship">dns nextapp</nextApp>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+  </ion-item-group>
 
-  <ion-card *ngIf="search.packs.length">
-    <ion-item>
-      Pack
+  <ion-item-group *ngIf="search.packs.length">
+    <ion-item-divider>
+      Packs
       <ion-icon name="search" *ngIf="model.searched == 'pack'"></ion-icon>
+    </ion-item-divider>
+    <ion-item *ngFor="let pack of search.packs">
+        <h2><a href="#" (click)="openPack(pack)">{{ pack.name }}</a></h2>
+        <p>{{ pack.stateMachine?.state }}<br />
+        {{ pack.locationSM?.state }} - {{ pack.place }}</p>
+        <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
+        <button ion-button (click)="print(pack)" disabled item-right>Print</button>
     </ion-item>
-    <ion-card-content>
-      <ion-item *ngFor="let pack of search.packs">
-        <a href="#" (click)="openPack(pack)">{{ pack.name }}</a> {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }} <nextApp [thing]="pack">dns nextapp</nextApp>
-        <button ion-button (click)="print(pack)" disabled>Print</button>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+  </ion-item-group>
 
-  <ion-card *ngIf="search.products.length">
-    <ion-item>
-      Products
+  <ion-item-group *ngIf="search.products.length">
+    <ion-item-divider>
+        Products
       <ion-icon name="search" *ngIf="model.searched == 'product'"></ion-icon>
+    </ion-item-divider>
+    <ion-item *ngFor="let product of search.products">
+      <h2><a href="#" (click)="openPack(product)">{{ product.name }}</a></h2>
+      <p>{{ product.stateMachine?.state }}</p>
+      <nextApp [thing]="product" item-right>dns nextapp</nextApp>
     </ion-item>
-    <ion-card-content>
-      <ion-item *ngFor="let product of search.products">
-        <a href="#" (click)="openPack(product)">{{ product.name }}</a> {{ product.stateMachine?.state }} -     <nextApp [thing]="product">dns nextapp</nextApp>
-        </ion-item>
-    </ion-card-content>
-  </ion-card>
+  </ion-item-group>
 
 </ion-content>
