@@ -86,7 +86,12 @@ export class AssemblagePage {
     //il faut update avant
     shipment.update()
       .then( () => shipment.assembler())
-      .then( () => this.productsProvider.ship(shipment));
+      .then( () => this.productsProvider.ship(shipment))
+      .then( () => this.displayWarning('Done'))
+      .then( () => this.reset(), (x) => {
+        this.displayWarning('An error occured');
+        console.log(x); //todo: on devrait logger ça au serveur
+      });
     this.model.nextStep = 'Expedier';
   }
 }
