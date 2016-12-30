@@ -5,7 +5,7 @@
       </ion-buttons>
 
       <ion-title>
-        Assemblage
+        Ship
       </ion-title>
       <input-bar (cb)="addIt($event)">Search bar</input-bar>
   </ion-toolbar>
@@ -14,29 +14,40 @@
 
 <ion-content padding>
 
-<ion-list *ngIf="model.shipment">
-  <ion-card>
+<div *ngIf="model.shipment">
+  <ion-item-group>
+    <ion-item-divider>
+       {{ model.shipment.name }}
+    </ion-item-divider>
     <ion-item>
-       <p>{{ model.shipment.name }}</p>
-       <p>With carrier: {{ model.shipment.carrier }} <button ion-button (click)="showModal(model.shipment)">Change Carrier</button>
-       </p>
-       <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)">Assembler</button>
+       <p>Send with {{ model.shipment.carrier }}
+         <button ion-button (click)="showModal(model.shipment)" item-right>Change</button>
+        </p>
+       <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)" block>Ship</button>
        <ion-badge *ngIf="model.ready == false " danger>Not ready : waiting another action</ion-badge>
    </ion-item>
- </ion-card>
-       <ion-card>
-         <ion-item>
-           Packs
-         </ion-item>
-         <ion-card-content>
-           <ion-item *ngFor="let pack of model.shipment.packs">
-             <!-- utilité d'avoir les state ? -->
-             {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} <span *ngIf="model.nextStep == 'Assemble'"><nextApp [thing]="pack">dns nextapp</nextApp></span>
-             <span *ngIf="model.packs[pack.name].done" color="primary">√</span>
+ </ion-item-group>
 
-             <ion-badge *ngIf="model.packs[pack.name].ready == false " danger>Not ready</ion-badge>
-           </ion-item>
-         </ion-card-content>
-       </ion-card>
-</ion-list>
+ <ion-item-group>
+     <ion-item-divider>
+        Packs
+     </ion-item-divider>
+
+     <ion-item *ngFor="let pack of model.shipment.packs">
+     <!-- utilité d'avoir les state ? -->
+      <h2>{{ pack.name }}
+        <span *ngIf="model.packs[pack.name].done" color="primary">√</span>
+        <ion-badge *ngIf="model.packs[pack.name].ready == false " danger>Not ready</ion-badge>
+      </h2>
+      <p>
+        {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }}
+        <span *ngIf="model.nextStep == 'Assemble' && pack.locationSM.state != 'transit'">
+          <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
+        </span>
+      </p>
+   </ion-item>
+
+</ion-item-group>
+
+</div>
 </ion-content>
