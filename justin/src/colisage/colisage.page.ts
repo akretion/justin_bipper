@@ -48,6 +48,9 @@ export class ColisagePage {
     //TODO deplacer ça dans Colisage.Provider
     var p = this.pack; //obligatoire à cause de this pourquoi ?
     console.log('validate', p);
+    if (!p.products.length)
+      return this.displayWarning('No products scanned');
+
     this.colisageProvider.validatePack(p, this.model.weight)
     .then(
       () => {
