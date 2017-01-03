@@ -14,18 +14,17 @@
 
 <ion-content padding>
   <ion-list>
-     <ion-card>
-       <ion-item>
-         Packs
-       </ion-item>
-       <ion-card-content>
-         <ion-item *ngFor="let pack of listeDeCourses">
-           {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }}
-           <span *ngIf="model.packs.has(pack.name)" color="primary">√</span>
-         </ion-item>
-       </ion-card-content>
-     </ion-card>
-     <ion-item>
+    <ion-item *ngIf="!listeDeCourses.length">
+      Nothing to unstock
+    </ion-item>
+    <ion-item-group *ngIf="listeDeCourses.length">
+      <ion-item-divider>
+        Packs
+      </ion-item-divider>
+      <ion-item *ngFor="let pack of listeDeCourses">
+         {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }}
+         <span *ngIf="model.packs.has(pack.name)" color="primary">√</span>
+      </ion-item>
        <ion-buttons start>
          <button ion-button (click)="reset()" danger>Reset</button>
        </ion-buttons>
@@ -35,6 +34,6 @@
              <ion-icon name="send"></ion-icon>
            </button>
        </ion-buttons>
-     </ion-item>
+     </ion-item-group >
   </ion-list>
 </ion-content>
