@@ -35,7 +35,7 @@ export class StockPage {
       this.displayWarning(`${scanned} not found`)
       return this.reset();
     }
-    if (pack.locationSM.availableState().indexOf('stock') == -1) {
+    if (!pack.locationSM.availableState().find(p => p.to == 'stock').length) {
       this.displayWarning(`${scanned} can't be stocked`);
       return this.reset();
     }
@@ -51,7 +51,7 @@ export class StockPage {
     //il faut update avant
     pack.place = this.model.place;
     this.productsProvider.stock(pack).then(function() {
-      this.displayWarning(`Saved!`)
+      this.displayWarning(`Saved!`);
       this.reset();
     });
   }
