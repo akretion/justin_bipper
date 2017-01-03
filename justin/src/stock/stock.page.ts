@@ -35,6 +35,10 @@ export class StockPage {
       this.displayWarning(`${scanned} not found`)
       return this.reset();
     }
+    if (pack.locationSM.availableState().indexOf('stock') == -1) {
+      this.displayWarning(`${scanned} can't be stocked`);
+      return this.reset();
+    }
     this.model.scanned = scanned;
     this.model.pack = pack;
 
