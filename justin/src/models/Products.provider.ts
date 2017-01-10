@@ -190,7 +190,10 @@ export class ProductsProvider {
       shipment.packs.map( x => x.name)
     ];
     return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
-      x=> console.log('bim ce partit, on imprime lettiquette', payload)
+      x=> {
+        console.log('bim ce partit, on imprime lettiquette', x);
+        return x;
+      }
     );
   }
   get_carrier(shipment) {

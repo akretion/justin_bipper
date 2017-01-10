@@ -46,7 +46,7 @@ export class Shipment {
            },
           () => {
             console.log('on check que tous les produits soit colisés');
-            if (!this.products.every( (product) => product.stateMachine.state === 'créer'))
+            if (!this.products.every( (product) => product.stateMachine.state === 'colisé'))
               return Promise.reject('Tous les produits ne sont pas colisés');
           }
         ], actions: []
