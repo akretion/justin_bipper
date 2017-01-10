@@ -22,7 +22,7 @@ export class Shipment {
       { name:'setPack', from: 'en attente', to:'en attente', conditions: [], actions:[]},
       { name:'update', from: 'en attente',  to: 'à assembler', conditions: [], actions:[]},
       { name:'assembler', from: 'à assembler', to: 'assemblé', conditions: [], actions:[]},
-      { name:'étiqueter', from: 'assemblé', to: 'étiqueté', conditions: [], actions:[]},
+      { name:'print', from: 'assemblé', to: 'étiqueté', conditions: [], actions:[]},
       { name:'charger', from: 'étiqueté', to: 'chargé', conditions: [], actions:[]}, //expedier ?
     ]);
 
@@ -46,7 +46,7 @@ export class Shipment {
            },
           () => {
             console.log('on check que tous les produits soit colisés');
-            if (!this.products.every( (product) => product.stateMachine.state === 'colisé'))
+            if (!this.products.every( (product) => product.stateMachine.state === 'créer'))
               return Promise.reject('Tous les produits ne sont pas colisés');
           }
         ], actions: []
@@ -57,7 +57,7 @@ export class Shipment {
           () => this.packs.forEach( (p) => p.stateMachine.go('assembler'))
         ]
       },
-      { name:'étiqueter', conditions: [], actions: [
+      { name:'print', conditions: [], actions: [
           (transporteur) => { this.carrier = transporteur }
         ]
       }
@@ -120,7 +120,7 @@ export class Shipment {
     return this.stateMachine.go('assembler');
   }
   étiqueter(transporteur) {
-    return this.stateMachine.go('étiqueter');
+    return this.stateMachine.go('print');
   }
   charger() {
 //    this.stateMachine.go('');
