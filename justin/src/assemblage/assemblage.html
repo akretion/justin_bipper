@@ -24,7 +24,7 @@
          <button ion-button (click)="showModal(model.shipment)" item-right>Change</button>
         </p>
        <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)" block>Ship</button>
-       <ion-badge *ngIf="model.ready == false " danger>Not ready : waiting another action</ion-badge>
+       <ion-badge *ngIf="model.ready == false " color="danger">Not ready : waiting another action</ion-badge>
    </ion-item>
  </ion-item-group>
 
@@ -37,7 +37,7 @@
      <!-- utilité d'avoir les state ? -->
       <h2>{{ pack.name }}
         <span *ngIf="model.packs[pack.name].done" color="primary">√</span>
-        <ion-badge *ngIf="model.packs[pack.name].ready == false " danger>Not ready</ion-badge>
+        <ion-badge *ngIf="model.packs[pack.name].ready == false " color="danger">Not ready</ion-badge>
       </h2>
       <p>
         {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }}
