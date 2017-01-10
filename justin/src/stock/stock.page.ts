@@ -35,7 +35,7 @@ export class StockPage {
       this.displayWarning(`${scanned} not found`)
       return this.reset();
     }
-    if (!pack.locationSM.availableState().find(p => p.to == 'stock').length) {
+    if (!pack.locationSM.availableState().find(p => p.to == 'stock')) {
       this.displayWarning(`${scanned} can't be stocked`);
       return this.reset();
     }
@@ -50,7 +50,8 @@ export class StockPage {
     console.log('stockage de', pack);
     //il faut update avant
     pack.place = this.model.place;
-    this.productsProvider.stock(pack).then(function() {
+    this.productsProvider.stock(pack).then(
+      () => {
       this.displayWarning(`Saved!`);
       this.reset();
     });
