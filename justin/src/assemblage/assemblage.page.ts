@@ -5,6 +5,7 @@ import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/actionFor.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {CarrierPage} from './carrier.page';
+import {PrintServices} from '../models/PrintServices';
 
 console.log('dans assemblage1');
 @Component({
@@ -19,7 +20,8 @@ export class AssemblagePage {
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
       public modalCtrl: ModalController,
-      public productsProvider: ProductsProvider
+      public productsProvider: ProductsProvider,
+      public printServices: PrintServices
     ) {
       this.reset();
   }
@@ -87,7 +89,12 @@ export class AssemblagePage {
     shipment.update()
       .then( () => shipment.assembler())
       .then( () => this.productsProvider.ship(shipment))
-      .then( () => this.displayWarning('Done'))
+      .then( (labels) => {
+        var msg = 'Transfert Done.'
+        msg+= (labels.length == 0) ? 'Nothing to print': 'Printing ' + labels.length + ' labels'
+        this.displayWarning(msg);
+        labels.forEach( label => this.printServices.printZebra(label.data));
+      })
       .then( () => this.reset(), (x) => {
         this.displayWarning('An error occured');
         console.log(x); //todo: on devrait logger ça au serveur

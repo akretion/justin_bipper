@@ -226,8 +226,8 @@ export class ProductsProvider {
     var payload = [{
         name: shipment.name
     }];
-    return this.odoo.call('bipper.webservice', 'get_labels', payload, {}).then(
-      x=>{ console.log('get ship reussix', x); return x; }
+    return this.odoo.call('bipper.webservice', 'get_carrier_labels', payload, {}).then(
+      x=>{ console.log('get ship reussix', x); return x.labels; }
     );
   }
 }

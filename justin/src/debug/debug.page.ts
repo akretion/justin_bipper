@@ -26,6 +26,7 @@ export class DebugPage {
     this.lastUpdate = this.productsProvider.lastUpdate;
     this.refresh()
     this.settings = printServices.getSettings();
+    window['pP'] = this.productsProvider;
     console.log('voici settings', this.settings);
   }
   refresh() {
