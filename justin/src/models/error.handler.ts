@@ -25,7 +25,7 @@ export class errorComponent {
       var msgs = {};
       msgs[true as any] = 'Unkown error';
       if (x.fullTrace.data) {
-        msgs[(x.fullTrace.data.exception_type == "internal_error") as any] = "Error irrevocable";
+        msgs[(x.fullTrace.data.exception_type == "internal_error") as any] = "Error ! " + x.fullTrace.data.message;
         msgs[(x.fullTrace.data.exception_type == 'wrong_login') as any] = "Please reconnect";
         msgs[(x.fullTrace.data.exception_type == 'validation_error') as any] = x.fullTrace.data.message;
       } else {
