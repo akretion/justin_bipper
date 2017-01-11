@@ -214,4 +214,20 @@ export class ProductsProvider {
       x=>{ console.log('set carrier reussix', x); return x; }
     );
   }
+  get_pack_label(pack) {
+    var payload = [{
+        name: pack.name,
+    }];
+    return this.odoo.call('bipper.webservice', 'get_pack_label', payload, {}).then(
+      x=>{ console.log('get pack label reussix', x); return x; }
+    );
+  }
+  get_ship_label(shipment) {
+    var payload = [{
+        name: shipment.name
+    }];
+    return this.odoo.call('bipper.webservice', 'get_labels', payload, {}).then(
+      x=>{ console.log('get ship reussix', x); return x; }
+    );
+  }
 }

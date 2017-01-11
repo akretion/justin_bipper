@@ -25,6 +25,7 @@ export class SearchPage {
     this.model = {};
     this.scans = [];
     this.search = {products: [], packs: [], shipments: [], terms:""};
+    window['printService'] = this.printServices;
   }
   addIt(scanned) {
     console.log('addit', scanned);
@@ -86,7 +87,10 @@ export class SearchPage {
   }
   print(pack) {
     console.log('on va printer du pack', pack);
-    var payload = {'name': pack.name }
-    //this.printServices.printDymo();
+    this.productsProvider.get_pack_label(pack).then(
+      (x) => {
+        console.log('on print',x);
+        this.printServices.printDymo(x);
+    })
   }
 }
