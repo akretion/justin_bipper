@@ -192,7 +192,7 @@ export class ProductsProvider {
     return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
       x=> {
         console.log('bim ce partit, on imprime lettiquette', x);
-        return x;
+        return x.labels;
       }
     );
   }
