@@ -230,4 +230,12 @@ export class ProductsProvider {
       x=>{ console.log('get ship reussix', x); return x.labels; }
     );
   }
+  get_pack_info(pack) {
+    var payload = [{
+      name: pack.name
+    }];
+    return this.odoo.call('bipper.webservice', 'get_pack_info', payload, {}).then(
+      x=>{ console.log('get pack info reussix', x); return x; }
+    );
+  }
 }
