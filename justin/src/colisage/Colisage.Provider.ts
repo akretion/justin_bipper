@@ -84,6 +84,21 @@ export class ColisageProvider {
     }).then(null, (x) => console.log('on leve pas',x));
   }
   reset() {
+    //on défait
+    console.log('on defait ', this.pack);
+    if (this.pack) {
+      this.pack.products.forEach(
+        prod => {
+          prod.pack = null;
+          prod.stateMachine.state = 'receptionné';
+      });
+      if (this.pack.shipment) {
+        this.pack.shipment.packs = this.pack.shipment.packs.filter(
+          pack => pack != this.pack
+        );
+      }
+    }
+
     this.pack = this.productsProvider.newPack();
     this.pack.créer();
     return this.pack;
