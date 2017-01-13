@@ -49,14 +49,19 @@ export class AssemblagePage {
       let shipment = pack.shipment
       this.model.shipment = shipment;
       this.model.toBeScanned = shipment.packs.length;
-      this.model.ready = true;
+
+      this.model.allProductsPacked = shipment.products.every( (p) => {
+        //tous les produits doivent être colisés
+        !p.stateMachine.nextState() //no next step = colisé
+      });
+
       shipment.packs.forEach((p) => {
+        /* tous les packs doivent être assemblés */
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,
           done: false,
         };
-        this.model.ready = this.model.ready && ready;
       });
       console.log('ship set');
     } else {
@@ -70,9 +75,16 @@ export class AssemblagePage {
     this.model.nextStep = "";
     this.model.toBeScanned--;
     this.model.packs[pack.name].done = true;
+    this.model.ready = false;
 
-    if (this.model.toBeScanned == 0) {
+    if (this.model.shipment.partial_allowed) {
+      this.model.nextStep = "Assemble"; // rien a foutre !
+      this.model.ready = true;
+    } else if (this.model.toBeScanned == 0 && this.model.allProductsPacked) {
       this.model.nextStep = "Assemble";
+      this.model.ready = true;
+    } else if (this.model.allProductsPacked) {
+      this.model.nextStep = `Some products are not packed`;
     } else {
       this.model.nextStep = `${this.model.toBeScanned} of ${this.model.shipment.packs.length} to scan`;
     }

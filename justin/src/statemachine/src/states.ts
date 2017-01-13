@@ -4,6 +4,7 @@ export class Shipment {
   name = 'WH/OUT102';
   carrier = '';
   products = [];
+  partial_allowed = false;
   emplacement = {
     //inexistant avant rassemblement
     //en zone d'expedition

@@ -92,6 +92,7 @@ export class ProductsProvider {
       ship.créer();
       ship.name = s.name;
       ship.carrier = s.carrier;
+      ship.partial_allowed = s.is_partial;
       return ship;
     }
 
