@@ -77,8 +77,9 @@ export class ColisageProvider {
       console.log("c'est good", x);
       pack.name = x[0];
       pack.label = x[1];
-      pack.coliser();
-      return this.productsProvider.addPack(pack)
+      return pack.coliser().then(
+        () => this.productsProvider.addPack(pack)
+      );
     }).then( () => {
       return pack;
     }).then(null, (x) => console.log('on leve pas',x));
