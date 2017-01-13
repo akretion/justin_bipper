@@ -52,7 +52,7 @@ export class AssemblagePage {
 
       this.model.allProductsPacked = shipment.products.every( (p) => {
         //tous les produits doivent être colisés
-        !p.stateMachine.nextState() //no next step = colisé
+        return !p.stateMachine.nextState() //no next step = colisé
       });
 
       shipment.packs.forEach((p) => {
