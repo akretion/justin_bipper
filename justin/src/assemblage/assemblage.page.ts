@@ -32,7 +32,6 @@ export class AssemblagePage {
     }).present();
   }
   showModal(shipment) {
-    console.log('ici on show la modal');
     this.modalCtrl.create(CarrierPage, {shipment: shipment}).present()
   }
   addIt(scanned) {
@@ -52,8 +51,9 @@ export class AssemblagePage {
 
       this.model.allProductsPacked = shipment.products.every( (p) => {
         //tous les produits doivent être colisés
-        return !p.stateMachine.nextState() //no next step = colisé
+        return p.nextSteps().length == 0; //no next step = colisé
       });
+      console.log('tous les produits du shipment packed', this.model.allProductsPacked);
 
       shipment.packs.forEach((p) => {
         /* tous les packs doivent être assemblés */
@@ -63,7 +63,6 @@ export class AssemblagePage {
           done: false,
         };
       });
-      console.log('ship set');
     } else {
       if (this.model.shipment != pack.shipment) {
         console.log('on reset car ', this.model.shipment,'!=', pack.shipment);
