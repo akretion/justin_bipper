@@ -58,7 +58,7 @@ export class ColisageProvider {
       if (pack.shipment)
         pack.shipment.setPack(pack);
       pack.setProduct(product);
-      return Promise.resolve(product);
+      return product.coliser(pack);
     }
 
     return getProduct(barcode)
@@ -77,9 +77,18 @@ export class ColisageProvider {
       console.log("c'est good", x);
       pack.name = x[0];
       pack.label = x[1];
+      //on colise les produits
+
       return pack.coliser().then(
         () => this.productsProvider.addPack(pack)
-      );
+      ).then(
+        () => {
+          console.log('on check si le pack est dans le ship', pack.shipment, pack.shipment.packs.indexOf(pack))
+          if (pack.shipment.packs.indexOf(pack) == -1)
+            pack.shipment.packs.push(pack);
+          console.log('apres', pack.shipment.packs.indexOf(pack));
+          }
+        );
     }).then( () => {
       return pack;
     }).then(null, (x) => console.log('on leve pas',x));
