@@ -70,6 +70,25 @@ export class SearchPage {
     };
     console.log('searched', this.search);
   }
+  searchHarder() {
+    var query = this.search.terms;
+    console.log('dans search harder');
+    this.productsProvider.get_pack_info({name: query}).then(
+      (infos) => {
+        this.search.hard = infos;
+        this.search.notFound = false;
+    });
+  }
+  printShippingLabel(picking) {
+    this.productsProvider.get_ship_label({name: picking}).then(
+      (labels) => {
+        console.log('on a du label !', labels);
+        labels.forEach(
+          label => this.printServices.printZebra(label.data)
+        );
+      }
+    )
+  }
   openPack(pack) {
     this.model["scanned"] = pack.name; //because of fucking typescript
     return this.addIt(pack.name);

@@ -13,8 +13,23 @@
 
 
 <ion-content padding>
-  <ion-item *ngIf="search.notFound">No result found !</ion-item>
+  <ion-item *ngIf="search.notFound">No result found !
+    <br />
+    <button ion-button (click)="searchHarder()">Search in sent</button>
+  </ion-item>
   <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
+
+  <ion-item-group *ngIf="search.hard">
+    <ion-item-divider>
+      Search live results
+    </ion-item-divider>
+    <ion-item>
+      <h3>Picking : {{ search.hard.picking }}</h3>
+      Weight: {{ search.hard.weight }} <br />
+      State: {{ search.hard.state}}<br />
+      <button ion-button (click)="printShippingLabel(search.hard.picking)" *ngIf="search.hard.state == 'done'">Print shipping label</button>
+    </ion-item>
+  </ion-item-group>
 
   <ion-item-group *ngIf="search.shipments.length">
     <ion-item-divider>
