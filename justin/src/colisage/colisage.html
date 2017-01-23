@@ -39,7 +39,7 @@
 
  <ion-list *ngIf="shipment">
       <ion-list-header>
-        {{ shipment.name }}<button ion-button outline>{{ nextStep }}</button>
+        {{ shipment.name }} {{ shipment.carrier }} <button ion-button outline>{{ nextStep }}</button>
       </ion-list-header>
 
       <ion-item-group>
