@@ -52,7 +52,7 @@
     <ion-item *ngFor="let pack of search.packs">
         <h2><a href="#" (click)="openPack(pack)">{{ pack.name }}</a></h2>
         <p>{{ pack.stateMachine?.state }}<br />
-        {{ pack.locationSM?.state }} - {{ pack.place }}</p>
+        {{ pack.locationSM?.state }} - {{ pack.place }} - {{ pack.category }}</p>
         <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
         <button ion-button (click)="print(pack)" item-right>Print</button>
     </ion-item>
@@ -65,7 +65,7 @@
     </ion-item-divider>
     <ion-item *ngFor="let product of search.products">
       <h2><a href="#" (click)="openPack(product)">{{ product.name }}</a></h2>
-      <p>{{ product.stateMachine?.state }}</p>
+      <p>{{ product.stateMachine?.state }} - {{ product.category }}</p>
       <nextApp [thing]="product" item-right>dns nextapp</nextApp>
     </ion-item>
   </ion-item-group>

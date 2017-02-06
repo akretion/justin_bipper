@@ -47,7 +47,7 @@
             Products
           </ion-item-divider>
           <ion-item *ngFor="let product of shipment.products">
-              {{ product.name }}
+              {{ product.name }} - {{ product.category }}
                - <span [ngSwitch]="product.stateMachine.state">
                  <span *ngSwitchCase="'init'">?</span>
                  <span *ngSwitchCase="'available'">Produced</span>
@@ -65,6 +65,7 @@
             <h2>{{ pack.name }} {{ pack.weight }}kg</h2>
             <p>
               {{ pack.stateMachine?.state }}<br />
+              {{ pack.category }}
               {{ pack.locationSM?.state }}
             </p>
             <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
