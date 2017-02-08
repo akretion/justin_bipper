@@ -15,13 +15,14 @@ export class RouteService {
   get() {
     return this.observable;
   }
-  goTo(action) {
+  goTo(action, data={}) {
+    console.log('Goto avec data', data);
     let page = this.appRoutes.find(
       (r) => r.action == action
     );
     if (!page)
       return console.error("No route found", action);
-    this.subject.next(page);
+    this.subject.next({'page': page, 'data': data});
   }
   setRoutes(routes) {
     //TO avoir circular dependencies

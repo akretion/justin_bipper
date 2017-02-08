@@ -19,7 +19,7 @@ export class nextAppComponent implements OnChanges {
   open(thing) {
     let steps = thing.nextSteps();
     console.log('possibles steps for', thing, steps)
-    this.routeService.goTo(steps.pop());
+    this.routeService.goTo(steps.pop(), { 'scanned': thing.name });
   }
   ngOnChanges(a) { //C'est notre $watch
     console.log('dans le on Change', a);

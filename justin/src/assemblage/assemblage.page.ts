@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, ToastController, ModalController} from 'ionic-angular';
+import {NavController, NavParams, ToastController, ModalController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/actionFor.component';
@@ -17,6 +17,7 @@ export class AssemblagePage {
   nextStep: string = '';
   constructor(
       public navCtrl: NavController,
+      public navParams: NavParams,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
       public modalCtrl: ModalController,
@@ -24,6 +25,10 @@ export class AssemblagePage {
       public printServices: PrintServices
     ) {
       this.reset();
+
+      var scanned = this.navParams.get('scanned');
+      if (scanned)
+        this.addIt(scanned);
   }
   displayWarning(msg) {
     this.toastCtrl.create({
