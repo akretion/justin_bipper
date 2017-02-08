@@ -63,7 +63,9 @@ export class ColisageProvider {
       .then(prod => ensureShipment(pack, prod))
       .then(prod => setProduct(pack, prod));
   }
-  validatePack(pack, weight) {
+  validatePack(pack, weight, withLabel) {
+    var withLabel = withLabel['withLabel'];
+    console.log('on valid avec le label ?', withLabel);
     return pack.setWeight(weight).then(() => {
       var payload = {
         'weight': pack.weight,

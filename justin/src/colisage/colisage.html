@@ -20,6 +20,7 @@
         {{product.name}}
       </ion-item>
     </ion-list>
+  <form name="colisageForm" (ngSubmit)="printAndContinue()">
   <ion-item>
     <ion-label>Weight</ion-label>
     <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any" required></ion-input>
@@ -31,11 +32,13 @@
     </ion-buttons>
 
     <ion-buttons end>
-      <button ion-button (click)="validate()" color="primary">Make package
+      <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.pack.products.length && model.weight)" ion-button color="secondary">Ship now</button>
+      <button (click)="printAndContinue()" ion-button [disabled]="!(model.pack.products.length && model.weight)" color="primary">Make package
           <ion-icon name="send"></ion-icon>
         </button>
     </ion-buttons>
   </ion-item>
+  </form>
 
  <ion-list *ngIf="shipment">
       <ion-list-header>

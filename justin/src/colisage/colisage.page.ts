@@ -47,30 +47,13 @@ export class ColisagePage {
         this.displayWarning(reason);
         console.log('toasted');
       }
-    );
-  }
-  validate() {
-    var self = this;
-    self.nextStep = "";
-    //TODO deplacer ça dans Colisage.Provider
-    var p = this.pack; //obligatoire à cause de this pourquoi ?
-    console.log('validate', p);
-    if (!p.products.length)
-      return this.displayWarning('No products scanned');
-
-    this.colisageProvider.validatePack(p, this.model.weight)
-    .then(
+    ).then(
       () => {
-        if (p.shipment) {
-          self.nextStep = p.shipment.nextSteps();
-          self.shipment = p.shipment;
+        if (this.model.pack.products.length == this.shipment.products.length) {
+          this.model.shipNow = true;
         }
-        this.displayWarning(`Saved`);
-        console.log('on print là', p);
-        this.printServices.printDymo(p.label);
       }
     );
-    this.reset(false);
   }
   reset(withShipment) {
     this.pack = this.colisageProvider.reset();
@@ -78,6 +61,32 @@ export class ColisagePage {
     this.model.pack = this.pack;
     if (withShipment)
       this.shipment = null;
-
+  }
+  printAndContinue() {
+    var p = this.pack;
+    this.colisageProvider.validatePack(p, this.model.weight, {'withLabel': true})
+    .then(
+      () => {
+        if (p.shipment) {
+          this.nextStep = p.shipment.nextSteps();
+          this.shipment = p.shipment;
+        }
+        this.displayWarning(`Saved`);
+        this.printServices.printDymo(p.label);
+      }
+    );
+    this.reset(false);
+  }
+  shipNow() {
+    // redirect to ship
+    var p = this.pack;
+    this.colisageProvider.validatePack(p, this.model.weight, {'withLabel': false})
+    .then(
+      () => {
+        console.log('pack crée, on redirige sans print', p);
+        this.routeService.goTo('assembler', {'scanned': p.name});
+      }
+    );
+    this.reset(true);
   }
 }
