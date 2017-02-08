@@ -142,6 +142,7 @@ export class Pack { //carton
   name: String;
   label: String;
   place: String;
+  category: String;
   weight = 0;
   locationSM: StateMachine;
   stateMachine: StateMachine;
@@ -270,6 +271,7 @@ export class Pack { //carton
   shipment: Shipment;
   isExpected = true;
   pack: Pack;
+  category: String;
   stateMachine: StateMachine;
   constructor() {
     this.stateMachine = new StateMachine();

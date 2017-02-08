@@ -101,10 +101,12 @@ export class ProductsProvider {
       prod.name = p.name;
       prod.stateMachine.state = p.state;
       prod.shipment = shipment;
+      prod.category = p.category;
       shipment.products.push(prod);
       if (pack) {
         pack.products.push(prod);
         prod.pack = pack;
+        pack.category = prod.category;
       }
       return prod;
     }
