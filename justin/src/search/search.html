@@ -5,7 +5,7 @@
       </ion-buttons>
 
       <ion-title>
-        Search
+        Inspect
       </ion-title>
       <input-bar (cb)="addIt($event)">Search bar</input-bar>
   </ion-toolbar>
@@ -15,7 +15,7 @@
 <ion-content padding>
   <ion-item *ngIf="search.notFound">No result found !
     <br />
-    <button ion-button (click)="searchHarder()">Search in sent</button>
+    <button ion-button (click)="searchHarder()">Search in shipped</button>
   </ion-item>
   <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
 
