@@ -53,9 +53,9 @@ export class DestockagePage {
   validate() {
     var packs = Array.from(this.model.packs.values());
     this.productsProvider.unstock(packs).then(
-      () => packs.forEach( p => {
-        (p as any).destocker()
-      })
+      () => Promise.all(
+            packs.map( p => (p as any).destocker())
+      )
     ).then( () => this.reset() );
   }
 }
