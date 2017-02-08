@@ -22,7 +22,7 @@ export class ColisagePage {
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
       private colisageProvider: ColisageProvider,
-      private printServices: PrintServices
+      private printServices: PrintServices,
       public routeService: RouteService,
     ) {
       this.reset(true);
