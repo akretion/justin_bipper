@@ -49,7 +49,6 @@ export class ColisageProvider {
         && pack.shipment != product.shipment)
         return Promise.reject('Shipment not equal');
 
-      console.log('continue in degraded mode');
       return Promise.resolve(product);
     }
 
@@ -57,8 +56,7 @@ export class ColisageProvider {
       console.log('setProduct', pack, product);
       if (pack.shipment)
         pack.shipment.setPack(pack);
-      pack.setProduct(product);
-      return product.coliser(pack);
+      return pack.setProduct(product);
     }
 
     return getProduct(barcode)
