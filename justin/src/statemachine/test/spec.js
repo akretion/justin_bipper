@@ -1,5 +1,9 @@
 "use strict";
 
+var Product = states.Product;
+var Pack = states.Pack;
+var Shipment = states.Shipment;
+
 function shouldFail(...a) {
   console.log('fail with a', a);
   expect(true).toBe(false);
@@ -10,17 +14,23 @@ function shouldSucceed(...a) {
 }
 describe('Product', () => {
   var p;
-  beforeEach(() => p = new Product())
+  beforeEach(() => {
+    p = new Product();
+    p.stateMachine.state = 'available';
+  }
+)
   it ('should init state', () => {
+    p = new Product();
     expect(p.stateMachine.state).toEqual('init');
+    //on produit a la mano
   });
-  it ('should reception first', (done) => {
+  it ('should receptionner first', (done) => {
     let prom = p.receptionner();
     prom.then(
       () => expect(p.stateMachine.state).toEqual('receptionné')
     ).then(done);
   });
-  it ('should not reception twice', (done) => {
+  it ('should not receptionner twice', (done) => {
     p.receptionner().then( () => {
       p.receptionner().then(shouldFail, shouldSucceed).then(done);
     });
@@ -32,6 +42,7 @@ describe('Pack', () => {
   describe('base', () => {
     beforeEach( () => {
       prod = new Product();
+      prod.stateMachine.state = 'available';
       pack = new Pack();
     });
 
@@ -79,7 +90,9 @@ describe('Pack', () => {
     var ready;
     beforeEach( () => {
       p1 = new Product();
+      p1.stateMachine.state = 'available';
       p2 = new Product();
+      p2.stateMachine.state = 'available';
       pack = new Pack();
       ready = pack.créer().then(
         () => Promise.all([p1.receptionner(), p2.receptionner()])
@@ -235,7 +248,9 @@ describe('Shipment', () => {
     var ready;
     beforeEach( () => {
       p1 = new Product();
+      p1.stateMachine.state = 'available';
       p2 = new Product();
+      p2.stateMachine.state = 'available';
       shipment = new Shipment();
       console.log(shipment.créer);
       ready = shipment.créer().then(
@@ -268,6 +283,8 @@ describe('Shipment', () => {
     });
     it ('should have products from the same shipment in the packs', (done) => {
       let p3 = new Product();
+      p3.stateMachine.state = 'available';
+      let newShip = new Shipment();
       let pack = new Pack();
       ready.then(
         () => pack.créer()
@@ -278,8 +295,8 @@ describe('Shipment', () => {
       ).then(
         () => pack.setProduct(p2)
       ).then(
-        () => shipment.setPack(pack) //devrait déclancher une erreur
-      )//.then(shouldFail, shouldSucceed)
+        () => newShip.setPack(pack) //devrait déclancher une erreur
+      ).then(shouldFail, shouldSucceed)
       .then(done)
     });
     it ('should let us know available states', (done) => {
@@ -314,7 +331,7 @@ describe('Shipment', () => {
       ).then(
         (nextStates) => {
           console.log('voila les nextstesp', nextStates);
-          expect(nextStates).toContain('update');
+          expect(nextStates).toContain('assembler');
           expect(nextStates.length).toEqual(1);
         }
       ).then(
