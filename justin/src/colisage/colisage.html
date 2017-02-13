@@ -47,13 +47,14 @@
             Products
           </ion-item-divider>
           <ion-item *ngFor="let product of shipment.products">
-              {{ product.name }} - {{ product.category }}
+              {{ product.name }}
                - <span [ngSwitch]="product.stateMachine.state">
                  <span *ngSwitchCase="'init'">?</span>
                  <span *ngSwitchCase="'available'">Produced</span>
                  <span *ngSwitchCase="'receptionné'">Received</span>
                  <span *ngSwitchCase="'colisé'">√</span>
                </span>
+               <br> <small>{{ product.category }}</small>
           </ion-item>
         </ion-item-group>
 
