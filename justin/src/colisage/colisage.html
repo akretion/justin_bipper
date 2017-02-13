@@ -18,6 +18,7 @@
         <ion-badge *ngIf="product.isExpected" color="primary">Received</ion-badge>
         <ion-badge *ngIf="!product.isExpected" color="danger">Unkown</ion-badge>
         {{product.name}}
+        <br><small>{{ product.category }}</small>
       </ion-item>
     </ion-list>
   <ion-item>
