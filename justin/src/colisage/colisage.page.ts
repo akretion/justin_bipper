@@ -75,8 +75,8 @@ export class ColisagePage {
     this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': false})
     .then(
       () => {
-        console.log('pack crée, on redirige sans print', p);
-        this.routeService.goTo('assembler', {'scanned': p.name});
+        console.log('pack crée, on redirige sans print', p.name);
+        return this.routeService.goTo('assembler', {'scanned': p.name});
       }
     );
     this.reset(true);
