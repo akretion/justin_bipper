@@ -1,11 +1,12 @@
 import {Component} from '@angular/core';
-import {NavController, ToastController} from 'ionic-angular';
+import {NavController, NavParams, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
 import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/actionFor.component';
 import {PrintServices} from '../models/PrintServices';
+import {RouteService} from '../models/route.Service';
 
 @Component({
   templateUrl: 'colisage.html',
@@ -17,13 +18,19 @@ export class ColisagePage {
   nextStep: string = '';
   constructor(
       public navCtrl: NavController,
+      public navParams: NavParams,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
       private colisageProvider: ColisageProvider,
-      private printServices: PrintServices
+      private printServices: PrintServices,
+      public routeService: RouteService,
     ) {
       this.reset(true);
       console.log('this', this);
+
+      var scanned = this.navParams.get('scanned');
+      if (scanned)
+        this.addIt(scanned);
   }
   displayWarning(msg) {
     this.toastCtrl.create({

@@ -5,7 +5,7 @@
       </ion-buttons>
 
       <ion-title>
-        Search
+        Inspect
       </ion-title>
       <input-bar (cb)="addIt($event)">Search bar</input-bar>
   </ion-toolbar>
@@ -13,8 +13,23 @@
 
 
 <ion-content padding>
-  <ion-item *ngIf="search.notFound">No result found !</ion-item>
+  <ion-item *ngIf="search.notFound">No result found !
+    <br />
+    <button ion-button (click)="searchHarder()">Search in shipped</button>
+  </ion-item>
   <ion-item *ngIf="search.terms">Results for : {{ search.terms }}</ion-item>
+
+  <ion-item-group *ngIf="search.hard">
+    <ion-item-divider>
+      Search live results
+    </ion-item-divider>
+    <ion-item>
+      <h3>Picking : {{ search.hard.picking }}</h3>
+      Weight: {{ search.hard.weight }} <br />
+      State: {{ search.hard.state}}<br />
+      <button ion-button (click)="printShippingLabel(search.hard.picking)" *ngIf="search.hard.state == 'done'">Print shipping label</button>
+    </ion-item>
+  </ion-item-group>
 
   <ion-item-group *ngIf="search.shipments.length">
     <ion-item-divider>
@@ -37,7 +52,8 @@
     <ion-item *ngFor="let pack of search.packs">
         <h2><a href="#" (click)="openPack(pack)">{{ pack.name }}</a></h2>
         <p>{{ pack.stateMachine?.state }}<br />
-        {{ pack.locationSM?.state }} - {{ pack.place }}</p>
+        {{ pack.locationSM?.state }} - {{ pack.place }}
+        <br><small>{{ pack.category }}</small></p>
         <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
         <button ion-button (click)="print(pack)" item-right>Print</button>
     </ion-item>
@@ -50,7 +66,8 @@
     </ion-item-divider>
     <ion-item *ngFor="let product of search.products">
       <h2><a href="#" (click)="openPack(product)">{{ product.name }}</a></h2>
-      <p>{{ product.stateMachine?.state }}</p>
+      <p>{{ product.stateMachine?.state }}<br>
+        <small>{{ product.category }}</small></p>
       <nextApp [thing]="product" item-right>dns nextapp</nextApp>
     </ion-item>
   </ion-item-group>

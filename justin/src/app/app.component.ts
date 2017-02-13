@@ -46,12 +46,13 @@ export class MyApp {
     });
     watcher = routeService.get();
     watcher.subscribe(i => {
-      this.openPage(i.component);
+      this.openPage(i.page.component, i.data);
     });
   }
-  openPage(x) {
+  openPage(page, data) {
+    console.log('openPage', data);
     this.menuCtrl.enable(true);
-    this.nav.setRoot(x);
+    this.nav.setRoot(page, data);
     this.menuCtrl.close();
   }
 }

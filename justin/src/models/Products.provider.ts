@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {Http} from '@angular/http';
-import {Product, Pack, Shipment} from '../statemachine/src/states.js';
+import {Product, Pack, Shipment} from '../statemachine/src/states';
 import {odooService} from '../angular-odoo/odoo';
 
 import {Observable} from 'rxjs/Observable';
@@ -101,10 +101,12 @@ export class ProductsProvider {
       prod.name = p.name;
       prod.stateMachine.state = p.state;
       prod.shipment = shipment;
+      prod.category = p.category;
       shipment.products.push(prod);
       if (pack) {
         pack.products.push(prod);
         prod.pack = pack;
+        pack.category = prod.category;
       }
       return prod;
     }

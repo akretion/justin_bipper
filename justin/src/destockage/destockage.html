@@ -22,8 +22,9 @@
         Packs
       </ion-item-divider>
       <ion-item *ngFor="let pack of listeDeCourses">
-         {{ pack.name }} - {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }} - {{ pack.place }}
+         {{ pack.name }} - {{ pack.place }}
          <span *ngIf="model.packs.has(pack.name)" color="primary">√</span>
+         <br><small>{{ pack.category }}</small>
       </ion-item>
        <ion-buttons start>
          <button ion-button (click)="reset()" danger>Reset</button>

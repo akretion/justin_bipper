@@ -24,6 +24,7 @@
          <button ion-button (click)="showModal(model.shipment)" item-right>Change</button>
         </p>
        <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)" block>Ship</button>
+       <ion-badge *ngIf="model.allProductsPacked == false" color="danger">Some products are not packed</ion-badge>
        <ion-badge *ngIf="model.ready == false " color="danger">Not ready : waiting another action</ion-badge>
    </ion-item>
  </ion-item-group>
@@ -41,6 +42,7 @@
       </h2>
       <p>
         {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }}
+        <br><small>{{ pack.category }}</small>
         <span *ngIf="model.nextStep == 'Assemble' && pack.locationSM.state != 'transit'">
           <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
         </span>

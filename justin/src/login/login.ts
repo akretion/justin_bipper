@@ -75,13 +75,9 @@ export class LoginPage {
       , this.handleError).then(
         () => loader.dismissAll()
       );
-
-      console.log(form);
-      console.log('boom c\'est bon');
     }
   }
   loginSuccess() {
-    console.log('go to home');
-    this.route.goTo('receptionner');
+    this.route.goTo('rechercher');
   }
 }
