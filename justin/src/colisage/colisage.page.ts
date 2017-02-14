@@ -46,6 +46,9 @@ export class ColisagePage {
         console.log('retour addone', product);
         this.model.products.push(product);
         this.shipment = product.shipment;
+
+        if (this.model.products.length == this.shipment.products.length)
+          this.model.shipNow = true;
       },
       (reason) => {
         this.displayWarning(reason);
@@ -53,33 +56,37 @@ export class ColisagePage {
       }
     );
   }
-  validate() {
-    var self = this;
-    self.nextStep = "";
-    //TODO deplacer ça dans Colisage.Provider
 
-    if (!this.model.products.length)
-      return this.displayWarning('No products scanned');
-
-    this.colisageProvider.validatePack(this.model.weight, this.model.products)
+  printAndContinue() {
+    this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
     .then(
       (pack) => {
         if (pack.shipment) {
-          self.nextStep = pack.shipment.nextSteps();
-          self.shipment = pack.shipment;
+          this.nextStep = pack.shipment.nextSteps();
+          this.shipment = pack.shipment;
         }
         this.displayWarning(`Saved`);
-        console.log('on print là', pack);
         this.printServices.printDymo(pack.label);
-      }
-    );
+      });
     this.reset(false);
   }
+  shipNow() {
+    // redirect to ship
+    this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': false})
+    .then(
+      () => {
+        console.log('pack crée, on redirige sans print', p);
+        this.routeService.goTo('assembler', {'scanned': p.name});
+      }
+    );
+    this.reset(true);
+  }
+
   reset(withShipment) {
     this.colisageProvider.reset();
     this.model = { 'products': []};
     if (withShipment)
       this.shipment = null;
-  }
+    }
 
 }

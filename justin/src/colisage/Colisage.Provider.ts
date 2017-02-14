@@ -51,8 +51,9 @@ export class ColisageProvider {
       .then(prod => prod);
   }
 
-  validatePack(weight, products) {
+  validatePack(weight, products, withLabel) {
     console.log('weight, products', weight, products);
+    var withLabel = withLabel['withLabel'];
     var pack = this.pack;
     let prodPromises = products.map(
       p => pack.setProduct(p)
@@ -64,7 +65,7 @@ export class ColisageProvider {
         'products': pack.products.map( x => x.name)
       };
       console.log('on envoi payload', payload);
-      return this.odoo.call('bipper.webservice','do_packing', [payload], {})
+      return this.odoo.call('bipper.webservice','do_packing', [payload, withLabel], {})
     }).then(x => {
       console.log("c'est good", x);
       pack.name = x[0];
