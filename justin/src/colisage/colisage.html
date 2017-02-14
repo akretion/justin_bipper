@@ -21,10 +21,10 @@
         <br><small>{{ product.category }}</small>
       </ion-item>
     </ion-list>
-  <form name="colisageForm" (ngSubmit)="printAndContinue()">
+  <form name="colisageForm">
   <ion-item>
     <ion-label>Weight</ion-label>
-    <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any" required></ion-input>
+    <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any"></ion-input>
   </ion-item>
 
   <ion-item>
