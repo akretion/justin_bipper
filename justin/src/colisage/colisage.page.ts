@@ -58,6 +58,7 @@ export class ColisagePage {
   }
 
   printAndContinue() {
+    console.log('dans print and continue');
     this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
     .then(
       (pack) => {
@@ -87,5 +88,4 @@ export class ColisagePage {
     if (withShipment)
       this.shipment = null;
     }
-
 }
