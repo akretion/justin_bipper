@@ -162,7 +162,8 @@ export class Pack { //carton
         (args) => {
           let product = args.product;
           if (product)
-            product.stateMachine.can('coliser');
+            return product.stateMachine.can('coliser');
+          return Promise.reject('No product');
           }
       ], actions:[
         (args) => {
@@ -263,7 +264,9 @@ export class Pack { //carton
     this.stateMachine.events = <Array<StateEvent>>[
       { name:'produire', from: 'init', to: 'available', conditions: [], actions:[]}, //produire is done on odoo
       { name:'receptionner', from: 'available', to: 'receptionné', conditions: [], actions:[]},
-      { name:'coliser', from: 'receptionné', to: 'colisé', conditions: [], actions:[]}
+      { name:'coliser', from: 'receptionné', to: 'colisé', conditions: [
+        (x) => {console.log('pouvons nous coliser ? '); return Promise.resolve('oui !'); },
+      ], actions:[]}
     ];
   }
   receptionner() {
