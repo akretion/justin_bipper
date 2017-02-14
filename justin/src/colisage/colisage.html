@@ -14,7 +14,7 @@
 
 <ion-content padding>
     <ion-list>
-      <ion-item *ngFor="let product of model.pack.products">
+      <ion-item *ngFor="let product of model.products">
         <ion-badge *ngIf="product.isExpected" color="primary">Received</ion-badge>
         <ion-badge *ngIf="!product.isExpected" color="danger">Unkown</ion-badge>
         {{product.name}}
@@ -53,9 +53,10 @@
                  <span *ngSwitchCase="'init'">?</span>
                  <span *ngSwitchCase="'available'">Produced</span>
                  <span *ngSwitchCase="'receptionné'">Received</span>
-                 <span *ngSwitchCase="'colisé'">√</span>
+                 <span *ngSwitchCase="'colisé'">Packed</span>
                </span>
-               <br> <small>{{ product.category }}</small>
+              - <span *ngIf="model.products.indexOf(product) != -1">√</span>
+              <br> <small>{{ product.category }}</small>
           </ion-item>
         </ion-item-group>
 

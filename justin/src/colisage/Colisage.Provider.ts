@@ -14,12 +14,7 @@ export class ColisageProvider {
     ) {
       this.reset();
   }
-
-  get() {
-    return this.pack;
-  }
-  addOne(barcode) {
-    //TODO vérifier que le produit fait parti de cet shipment?
+  addOne(barcode, alreadyScanned) {
     var pack = this.pack;
     var productsProvider = this.productsProvider;
     var products = productsProvider.getProducts(barcode);
@@ -27,7 +22,7 @@ export class ColisageProvider {
 
     function getProduct(barcode) {
       var nextAvailableProduct = products
-        .find( (l) => l.stateMachine.state ==  'receptionné');
+        .find( (l) => l.stateMachine.state == 'receptionné' && alreadyScanned.indexOf(l) == -1);
 
       if (nextAvailableProduct)
         return Promise.resolve(nextAvailableProduct);
@@ -51,20 +46,19 @@ export class ColisageProvider {
 
       return Promise.resolve(product);
     }
-
-    function setProduct(pack, product) {
-      console.log('setProduct', pack, product);
-      if (pack.shipment)
-        pack.shipment.setPack(pack);
-      return pack.setProduct(product);
-    }
-
     return getProduct(barcode)
       .then(prod => ensureShipment(pack, prod))
-      .then(prod => setProduct(pack, prod));
+      .then(prod => prod);
   }
-  validatePack(pack, weight) {
-    return pack.setWeight(weight).then(() => {
+
+  validatePack(weight, products) {
+    console.log('weight, products', weight, products);
+    var pack = this.pack;
+    let prodPromises = products.map(
+      p => pack.setProduct(p)
+    );
+    prodPromises.push(pack.setWeight(weight));
+    return Promise.all(prodPromises).then( (...a) => {
       var payload = {
         'weight': pack.weight,
         'products': pack.products.map( x => x.name)
@@ -76,37 +70,14 @@ export class ColisageProvider {
       pack.name = x[0];
       pack.label = x[1];
       //on colise les produits
-
-      return pack.coliser().then(
-        () => this.productsProvider.addPack(pack)
-      ).then(
-        () => {
-          console.log('on check si le pack est dans le ship', pack.shipment, pack.shipment.packs.indexOf(pack))
-          if (pack.shipment.packs.indexOf(pack) == -1)
-            pack.shipment.packs.push(pack);
-          console.log('apres', pack.shipment.packs.indexOf(pack));
-          }
-        );
-    }).then( () => {
-      return pack;
-    }).then(null, (x) => console.log('on leve pas',x));
+      pack.shipment.setPack(pack);
+      return pack.coliser();
+    }
+    ).then( () => this.productsProvider.addPack(pack)
+    ).then( () => pack, (x) => console.log('on leve pas',x));
   }
   reset() {
     //on défait
-    console.log('on defait ', this.pack);
-    if (this.pack) {
-      this.pack.products.forEach(
-        prod => {
-          prod.pack = null;
-          prod.stateMachine.state = 'receptionné';
-      });
-      if (this.pack.shipment) {
-        this.pack.shipment.packs = this.pack.shipment.packs.filter(
-          pack => pack != this.pack
-        );
-      }
-    }
-
     this.pack = this.productsProvider.newPack();
     this.pack.créer();
     return this.pack;

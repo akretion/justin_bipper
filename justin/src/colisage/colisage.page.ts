@@ -7,12 +7,12 @@ import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/actionFor.component';
 import {PrintServices} from '../models/PrintServices';
 import {RouteService} from '../models/route.Service';
+import {Pack, Shipment, Product } from '../statemachine/src/states';
 
 @Component({
   templateUrl: 'colisage.html',
 })
 export class ColisagePage {
-  pack: any = {};
   shipment: any;
   model: any = {};
   nextStep: string = '';
@@ -41,8 +41,12 @@ export class ColisagePage {
   addIt(scanned) {
     console.log('dans addit', scanned);
 
-    this.colisageProvider.addOne(scanned).then(
-      () => this.shipment = this.model.pack.shipment,
+    this.colisageProvider.addOne(scanned, this.model.products).then(
+      (product: Product) => {
+        console.log('retour addone', product);
+        this.model.products.push(product);
+        this.shipment = product.shipment;
+      },
       (reason) => {
         this.displayWarning(reason);
         console.log('toasted');
@@ -53,31 +57,29 @@ export class ColisagePage {
     var self = this;
     self.nextStep = "";
     //TODO deplacer ça dans Colisage.Provider
-    var p = this.pack; //obligatoire à cause de this pourquoi ?
-    console.log('validate', p);
-    if (!p.products.length)
+
+    if (!this.model.products.length)
       return this.displayWarning('No products scanned');
 
-    this.colisageProvider.validatePack(p, this.model.weight)
+    this.colisageProvider.validatePack(this.model.weight, this.model.products)
     .then(
-      () => {
-        if (p.shipment) {
-          self.nextStep = p.shipment.nextSteps();
-          self.shipment = p.shipment;
+      (pack) => {
+        if (pack.shipment) {
+          self.nextStep = pack.shipment.nextSteps();
+          self.shipment = pack.shipment;
         }
         this.displayWarning(`Saved`);
-        console.log('on print là', p);
-        this.printServices.printDymo(p.label);
+        console.log('on print là', pack);
+        this.printServices.printDymo(pack.label);
       }
     );
     this.reset(false);
   }
   reset(withShipment) {
-    this.pack = this.colisageProvider.reset();
-    this.model = {};
-    this.model.pack = this.pack;
+    this.colisageProvider.reset();
+    this.model = { 'products': []};
     if (withShipment)
       this.shipment = null;
-
   }
+
 }

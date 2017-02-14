@@ -47,32 +47,55 @@ export class ProductsProvider {
       return odoo.call('bipper.webservice', 'get_all_receptions', [], {}).then(
         x => {
           concurrent--;
-          this.packsLookup = new Map();
-          this.shipsLookup = new Map();
-          this.productsLookup = new Map();
-
           this.lastUpdate.next(Date());
           x.forEach(
             s => {
-              var ship = buildShip(s);
-              this.shipsLookup.set(ship.name, ship)
+              var oldShip = this.shipsLookup.get(s.name);
+              if (oldShip) {
+                var ship = updateShip(s, oldShip);
+              } else {
+                var ship = buildShip(s);
+                this.shipsLookup.set(ship.name, ship)
+              }
 
               s.packs.forEach(
                 p => {
-                  var pack = buildPack(p, ship);
-                  this.packsLookup.set(pack.name, pack);
-                }
-              );
-              s.lines.forEach(
-                p => {
-                  if (!this.productsLookup.has(p.name))
-                    this.productsLookup.set(p.name, []);
-                  let pack = this.packsLookup.get(p.pack);
-                  let prod = buildProduct(p, pack, ship);
-                  this.productsLookup.get(p.name).push(prod);
+                  var oldPack = this.packsLookup.get(p.name);
+                  if (oldPack) {
+                    updatePack(p, oldPack);
+                  } else {
+                    var pack = buildPack(p, ship);
+                    this.packsLookup.set(pack.name, pack);
+                  }
                 }
               );
 
+              if (!oldShip) {
+                s.lines.forEach(
+                  p => {
+                    let pack = this.packsLookup.get(p.pack);
+                    let prod = buildProduct(p, pack, ship);
+                    if (!this.productsLookup.has(p.name))
+                      this.productsLookup.set(p.name, []);
+                    this.productsLookup.get(p.name).push(prod);
+                  }
+                );
+              } else {
+                s.lines.reduce((acc, cur) => {
+                  if (!acc.has(cur.name))
+                    acc.set(cur.name, []);
+                  acc.get(cur.name).push(cur);
+                  return acc;
+                }, new Map())
+                // converts to { 'dev-xx-x1': [a,b], 'dev-xx-x2': [c,d,e]}
+                .forEach( (kindOfProduct) => {
+                  kindOfProduct.forEach( (p, idx) => {
+                    let pack = this.packsLookup.get(p.pack);
+                    let prod = this.productsLookup.get(p.name)[idx];
+                    updateProduct(p, prod, pack);
+                  });
+                })
+              }
             });
           }, (err) => {
             concurrent--;
@@ -91,6 +114,10 @@ export class ProductsProvider {
       var ship = new Shipment();
       ship.créer();
       ship.name = s.name;
+      return updateShip(ship, s);
+    }
+
+    function updateShip(ship, s) {
       ship.carrier = s.carrier;
       ship.partial_allowed = s.is_partial;
       return ship;
@@ -99,21 +126,30 @@ export class ProductsProvider {
     function buildProduct(p, pack, shipment) {
       var prod = new Product();
       prod.name = p.name;
-      prod.stateMachine.state = p.state;
       prod.shipment = shipment;
       prod.category = p.category;
       shipment.products.push(prod);
-      if (pack) {
+      return updateProduct(p, prod, pack);
+    }
+    function updateProduct(p, prod, pack) {
+      prod.stateMachine.state = p.state;
+      if (!prod.pack && pack) {
         pack.products.push(prod);
         prod.pack = pack;
         pack.category = prod.category;
       }
       return prod;
     }
+
     function buildPack(p, shipment) {
       var pack = new Pack();
       pack.name = p.name;
       pack.weight = p.weight;
+      pack.shipment = shipment;
+      shipment.packs.push(pack);
+      return updatePack(p, pack);
+    }
+    function updatePack(p, pack) {
       pack.stateMachine.state = p.state;
       if (!p.state){
         console.log('init state par défaut')
@@ -125,8 +161,6 @@ export class ProductsProvider {
       } else {
         pack.locationSM.state = 'transit';
       }
-      pack.shipment = shipment;
-      shipment.packs.push(pack);
       return pack;
     }
   }
