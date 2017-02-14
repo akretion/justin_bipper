@@ -151,45 +151,34 @@ export class Pack { //carton
     this.stateMachine.state = 'init';
     this.stateMachine.events = <Array<StateEvent>>([
       {name:'créer', from: 'init', to: 'init', conditions: [], actions:[]},
-      {name:'setWeight', from: 'init', to: 'init', conditions: [], actions:[
-        (args) => {
-          let weight = args.weight;
-          weight = parseFloat(weight);
-          this.weight = weight;
-        }
-      ]},
-      {name:'setProduct', from: 'init', to: 'init', conditions: [
-        (args) => {
-          let product = args.product;
-          if (product)
-            return product.stateMachine.can('coliser');
-          return Promise.reject('No product');
-          }
-      ], actions:[
-        (args) => {
-          let product = args.product;
-          product.coliser(this);
-        },
-        (args) => {
-          let product = args.product;
-          this.products.push(product)
-        }
-      ]},
       {name:'coliser', from: 'init', to: 'created', conditions: [
-        () => {
-          if (!this.weight)
+        (args) => {
+          let weight = parseFloat(args.weight);
+          if (!args.weight)
             return Promise.reject("pas de poids");
+          if (weight <= 0)
+            return Promise.reject('poids null');
         },
-        () => {
-          if (!this.products.length)
+        (args) => {
+          console.log('voici args', args);
+          if (!args.products.length)
             return Promise.reject('Pas de produits');
         },
-        () => {
-          if (!this.products.every( (p) => p.stateMachine.state == 'colisé'))
-            return Promise.reject("Tous les colis ne sont pas colisés");
+        (args) => {
+          let ship = args.products[0].shipment;
+          if (!args.products.every(prod => prod.shipment == ship))
+            return Promise.reject('All the products are not from the same shipment');
+        },
+        (args) => {
+          return Promise.all(
+            args.products.map(prod => prod.stateMachine.can('coliser', {pack: this}))
+          ).catch( () => Promise.reject("All the products are not packable"));
         }
       ], actions:[
-        () => this.locationSM.go('créer')
+        (args) => this.weight = parseFloat(args.weight),
+        (args) => this.products = args.products,
+        (args) => this.products.forEach( prod => prod.coliser(this)),
+        (args) => this.locationSM.go('créer')
       ]},
       {name:'assembler', from: 'created', to: 'assemblé', conditions: [
         () => this.locationSM.can('assembler'),
@@ -199,14 +188,7 @@ export class Pack { //carton
     this.statesAction = [
       { name:'init', action: () => {
         var steps = new Set()
-        if (!this.weight)
-          steps.add('setWeight')
-
-        if (!this.products.length)
-          steps.add('setProduct');
-
-        if (steps.size == 0)
-          steps.add('coliser');
+        steps.add('coliser');
         return steps;
       }},
       { name:'created', action: () => {
@@ -214,7 +196,7 @@ export class Pack { //carton
         if (this.locationSM.state == 'transit')
           steps.add('assembler');
         if (this.locationSM.state == 'stock')
-          steps.add('destocker'); //est-ce pas plutot au shippemnt de dire ça?
+          steps.add('destocker'); //est-ce pas plutot au shipment de dire ça?
         return steps;
       }}
     ];
@@ -223,16 +205,9 @@ export class Pack { //carton
   créer() {
     return this.stateMachine.go('créer');
   }
-  setProduct(product: Product) {
-    return this.stateMachine.go('setProduct', {product: product});
-  }
-  setWeight(weight) {
-    //convert to int
-    return this.stateMachine.go('setWeight', { weight: weight});
-  }
-  coliser() {
-    console.log('dans le colisage', this);
-    return this.stateMachine.go('coliser');
+  coliser(weight, products: Array<Product>) {
+    console.log('voici products', products);
+    return this.stateMachine.go('coliser', {weight: weight, products: products});
   }
   assembler() {
     return this.stateMachine.go('assembler');
@@ -265,8 +240,17 @@ export class Pack { //carton
       { name:'produire', from: 'init', to: 'available', conditions: [], actions:[]}, //produire is done on odoo
       { name:'receptionner', from: 'available', to: 'receptionné', conditions: [], actions:[]},
       { name:'coliser', from: 'receptionné', to: 'colisé', conditions: [
-        (x) => {console.log('pouvons nous coliser ? '); return Promise.resolve('oui !'); },
-      ], actions:[]}
+        (args) => {
+          let pack = args.pack;
+          if (!pack)
+            return Promise.reject('No pack');
+          return Promise.resolve();
+        }
+      ], actions:[
+          (args) => {
+            this.pack = args.pack;
+          }
+      ]}
     ];
   }
   receptionner() {
@@ -275,18 +259,7 @@ export class Pack { //carton
   }
   coliser(pack:Pack) {
     console.log('colisage du produit avec le pack ',pack);
-    var conditions = [
-      () => {
-        if (!pack)
-          return Promise.reject('No pack');
-      }
-    ];
-    var actions = [
-      () => this.pack = pack
-    ];
-    return this.stateMachine.can('coliser').then(
-      (f) => f(conditions, actions)
-    );
+    return this.stateMachine.go('coliser', {pack: pack});
   }
   nextSteps() {
     var nextSteps = [];

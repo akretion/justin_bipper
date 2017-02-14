@@ -52,11 +52,7 @@ describe('Pack', () => {
       ).then(
         () => pack.créer()
       ).then(
-        () => pack.setProduct(prod)
-      ).then(
-        () => pack.setWeight(8)
-      ).then(
-        () => pack.coliser()
+        () => pack.coliser(8, [prod])
       ).then(shouldSucceed, shouldFail).then(done);
     });
 
@@ -64,9 +60,7 @@ describe('Pack', () => {
       Promise.resolve().then(
         () => pack.créer()
       ).then(
-        () => pack.setWeight(8)
-      ).then(
-        () => pack.coliser()
+        () => pack.coliser(8, [])
       ).then(shouldFail, shouldSucceed).then(done);
     });
 
@@ -76,9 +70,7 @@ describe('Pack', () => {
       ).then(
         () => p.receptionner()
       ).then(
-        () => pack.setProduct(p)
-      ).then(
-        () => pack.coliser()
+        () => pack.coliser("", p)
       ).then(shouldFail, shouldSucceed).then(done);
     });
   });
@@ -94,20 +86,12 @@ describe('Pack', () => {
       p2 = new Product();
       p2.stateMachine.state = 'available';
       pack = new Pack();
-      ready = pack.créer().then(
-        () => Promise.all([p1.receptionner(), p2.receptionner()])
-      ).then(
-        () => Promise.all([pack.setProduct(p1), pack.setProduct(p2)])
-      ).then(
-        () => pack.setWeight(8)
-      ).then(
-        () => console.log('on est ready', pack)
-      )
+      ready = Promise.all([pack.créer(), p1.receptionner(), p2.receptionner()]);
       console.log('dans beforeEach', ready);
     });
     it ('should not assemble from stock', (done) => {
       ready.then(
-        () => pack.coliser()
+        () => pack.coliser(8, [p1, p2])
       ).then(
         () => pack.stocker()
       ).then(
@@ -120,7 +104,7 @@ describe('Pack', () => {
       ready.then(
         () => expect(pack.locationSM.state).toEqual('init')
       ).then(
-        () => pack.coliser()
+        () => pack.coliser(8, [p1,p2])
       ).then(
         () => expect(pack.locationSM.state).toEqual('transit')
       ).then(
@@ -135,27 +119,23 @@ describe('Pack', () => {
         () => pack.assembler()
       ).then(shouldSucceed, shouldFail).then(done);
     });
-    it ('should handle change of weight', (done) => {
-      ready.then(
-        () => pack.setWeight(4)
-      ).then(
-        () => expect(pack.weight).toEqual(4)
-      ).then(
-        () => pack.coliser()
-      ).then(shouldSucceed, shouldFail).then(done);
-    });
     it ('should handle weight as string', (done) => {
       ready.then(
-        () => pack.setWeight("4")
+        () => pack.coliser("4", [p1])
       ).then(
         () => expect(pack.weight).toEqual(4)
-      ).then(
-        () => pack.coliser()
       ).then(shouldSucceed, shouldFail).then(done);
+    });
+    it ('should reject negative weight', (done) => {
+      ready.then(
+        () => pack.coliser("-4", [p1])
+      ).then(
+        () => expect(pack.weight).toEqual(4)
+      ).then(shouldFail, shouldSucceed).then(done);
     });
     it ('should tell us possible steps', (done) => {
       ready.then(
-        () => pack.coliser()
+        () => pack.coliser(7, [p1])
       ).then(
         () => pack.stocker()
       ).then(
@@ -177,7 +157,7 @@ describe('Pack', () => {
           expect(nextSteps).toContain('coliser')
         }
       ).then(
-        () => pack.coliser()
+        () => pack.coliser(8, [p1, p2])
       ).then(
         () => pack.nextSteps()
       ).then(
@@ -194,29 +174,10 @@ describe('Pack', () => {
         }
       ).then(shouldSucceed, shouldFail).then(done);
     });
-    it ('should tell us next steps directly 0.1', (done) => {
-      var p = new Pack();
-      p.créer().then(
-        () => pack.nextSteps()
-      ).then(
-        (nextSteps) => {
-          expect(nextSteps).toContain('setProduct')
-          expect(nextSteps).toContain('setWeight')
-        }
-      ).then(
-        () => pack.setWeight(3)
-      ).then(
-        () => pack.nextSteps()
-      ).then(
-        (nextSteps) => {
-          expect(nextSteps).toContain('setProduct')
-          expect(nextSteps.length).toEqual(1)
-        }
-      ).then(shouldSucceed, shouldFail).then(done);
-    });
+
     it ('should tell us next steps directly 1', (done) => {
       ready.then(
-        () => pack.coliser()
+        () => pack.coliser(7, [p1,p2])
       ).then(
         () => pack.nextSteps()
       ).then(
@@ -228,7 +189,7 @@ describe('Pack', () => {
     });
     it ('should tell us next steps directly 2', (done) => {
       ready.then(
-        () => pack.coliser()
+        () => pack.coliser(8, [p1,p2])
       ).then(
         () => pack.stocker()
       ).then(
@@ -274,7 +235,7 @@ describe('Shipment', () => {
       ready.then(
         () => pack.créer()
       ).then(
-        () => pack.setProduct(shipment.products[0])
+        () => pack.coliser(3, [shipment.products[0]])
       ).then(
         () => shipment.setPack(pack)
       ).then(
@@ -282,20 +243,17 @@ describe('Shipment', () => {
       ).then(shouldSucceed, shouldFail).then(done);
     });
     it ('should have products from the same shipment in the packs', (done) => {
-      let p3 = new Product();
-      p3.stateMachine.state = 'available';
       let newShip = new Shipment();
       let pack = new Pack();
+      let p3 = new Product();
+      p3.stateMachine.state = 'available';
+      p3.shipment = newShip;
       ready.then(
         () => pack.créer()
       ).then(
         () => p3.receptionner()
       ).then(
-        () => pack.setProduct(p3)
-      ).then(
-        () => pack.setProduct(p2)
-      ).then(
-        () => newShip.setPack(pack) //devrait déclancher une erreur
+        () => pack.coliser(4, [p3, p2])
       ).then(shouldFail, shouldSucceed)
       .then(done)
     });
@@ -318,13 +276,9 @@ describe('Shipment', () => {
           p1.shipment = shipment;
           p2.shipment = shipment;
           return Promise.all([
-            pack.setProduct(p1),
-            pack.setProduct(p2),
+            pack.coliser(3, [p1,p2]),
             shipment.setPack(pack),
-            pack.setWeight(3),
-          ]).then(
-            () =>pack.coliser()
-          );
+          ]);
         }
       ).then(
         () => shipment.nextSteps()
