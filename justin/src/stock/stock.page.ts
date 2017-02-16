@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 
 @Component({
@@ -35,7 +35,7 @@ export class StockPage {
       this.displayWarning(`${scanned} not found`)
       return this.reset();
     }
-    if (!pack.locationSM.availableState().find(p => p.to == 'stock')) {
+    if (!pack.stateMachine.availableState().find(p => p.to == 'stock')) {
       this.displayWarning(`${scanned} can't be stocked`);
       return this.reset();
     }

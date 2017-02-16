@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Home
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  {{ searched.notFound}}  {{ searched.terms}}
+</ion-content>

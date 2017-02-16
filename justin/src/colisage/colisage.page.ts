@@ -4,7 +4,7 @@ import {AlertController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
 import {inputBarComponent} from '../models/inputBar.component';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {PrintServices} from '../models/PrintServices';
 import {RouteService} from '../models/route.Service';
 import {Pack, Shipment, Product } from '../statemachine/src/states';
@@ -15,7 +15,6 @@ import {Pack, Shipment, Product } from '../statemachine/src/states';
 export class ColisagePage {
   shipment: any;
   model: any = {};
-  nextStep: string = '';
   constructor(
       public navCtrl: NavController,
       public navParams: NavParams,
@@ -63,7 +62,6 @@ export class ColisagePage {
     .then(
       (pack) => {
         if (pack.shipment) {
-          this.nextStep = pack.shipment.nextSteps();
           this.shipment = pack.shipment;
         }
         this.displayWarning(`Saved`);

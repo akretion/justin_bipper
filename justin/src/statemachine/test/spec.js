@@ -50,24 +50,18 @@ describe('Pack', () => {
       Promise.resolve().then(
         () => prod.receptionner()
       ).then(
-        () => pack.créer()
-      ).then(
         () => pack.coliser(8, [prod])
       ).then(shouldSucceed, shouldFail).then(done);
     });
 
     it ('should not coliser sans produits', (done) => {
       Promise.resolve().then(
-        () => pack.créer()
-      ).then(
         () => pack.coliser(8, [])
       ).then(shouldFail, shouldSucceed).then(done);
     });
 
     it ('should not coliser sans poids', (done) => {
       Promise.resolve().then(
-        () => pack.créer()
-      ).then(
         () => p.receptionner()
       ).then(
         () => pack.coliser("", p)
@@ -86,7 +80,7 @@ describe('Pack', () => {
       p2 = new Product();
       p2.stateMachine.state = 'available';
       pack = new Pack();
-      ready = Promise.all([pack.créer(), p1.receptionner(), p2.receptionner()]);
+      ready = Promise.all([p1.receptionner(), p2.receptionner()]);
       console.log('dans beforeEach', ready);
     });
     it ('should not assemble from stock', (done) => {
@@ -102,19 +96,19 @@ describe('Pack', () => {
     });
     it ('should assemble after stock', (done) => {
       ready.then(
-        () => expect(pack.locationSM.state).toEqual('init')
+        () => expect(pack.stateMachine.state).toEqual('init')
       ).then(
         () => pack.coliser(8, [p1,p2])
       ).then(
-        () => expect(pack.locationSM.state).toEqual('transit')
+        () => expect(pack.stateMachine.state).toEqual('transit')
       ).then(
         () => pack.stocker()
       ).then(
-        () => expect(pack.locationSM.state).toEqual('stock')
+        () => expect(pack.stateMachine.state).toEqual('stock')
       ).then(
         () => pack.destocker()
       ).then(
-        () => expect(pack.locationSM.state).toEqual('transit')
+        () => expect(pack.stateMachine.state).toEqual('transit')
       ).then(
         () => pack.assembler()
       ).then(shouldSucceed, shouldFail).then(done);
@@ -140,10 +134,6 @@ describe('Pack', () => {
         () => pack.stocker()
       ).then(
         () => pack.stateMachine.possibleStates()
-      ).then(
-        (av) => expect(av.length).toEqual(0)
-      ).then(
-        () => pack.locationSM.possibleStates()
       ).then(
         (av) => expect(av).toContain('destocker')
       ).then(shouldSucceed, shouldFail).then(done);
@@ -213,7 +203,6 @@ describe('Shipment', () => {
       p2 = new Product();
       p2.stateMachine.state = 'available';
       shipment = new Shipment();
-      console.log(shipment.créer);
       ready = shipment.créer().then(
         () => Promise.all([p1.receptionner(), p2.receptionner()])
       ).then(
@@ -233,8 +222,6 @@ describe('Shipment', () => {
       let pack = new Pack();
 
       ready.then(
-        () => pack.créer()
-      ).then(
         () => pack.coliser(3, [shipment.products[0]])
       ).then(
         () => shipment.setPack(pack)
@@ -249,8 +236,6 @@ describe('Shipment', () => {
       p3.stateMachine.state = 'available';
       p3.shipment = newShip;
       ready.then(
-        () => pack.créer()
-      ).then(
         () => p3.receptionner()
       ).then(
         () => pack.coliser(4, [p3, p2])
@@ -258,47 +243,102 @@ describe('Shipment', () => {
       .then(done)
     });
     it ('should let us know available states', (done) => {
+      let p3 = new Product();
+      let pack = new Pack();
+      let pack2 = new Pack();
+      shipment.products.push(p3);
       ready.then(
-        () => shipment.stateMachine.possibleStates()
+        () => shipment.nextSteps()
       ).then(
         (availableStates) => {
-          expect(availableStates).toContain('setPack');
-          console.log(availableStates);
+          expect(availableStates).toContain('coliser');
+          expect(availableStates).toContain('produire');
+          expect(availableStates.length).toEqual(2);
+          console.log(1, availableStates);
         }
-      ).then(shouldSucceed, shouldFail).then(done)
-    });
-    it ('should let us know available states for repuriaperaa', (done) => {
-      var pack= new Pack();
-      ready.then(
-        () => pack.créer()
       ).then(
         () => {
-          p1.shipment = shipment;
-          p2.shipment = shipment;
-          return Promise.all([
-            pack.coliser(3, [p1,p2]),
-            shipment.setPack(pack),
-          ]);
+          return pack.coliser(3, [p1])
+            .then( () => shipment.setPack(pack))
+            .then( () => shipment.nextSteps());
         }
       ).then(
-        () => shipment.nextSteps()
-      ).then(
-        (nextStates) => {
-          console.log('voila les nextstesp', nextStates);
-          expect(nextStates).toContain('assembler');
-          expect(nextStates.length).toEqual(1);
+        (availableStates) => {
+          expect(availableStates).toContain('coliser');
+          expect(availableStates).toContain('produire');
+          expect(availableStates).toContain('stocker');
+          expect(availableStates.length).toEqual(3);
+          console.log(2, availableStates);
         }
       ).then(
-        () => shipment.update()
-      ).then(
-        () => shipment.nextSteps()
-      ).then(
-        (nextStates) => {
-          console.log('voila les nextstesp', nextStates);
-          expect(nextStates).toContain('assembler');
-          expect(nextStates.length).toEqual(1);
+        () => {
+          p3.stateMachine.state = 'available';
+          return shipment.nextSteps();
         }
-      ).then(shouldSucceed, shouldFail).then(done)
+      ).then(
+        (availableStates) => {
+          expect(availableStates).not.toContain('produire');
+          expect(availableStates).toContain('coliser');
+          expect(availableStates).toContain('stocker');
+          expect(availableStates).toContain('receptionner');
+          expect(availableStates.length).toEqual(3);
+          console.log(3, availableStates);
+        }
+      ).then( () => {
+        return p3.receptionner().then(
+          () => shipment.nextSteps()
+        );
+      }).then(
+        (availableStates) => {
+          expect(availableStates).not.toContain('receptionner');
+          expect(availableStates).not.toContain('produire');
+          expect(availableStates).toContain('stocker');
+          expect(availableStates).toContain('coliser');
+          expect(availableStates.length).toEqual(2);
+          console.log(4, availableStates);
+        }
+      ).then( () => {
+        return pack.stocker().then(
+          () => shipment.nextSteps()
+        );
+      }).then(
+        (availableStates) => {
+          expect(availableStates).not.toContain('stocker');
+          expect(availableStates).toContain('coliser');
+          expect(availableStates.length).toEqual(1);
+          console.log(5, availableStates);
+        }
+      ).then(
+        () => {
+          return pack2.coliser(5,[p2,p3]).then(
+            () => shipment.setPack(pack2)
+          ).then( () => shipment.nextSteps())
+      }).then(
+        (availableStates) => {
+          expect(availableStates).not.toContain('receptionner');
+          expect(availableStates).not.toContain('produire');
+          expect(availableStates).not.toContain('coliser');
+          expect(availableStates).not.toContain('assembler');
+          expect(availableStates).toContain('destocker');
+          //on a pas stocker ni assembler car destocker est l'objectif
+          expect(availableStates.length).toEqual(1);
+          console.log(6, availableStates);
+        }
+      ).then(
+        () => {
+          return pack.destocker().then( () => shipment.nextSteps())
+      }).then(
+        (availableStates) => {
+          expect(availableStates).not.toContain('receptionner');
+          expect(availableStates).not.toContain('produire');
+          expect(availableStates).not.toContain('coliser');
+          expect(availableStates).not.toContain('stocker');
+          expect(availableStates).not.toContain('destocker');
+          expect(availableStates).toContain('assembler');
+          expect(availableStates.length).toEqual(1);
+          console.log(7, availableStates);
+        })
+      .then(shouldSucceed, shouldFail).then(done)
     });
   });
 });

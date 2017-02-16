@@ -14,12 +14,13 @@ import {StockPage} from './../stock/stock.page';
 import {DebugPage} from '../debug/debug.page';
 import {LoginPage} from '../login/login';
 import {CarrierPage} from '../assemblage/carrier.page';
+import {HomePage} from '../home/home.page';
 
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
 import {RouteService} from '../models/route.Service';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {PrintServices} from './../models/PrintServices';
 
@@ -38,6 +39,7 @@ import { errorComponent } from '../models/error.handler';
     StockPage,
     LoginPage,
     DebugPage,
+    HomePage,
     nextAppComponent,
     inputBarComponent,
     errorComponent,
@@ -58,6 +60,7 @@ import { errorComponent } from '../models/error.handler';
     StockPage,
     LoginPage,
     DebugPage,
+    HomePage,
   ],
   providers: [
       ProductsProvider,

@@ -64,7 +64,6 @@ export class ColisageProvider {
       console.log('on envoi payload', payload);
       return this.odoo.call('bipper.webservice','do_packing', [payload, withLabel], {})
     }).then(x => {
-      console.log("c'est good", x);
       pack.name = x[0];
       pack.label = x[1];
       //on colise les produits
@@ -77,7 +76,6 @@ export class ColisageProvider {
   reset() {
     //on défait
     this.pack = this.productsProvider.newPack();
-    this.pack.créer();
     return this.pack;
   }
 };

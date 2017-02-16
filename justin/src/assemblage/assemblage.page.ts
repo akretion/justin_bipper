@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, NavParams, ToastController, ModalController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {CarrierPage} from './carrier.page';
 import {PrintServices} from '../models/PrintServices';
@@ -12,7 +12,6 @@ console.log('dans assemblage1');
   templateUrl: 'assemblage.html',
 })
 export class AssemblagePage {
-  pack: any = {};
   model: any = {};
   nextStep: string = '';
   constructor(
@@ -58,14 +57,13 @@ export class AssemblagePage {
         //tous les produits doivent être colisés
         return p.nextSteps().length == 0; //no next step = colisé
       });
-      console.log('tous les produits du shipment packed', this.model.allProductsPacked);
 
       shipment.packs.forEach((p) => {
         /* tous les packs doivent être assemblés */
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,
-          done: false,
+          done: false
         };
       });
     } else {
