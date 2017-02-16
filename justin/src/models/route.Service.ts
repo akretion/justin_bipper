@@ -8,7 +8,6 @@ export class RouteService {
   appRoutes = [];
 
   constructor() {
-    console.log('je suis construit');
     this.subject = new ReplaySubject<string>();
     this.observable = this.subject.asObservable()
   }
@@ -28,5 +27,9 @@ export class RouteService {
     //TO avoir circular dependencies
     //works only if we are in a singleton
     return this.appRoutes = routes;
+  }
+  getPageTitle(action) {
+    let route = this.appRoutes.find( (r) => r.action == action);
+    return (route) ? route.data.title: action;
   }
 }
