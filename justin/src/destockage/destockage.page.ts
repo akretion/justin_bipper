@@ -22,7 +22,6 @@ export class DestockagePage {
       console.log('dans le consturteur de destockage');
 
       //trouver que les commandes bloquées
-      console.log('liste', this.listeDeCourses);
       this.reset();
   }
   displayWarning(msg) {
@@ -56,6 +55,7 @@ export class DestockagePage {
       () => Promise.all(
             packs.map( p => (p as any).destocker())
       )
+    ).then( () => this.displayWarning(`Done !`)
     ).then( () => this.reset() );
   }
 }
