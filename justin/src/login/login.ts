@@ -40,7 +40,7 @@ export class LoginPage {
           return isLogged
         }
       )
-    ).then( (isLogged) =>
+    ).then( (isLogged) => {
       if (!isLogged)
         return odoo.getDbList().then(
         x => {
@@ -49,7 +49,7 @@ export class LoginPage {
             this.login.db = defaultDb;
         }
       )
-    ).then(null, this.handleError);
+    }).then(null, this.handleError);
   }
 
   onLogin(form) {
