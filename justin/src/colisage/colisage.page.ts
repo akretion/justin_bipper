@@ -4,7 +4,7 @@ import {AlertController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
 import {inputBarComponent} from '../models/inputBar.component';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {PrintServices} from '../models/PrintServices';
 import {RouteService} from '../models/route.Service';
 import {Pack, Shipment, Product } from '../statemachine/src/states';

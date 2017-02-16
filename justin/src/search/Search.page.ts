@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {NavController, NavParams, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {PrintServices} from '../models/PrintServices';
 

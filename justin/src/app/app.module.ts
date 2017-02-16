@@ -19,7 +19,7 @@ import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
 import {RouteService} from '../models/route.Service';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {PrintServices} from './../models/PrintServices';
 
