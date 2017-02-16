@@ -35,7 +35,7 @@ export class StockPage {
       this.displayWarning(`${scanned} not found`)
       return this.reset();
     }
-    if (!pack.locationSM.availableState().find(p => p.to == 'stock')) {
+    if (!pack.stateMachine.availableState().find(p => p.to == 'stock')) {
       this.displayWarning(`${scanned} can't be stocked`);
       return this.reset();
     }

@@ -156,10 +156,12 @@ export class ProductsProvider {
         pack.stateMachine.state = 'init';
       }
       if (p.place) {
-        pack.locationSM.state = 'stock';
+//        console.log('force stock au lieu de  ', pack.stateMachine.state)
+        pack.stateMachine.state = 'stock';
         pack.place = p.place;
       } else {
-        pack.locationSM.state = 'transit';
+//        console.log('force transit au lieu de ', pack.stateMachine.state)
+        pack.stateMachine.state = 'transit';
       }
       return pack;
     }
@@ -182,7 +184,7 @@ export class ProductsProvider {
   }
   getReserved() {
     return Array.from(this.packsLookup.values()).filter(
-      (p) => p.locationSM.state == 'stock'
+      (p) => p.stateMachine.state == 'stock'
     );
   }
   newProduct(barcode) {

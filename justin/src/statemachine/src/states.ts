@@ -129,29 +129,13 @@ export class Pack { //carton
   place: String;
   category: String;
   weight = 0;
-  locationSM: StateMachine;
   stateMachine: StateMachine;
   statesAction: Array<any>;
   constructor() {
-    this.locationSM = new StateMachine();
-    this.locationSM.state = 'init';
-    this.locationSM.events = <Array<StateEvent>>([
-      {name:'créer', from: 'init', to:'transit', conditions: [], actions:[]},
-      {name:'stocker', from: 'transit', to:'stock', conditions: [], actions: [
-        (args) => {
-          this.place = args.place;
-        }
-      ]},
-      {name:'destocker', from: 'stock', to:'transit', conditions: [], actions:[]},
-      {name:'assembler', from: 'transit', to:'transit', conditions: [], actions:[]},
-      {name:'expedier', from: 'transit', to:'terminé', conditions: [], actions:[]},
-    ]);
-
     this.stateMachine = new StateMachine();
     this.stateMachine.state = 'init';
     this.stateMachine.events = <Array<StateEvent>>([
-      {name:'créer', from: 'init', to: 'init', conditions: [], actions:[]},
-      {name:'coliser', from: 'init', to: 'created', conditions: [
+      {name:'coliser', from: 'init', to: 'transit', conditions: [
         (args) => {
           let weight = parseFloat(args.weight);
           if (!args.weight)
@@ -160,16 +144,15 @@ export class Pack { //carton
             return Promise.reject('poids null');
         },
         (args) => {
-          console.log('voici args', args);
-          if (!args.products.length)
+          if (!args.products || !args.products.length)
             return Promise.reject('Pas de produits');
-        },
-        (args) => {
           let ship = args.products[0].shipment;
           if (!args.products.every(prod => prod.shipment == ship))
             return Promise.reject('All the products are not from the same shipment');
         },
         (args) => {
+          if (!args.products || !args.products.length)
+            return Promise.reject('Pas de produits');
           return Promise.all(
             args.products.map(prod => prod.stateMachine.can('coliser', {pack: this}))
           ).catch( () => Promise.reject("All the products are not packable"));
@@ -177,33 +160,31 @@ export class Pack { //carton
       ], actions:[
         (args) => this.weight = parseFloat(args.weight),
         (args) => this.products = args.products,
-        (args) => this.products.forEach( prod => prod.coliser(this)),
-        (args) => this.locationSM.go('créer')
+        (args) => this.products.forEach( prod => prod.coliser(this))
       ]},
-      {name:'assembler', from: 'created', to: 'assemblé', conditions: [
-        () => this.locationSM.can('assembler'),
-      ], actions:[]},
+      {name:'stocker', from: 'transit', to:'stock', conditions: [], actions: [
+        (args) => {
+          this.place = args.place;
+        }
+      ]},
+      {name:'destocker', from: 'stock', to:'transit', conditions: [], actions:[
+        (args) => this.place = null
+      ]},
+      {name:'assembler', from: 'transit', to: 'assemblé', conditions: [], actions:[]},
+      {name:'expedier', from: 'assemblé', to:'terminé', conditions: [], actions:[]},
     ]);
 
     this.statesAction = [
       { name:'init', action: () => {
-        var steps = new Set()
-        steps.add('coliser');
-        return steps;
+        return new Set(['coliser']);
       }},
-      { name:'created', action: () => {
-        var steps = new Set();
-        if (this.locationSM.state == 'transit')
-          steps.add('assembler');
-        if (this.locationSM.state == 'stock')
-          steps.add('destocker'); //est-ce pas plutot au shipment de dire ça?
-        return steps;
+      { name:'transit', action: () => {
+        return new Set(['assembler','stocker']);
+      }},
+      { name:'stock', action: () => {
+        return new Set(['destocker']);
       }}
     ];
-
-  }
-  créer() {
-    return this.stateMachine.go('créer');
   }
   coliser(weight, products: Array<Product>) {
     console.log('voici products', products);
@@ -213,10 +194,10 @@ export class Pack { //carton
     return this.stateMachine.go('assembler');
   }
   stocker(place) {
-    return this.locationSM.go('stocker', { place: place});
+    return this.stateMachine.go('stocker', { place: place});
   }
   destocker() {
-    return this.locationSM.go('destocker');
+    return this.stateMachine.go('destocker');
   }
   nextSteps() {
     var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state );
