@@ -81,6 +81,6 @@ export class LoginPage {
     }
   }
   loginSuccess() {
-    this.route.goTo('rechercher');
+    this.route.goTo('home');
   }
 }
