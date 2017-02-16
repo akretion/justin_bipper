@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {NavController, ToastController} from 'ionic-angular';
+import {NavController, NavParams, ToastController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/actionFor.component';
@@ -16,6 +16,7 @@ export class SearchPage {
   search: any= {};
   constructor(
       public navCtrl: NavController,
+      public navParams: NavParams,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
       private productsProvider: ProductsProvider,
@@ -26,6 +27,9 @@ export class SearchPage {
     this.scans = [];
     this.search = {products: [], packs: [], shipments: [], terms:""};
     window['printService'] = this.printServices;
+    var scanned = this.navParams.get('scanned');
+    if (scanned)
+      this.addIt(scanned);
   }
   addIt(scanned) {
     console.log('addit', scanned);
@@ -52,7 +56,6 @@ export class SearchPage {
       this.model.searched = "shipment";
     } else if (prod.length) {
       // on a trouve un produit
-      console.log(prod);
       ships = [prod[0].shipment];
       packs = (prod[0].pack) ? [prod[0].pack]: [];
       prods = [prod[0]];
