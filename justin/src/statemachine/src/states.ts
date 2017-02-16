@@ -35,12 +35,11 @@ export class Shipment {
           return Promise.reject('Pas de packs');
         },
         () => {
-          console.log('on check que tout soit bien colise');
-          if (!this.packs.every( (pack) => pack.stateMachine.state === 'created'))
-            return Promise.reject('Tous les colis ne sont pas colisés');
+          console.log('on check que les packs soit bien assemblable');
+          return Promise.all(this.packs.map( (pack) => pack.stateMachine.can('assembler')));
          },
         () => {
-          console.log('on check que tous les produits soit colisés');
+          console.log('on check que tous les produits soient colisés');
           if (!this.products.every( (product) => product.stateMachine.state === 'colisé'))
             return Promise.reject('Tous les produits ne sont pas colisés');
         }
@@ -59,25 +58,41 @@ export class Shipment {
     this.statesAction = [
       {name: 'en attente', action: () => {
         var nextStep = new Set();
-        function tousLesProduitsSontColisés(shipment) {
-          return shipment.products.every(
-            (product) => product.stateMachine.state == 'colisé'
-          );
-        }
-        function tousLesPacksSontEnTransit(shipment) {
-          return shipment.packs.every(
-            (pack) => pack.locationSM.state == 'transit'
+        let prodSteps = new Set();
+        let shipSteps = new Set();
+        let packSteps = new Set();
+
+        let stepsOfCollection = (collection) => {
+          let set = new Set();
+          collection.forEach(item =>
+            item.nextSteps().forEeach(step=> set.add(step))
           )
+          return set;
         }
-        //on regarde que tous les produits soient recep
-        if (tousLesProduitsSontColisés(this)) {
-          if (tousLesPacksSontEnTransit(this)) {
-            return nextStep.add("assembler");
-          }
-          return nextStep.add("destocker");
+        prodSteps = stepsOfCollection(this.products);
+        packSteps = stepsOfCollection(this.packs);
+
+        prodSteps.forEach( s => shipSteps.add(s) );
+        packSteps.forEach( s => shipSteps.add(s) );
+
+        if (prodSteps.size > 0) {
+          //des produits sont pas fini
+          //y-t-il des packs en stock ?
+          shipSteps.delete('destocker');
+          //dans tous les cas on assemble pas
+          shipSteps.delete('assembler');
         } else {
-          return nextStep.add("setPack");
+          //les produits sont tous colisés
+          //on a pas le droit de stocker
+          if (packSteps.has('destocker')) {
+            shipSteps.delete('assembler');
+            shipSteps.delete('stocker');
+          } else {
+            //normalement on a que de l'assemblage
+            shipSteps.delete('stocker');
+          }
         }
+        return shipSteps;
       }},
       {name:'à assembler', action: () => {
 
@@ -250,6 +265,8 @@ export class Pack { //carton
         nextSteps = ["coliser"];
     if (this.stateMachine.state == "colisé")
         nextSteps = [];
+    if (this.stateMachine.state == 'init')
+        nextSteps = ['produire'];
     return nextSteps;
   }
 }
@@ -278,8 +295,7 @@ export class StateMachine {
         let proms = this.availableState().map(
           state => this.can(state.name).then(
             () => succeeds.push(state.name)
-          , (v) => console.log('oesf', v)
-          )
+          , (x) => null) //on veut pas d'erreur sur les etats impossibles
         );
         Promise.all(proms).then(
           () => resolve(succeeds)

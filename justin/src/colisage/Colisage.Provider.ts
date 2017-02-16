@@ -77,7 +77,6 @@ export class ColisageProvider {
   reset() {
     //on défait
     this.pack = this.productsProvider.newPack();
-    this.pack.créer();
     return this.pack;
   }
 };
