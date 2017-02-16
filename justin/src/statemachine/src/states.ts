@@ -218,7 +218,6 @@ export class Pack { //carton
     var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state );
     if (!stateAction)
       return [];
-    console.log("action : ", stateAction);
     return Array.from(stateAction.action());
   }
 }
