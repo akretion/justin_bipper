@@ -67,6 +67,7 @@ export class ColisageProvider {
       pack.name = x[0];
       pack.label = x[1];
       //on colise les produits
+      this.productsProvider.explicitRefresh();
       return pack;
     }).then(() => pack.coliser(weight, products)
     ).then( () => pack.shipment.setPack(pack)
