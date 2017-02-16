@@ -65,7 +65,7 @@ export class Shipment {
         let stepsOfCollection = (collection) => {
           let set = new Set();
           collection.forEach(item =>
-            item.nextSteps().forEeach(step=> set.add(step))
+            item.nextSteps().forEach(step=> set.add(step))
           )
           return set;
         }

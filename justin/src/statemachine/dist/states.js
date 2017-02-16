@@ -52,7 +52,7 @@ export class Shipment {
                     let packSteps = new Set();
                     let stepsOfCollection = (collection) => {
                         let set = new Set();
-                        collection.forEach(item => item.nextSteps().forEeach(step => set.add(step)));
+                        collection.forEach(item => item.nextSteps().forEach(step => set.add(step)));
                         return set;
                     };
                     prodSteps = stepsOfCollection(this.products);
