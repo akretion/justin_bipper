@@ -12,7 +12,6 @@ console.log('dans assemblage1');
   templateUrl: 'assemblage.html',
 })
 export class AssemblagePage {
-  pack: any = {};
   model: any = {};
   nextStep: string = '';
   constructor(
@@ -58,14 +57,13 @@ export class AssemblagePage {
         //tous les produits doivent être colisés
         return p.nextSteps().length == 0; //no next step = colisé
       });
-      console.log('tous les produits du shipment packed', this.model.allProductsPacked);
 
       shipment.packs.forEach((p) => {
         /* tous les packs doivent être assemblés */
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,
-          done: false,
+          done: false
         };
       });
     } else {
