@@ -206,6 +206,7 @@ export class ProductsProvider {
     list.forEach(l => {
       payload[l.barcode] =l.qty
     });
+    //pas d'explicitRefresh car on sait pas qd la cron aura fini
     return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {}).then(
       null, x => Promise.reject(x.message)
     );
@@ -213,14 +214,14 @@ export class ProductsProvider {
   stock(pack) {
     var payload = { name: pack.name, place: pack.place};
     return this.odoo.call('bipper.webservice', 'set_package_place', [payload], {}).then(
-      x=> console.log('ayé on stacké', pack)
+      () => this.explicitRefresh()
     )
   }
   unstock(packs) {
     var payload = packs.map(p =>{ return {name: p.name }});
 
     return this.odoo.call('bipper.webservice', 'unset_package_place', [payload], {}).then(
-      x=> console.log('ayé on a unstocké', payload)
+      x=> this.explicitRefresh()
     );
   }
   ship(shipment) {
@@ -232,6 +233,7 @@ export class ProductsProvider {
     return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
       x=> {
         console.log('bim ce partit, on imprime lettiquette', x);
+        this.explicitRefresh()
         return x.labels;
       }
     );
