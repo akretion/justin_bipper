@@ -99,7 +99,8 @@ export class ProductsProvider {
             });
           }, (err) => {
             concurrent--;
-            this.pauser.next(true);
+            console.log('une erreur ? ');
+//            this.pauser.next(true);
           }
       );
     };
