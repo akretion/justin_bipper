@@ -25,6 +25,12 @@ export class BeepPage {
       return;
     this.scansProvider.addOne(scanned);
   }
+  displayWarning(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).present();
+  }
   validate() {
     console.log('send this to the server');
 
@@ -38,18 +44,12 @@ export class BeepPage {
     this.scansProvider.validate().then(
       () => {
         loader.dismissAll()
-        this.toastCtrl.create({
-          message: 'Saved',
-          duration: 2000
-        }).present();
+        this.displayWarning('Saved');
         this.reset();
       },
       (y) => {
         loader.dismissAll()
-        this.toastCtrl.create({
-          message: 'Error ! ' + y,
-          duration: 10000
-        }).present();
+        this.displayWarning('Error ! ' + y);
       }
     );
   }

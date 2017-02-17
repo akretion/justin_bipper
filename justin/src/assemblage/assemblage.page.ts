@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, ToastController, ModalController} from 'ionic-angular';
-import {AlertController} from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -19,6 +19,7 @@ export class AssemblagePage {
       public navParams: NavParams,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
+      public loadingCtrl: LoadingController,
       public modalCtrl: ModalController,
       public productsProvider: ProductsProvider,
       public printServices: PrintServices
@@ -99,6 +100,11 @@ export class AssemblagePage {
   }
   assembler(shipment) {
     console.log('assemblage', shipment);
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
     //il faut update avant
     shipment.update()
       .then( () => shipment.assembler())
@@ -110,6 +116,7 @@ export class AssemblagePage {
         labels.forEach( label => this.printServices.printZebra(label.data));
       })
       .then( () => this.reset(), (x) => {
+        loader.dismissAll();
         this.displayWarning('An error occured');
         console.log(x); //todo: on devrait logger ça au serveur
       });
