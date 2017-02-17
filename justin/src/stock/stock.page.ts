@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
-import {AlertController} from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -16,6 +16,7 @@ export class StockPage {
       public navCtrl: NavController,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
+      public loadingCtrl: LoadingController,
       public productsProvider: ProductsProvider
     ) {
       this.reset();
@@ -49,11 +50,17 @@ export class StockPage {
   validate(pack) {
     console.log('stockage de', pack);
     //il faut update avant
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
     pack.place = this.model.place;
     this.productsProvider.stock(pack).then(
       () => {
       this.displayWarning(`Saved!`);
       this.reset();
     });
+    loader.dismissAll();
   }
 }

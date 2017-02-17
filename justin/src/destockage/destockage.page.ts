@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
-import {AlertController} from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/nextSteps.component';
@@ -17,6 +17,7 @@ export class DestockagePage {
       public navCtrl: NavController,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
+      private loadingCtrl: LoadingController,
       private productsProvider: ProductsProvider
     ) {
       console.log('dans le consturteur de destockage');
@@ -50,12 +51,19 @@ export class DestockagePage {
     );
   }
   validate() {
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
     var packs = Array.from(this.model.packs.values());
     this.productsProvider.unstock(packs).then(
       () => Promise.all(
             packs.map( p => (p as any).destocker())
       )
-    ).then( () => this.displayWarning(`Done !`)
-    ).then( () => this.reset() );
+    ).then( () => {
+      this.displayWarning(`Done !`);
+      loader.dismissAll();
+    }).then( () => this.reset() );
   }
 }

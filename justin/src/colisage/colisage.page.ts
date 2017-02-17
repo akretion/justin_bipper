@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {NavController, NavParams, ToastController} from 'ionic-angular';
-import {AlertController} from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
 import {ColisageProvider} from './Colisage.Provider';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -20,6 +20,7 @@ export class ColisagePage {
       public navParams: NavParams,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
+      public loadingCtrl: LoadingController,
       private colisageProvider: ColisageProvider,
       private printServices: PrintServices,
       public routeService: RouteService,
@@ -58,22 +59,37 @@ export class ColisagePage {
 
   printAndContinue() {
     console.log('dans print and continue');
+
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
+
     this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
     .then(
       (pack) => {
         if (pack.shipment) {
           this.shipment = pack.shipment;
         }
+        loader.dismissAll()
         this.displayWarning(`Saved`);
         this.printServices.printDymo(pack.label);
       });
     this.reset(false);
   }
   shipNow() {
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
+
     // redirect to ship
     this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': false})
     .then(
       (pack) => {
+        loader.dismissAll()
         return this.routeService.goTo('assembler', {'scanned': pack.name});
       }
     );
