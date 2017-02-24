@@ -36,18 +36,27 @@ export class Shipment {
         },
         () => {
           console.log('on check que les packs soit bien assemblable');
-          return Promise.all(this.packs.map( (pack) => pack.stateMachine.can('assembler')));
+          if (!this.partial_allowed)
+            return Promise.all(this.packs.map( (pack) => pack.stateMachine.can('assembler')));
          },
         () => {
           console.log('on check que tous les produits soient colisés');
+          if (this.partial_allowed)
+            return Promise.resolve('partial allowed');
           if (!this.products.every( (product) => product.stateMachine.state === 'colisé'))
             return Promise.reject('Tous les produits ne sont pas colisés');
         }
       ], actions:[ ]},
       { name:'assembler', from: 'à assembler', to: 'assemblé', conditions: [
-        () => Promise.all(this.packs.map( (p) => p.stateMachine.can('assembler')))
+        () => {
+          if (!this.partial_allowed)
+            return Promise.all(this.packs.map( (p) => p.stateMachine.can('assembler')))
+        }
       ], actions:[
-        () => this.packs.forEach( (p) => p.stateMachine.go('assembler'))
+        () => {
+          if (!this.partial_allowed)
+            this.packs.forEach( (p) => p.stateMachine.go('assembler'))
+          }
       ]},
       { name:'print', from: 'assemblé', to: 'étiqueté', conditions: [], actions:[
         (transporteur) => { this.carrier = transporteur }
