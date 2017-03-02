@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
 import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
@@ -13,6 +13,7 @@ export class DestockagePage {
   model: any = { packs: null};
   nextStep: string = '';
   listeDeCourses= [];
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       private alertCtrl: AlertController,
@@ -49,6 +50,8 @@ export class DestockagePage {
         return p.shipment.nextSteps().indexOf('destocker') !== -1;
         }
     );
+    if (this.inputBar)
+      this.inputBar.focus();
   }
   validate() {
     var loader = this.loadingCtrl.create({

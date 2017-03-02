@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
 import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
@@ -12,6 +12,7 @@ export class StockPage {
   pack: any = {};
   model: any = {};
   nextStep: string = '';
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       public alertCtrl: AlertController,
@@ -46,6 +47,8 @@ export class StockPage {
   }
   reset() {
     this.model = { pack:null, scanned: null};
+    if (this.inputBar)
+      this.inputBar.focus();
   }
   validate(pack) {
     console.log('stockage de', pack);
