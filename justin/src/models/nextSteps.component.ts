@@ -22,8 +22,14 @@ export class nextAppComponent implements OnChanges {
   ngOnChanges(a) { //C'est notre $watch
     let thing = a.thing.currentValue
     if (thing)
-      this.steps = thing.nextSteps().map(
-        s => ({ action: s, title: this.routeService.getPageTitle(s)})
-      );
+      this.refreshThing(thing);
+  }
+  refresh() {
+    this.refreshThing(this.thing);
+  }
+  refreshThing(thing) {
+    this.steps = thing.nextSteps().map(
+      s => ({ action: s, title: this.routeService.getPageTitle(s)})
+    );
   }
 }
