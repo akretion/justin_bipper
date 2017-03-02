@@ -238,8 +238,8 @@ export class Pack { //carton
     this.stateMachine = new StateMachine();
     this.stateMachine.events = <Array<StateEvent>>[
       { name:'produire', from: 'init', to: 'available', conditions: [], actions:[]}, //produire is done on odoo
-      { name:'receptionner', from: 'available', to: 'recieved', conditions: [], actions:[]},
-      { name:'coliser', from: 'recieved', to: 'packed', conditions: [
+      { name:'receptionner', from: 'available', to: 'received', conditions: [], actions:[]},
+      { name:'coliser', from: 'received', to: 'packed', conditions: [
         (args) => {
           let pack = args.pack;
           if (!pack)
@@ -265,7 +265,7 @@ export class Pack { //carton
     var nextSteps = [];
     if (this.stateMachine.state == 'available')
         nextSteps = ["receptionner"]
-    if (this.stateMachine.state == 'recieved')
+    if (this.stateMachine.state == 'received')
         nextSteps = ["coliser"];
     if (this.stateMachine.state == "packed")
         nextSteps = [];
