@@ -18,9 +18,9 @@ export class Shipment {
     this.stateMachine = new StateMachine();
     this.stateMachine.state = 'init';
     this.stateMachine.events = <Array<StateEvent>>([
-      { name:'créer', from: 'init', to: 'en attente', conditions: [], actions:[]}, //liste de packs ou de produits?
+      { name:'créer', from: 'init', to: 'waiting', conditions: [], actions:[]}, //liste de packs ou de produits?
       //de receptions, de colisage, de destockage
-      { name:'setPack', from: 'en attente', to:'en attente',
+      { name:'setPack', from: 'waiting', to:'waiting',
       conditions: [
       ], actions:[
         (args) => {
@@ -29,7 +29,7 @@ export class Shipment {
             this.packs.push(pack);
         }
       ]},
-      { name:'update', from: 'en attente',  to: 'à assembler',
+      { name:'update', from: 'waiting',  to: 'to ship',
       conditions: [
         () => { if (!this.packs.length)
           return Promise.reject('Pas de packs');
@@ -40,14 +40,14 @@ export class Shipment {
             return Promise.all(this.packs.map( (pack) => pack.stateMachine.can('assembler')));
          },
         () => {
-          console.log('on check que tous les produits soient colisés');
+          console.log('on check que tous les produits soient packeds');
           if (this.partial_allowed)
             return Promise.resolve('partial allowed');
-          if (!this.products.every( (product) => product.stateMachine.state === 'colisé'))
-            return Promise.reject('Tous les produits ne sont pas colisés');
+          if (!this.products.every( (product) => product.stateMachine.state === 'packed'))
+            return Promise.reject('Tous les produits ne sont pas packeds');
         }
       ], actions:[ ]},
-      { name:'assembler', from: 'à assembler', to: 'assemblé', conditions: [
+      { name:'assembler', from: 'to ship', to: 'shipped', conditions: [
         () => {
           if (!this.partial_allowed)
             return Promise.all(this.packs.map( (p) => p.stateMachine.can('assembler')))
@@ -58,14 +58,10 @@ export class Shipment {
             this.packs.forEach( (p) => p.stateMachine.go('assembler'))
           }
       ]},
-      { name:'print', from: 'assemblé', to: 'étiqueté', conditions: [], actions:[
-        (transporteur) => { this.carrier = transporteur }
-      ]},
-      { name:'charger', from: 'étiqueté', to: 'chargé', conditions: [], actions:[]}, //expedier ?
     ]);
 
     this.statesAction = [
-      {name: 'en attente', action: () => {
+      {name: 'waiting', action: () => {
         var nextStep = new Set();
         let prodSteps = new Set();
         let shipSteps = new Set();
@@ -91,7 +87,7 @@ export class Shipment {
           //dans tous les cas on assemble pas
           shipSteps.delete('assembler');
         } else {
-          //les produits sont tous colisés
+          //les produits sont tous packeds
           //on a pas le droit de stocker
           if (packSteps.has('destocker')) {
             shipSteps.delete('assembler');
@@ -103,7 +99,7 @@ export class Shipment {
         }
         return shipSteps;
       }},
-      {name:'à assembler', action: () => {
+      {name:'to ship', action: () => {
 
         var nextSteps = new Set()
         this.packs.forEach(
@@ -194,8 +190,8 @@ export class Pack { //carton
       {name:'destocker', from: 'stock', to:'transit', conditions: [], actions:[
         (args) => this.place = null
       ]},
-      {name:'assembler', from: 'transit', to: 'assemblé', conditions: [], actions:[]},
-      {name:'expedier', from: 'assemblé', to:'terminé', conditions: [], actions:[]},
+      {name:'assembler', from: 'transit', to: 'shipped', conditions: [], actions:[]},
+      {name:'expedier', from: 'shipped', to:'done', conditions: [], actions:[]},
     ]);
 
     this.statesAction = [
@@ -242,8 +238,8 @@ export class Pack { //carton
     this.stateMachine = new StateMachine();
     this.stateMachine.events = <Array<StateEvent>>[
       { name:'produire', from: 'init', to: 'available', conditions: [], actions:[]}, //produire is done on odoo
-      { name:'receptionner', from: 'available', to: 'receptionné', conditions: [], actions:[]},
-      { name:'coliser', from: 'receptionné', to: 'colisé', conditions: [
+      { name:'receptionner', from: 'available', to: 'recieved', conditions: [], actions:[]},
+      { name:'coliser', from: 'recieved', to: 'packed', conditions: [
         (args) => {
           let pack = args.pack;
           if (!pack)
@@ -269,9 +265,9 @@ export class Pack { //carton
     var nextSteps = [];
     if (this.stateMachine.state == 'available')
         nextSteps = ["receptionner"]
-    if (this.stateMachine.state == 'receptionné')
+    if (this.stateMachine.state == 'recieved')
         nextSteps = ["coliser"];
-    if (this.stateMachine.state == "colisé")
+    if (this.stateMachine.state == "packed")
         nextSteps = [];
     if (this.stateMachine.state == 'init')
         nextSteps = ['produire'];

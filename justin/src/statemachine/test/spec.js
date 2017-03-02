@@ -27,7 +27,7 @@ describe('Product', () => {
   it ('should receptionner first', (done) => {
     let prom = p.receptionner();
     prom.then(
-      () => expect(p.stateMachine.state).toEqual('receptionné')
+      () => expect(p.stateMachine.state).toEqual('recieved')
     ).then(done);
   });
   it ('should not receptionner twice', (done) => {

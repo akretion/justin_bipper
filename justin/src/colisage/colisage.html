@@ -55,8 +55,8 @@
                - <span [ngSwitch]="product.stateMachine.state">
                  <span *ngSwitchCase="'init'">?</span>
                  <span *ngSwitchCase="'available'">Produced</span>
-                 <span *ngSwitchCase="'receptionné'">Received</span>
-                 <span *ngSwitchCase="'colisé'">Packed</span>
+                 <span *ngSwitchCase="'recieved'">Received</span>
+                 <span *ngSwitchCase="'packed'">Packed</span>
                </span>
               - <span *ngIf="model.products.indexOf(product) != -1">√</span>
               <br> <small>{{ product.category }}</small>
