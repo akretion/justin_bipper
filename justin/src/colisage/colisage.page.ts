@@ -16,6 +16,7 @@ export class ColisagePage {
   shipment: any;
   model: any = {};
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
+  @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
   constructor(
       public navCtrl: NavController,
@@ -74,6 +75,12 @@ export class ColisagePage {
         if (pack.shipment) {
           this.shipment = pack.shipment;
         }
+        var ns = pack.shipment.nextSteps();
+        if (ns.indexOf('assembler') != -1) {
+          console.log('on force le refersh');
+          this.nextApp.refresh();
+        }
+
         loader.dismissAll()
         this.displayWarning(`Saved`);
         this.printServices.printDymo(pack.label);
@@ -81,6 +88,7 @@ export class ColisagePage {
     this.reset(false);
   }
   shipNow() {
+    //pack, don't prnt label and go to shipping page directly
     var loader = this.loadingCtrl.create({
       content:'Please wait',
       duration: 3000
