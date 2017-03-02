@@ -43,7 +43,7 @@
 
  <ion-list *ngIf="shipment">
       <ion-list-header>
-        {{ shipment.name }} {{ shipment.carrier }} <nextApp [thing]="shipment" item-right>dns nextapp</nextApp>
+        {{ shipment.name }} {{ shipment.carrier }} <nextApp [withArgs]="false" [thing]="shipment" item-right>dns nextapp</nextApp>
       </ion-list-header>
 
       <ion-item-group>
