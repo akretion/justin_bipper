@@ -138,8 +138,9 @@ export class ProductsProvider {
       if (!prod.pack && pack) {
         pack.products.push(prod);
         prod.pack = pack;
-        pack.category = prod.category;
       }
+      if (pack)
+        pack.category = prod.category;
       return prod;
     }
 
