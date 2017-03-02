@@ -56,12 +56,12 @@ export class AssemblagePage {
       this.model.toBeScanned = shipment.packs.length;
 
       this.model.allProductsPacked = shipment.products.every( (p) => {
-        //tous les produits doivent être colisés
-        return p.nextSteps().length == 0; //no next step = colisé
+        //tous les produits doivent être packeds
+        return p.nextSteps().length == 0; //no next step = packed
       });
 
       shipment.packs.forEach((p) => {
-        /* tous les packs doivent être assemblés */
+        /* tous les packs doivent être shippeds */
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,

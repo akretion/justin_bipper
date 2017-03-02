@@ -22,7 +22,7 @@ export class ColisageProvider {
 
     function getProduct(barcode) {
       var nextAvailableProduct = products
-        .find( (l) => l.stateMachine.state == 'receptionné' && alreadyScanned.indexOf(l) == -1);
+        .find( (l) => l.stateMachine.state == 'received' && alreadyScanned.indexOf(l) == -1);
 
       if (nextAvailableProduct)
         return Promise.resolve(nextAvailableProduct);

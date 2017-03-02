@@ -132,8 +132,9 @@ export class ProductsProvider {
       shipment.products.push(prod);
       return updateProduct(p, prod, pack);
     }
+    var convState= { 'receptionné': 'received', 'colisé': 'packed'};
     function updateProduct(p, prod, pack) {
-      prod.stateMachine.state = p.state;
+      prod.stateMachine.state = convState[p.state] || p.state;
       if (!prod.pack && pack) {
         pack.products.push(prod);
         prod.pack = pack;
