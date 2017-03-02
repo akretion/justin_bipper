@@ -13,10 +13,11 @@ export class nextAppComponent implements OnChanges {
   model = { msg: ''}
   steps = [];
   @Input() thing: any;
+  @Input() withArgs: boolean = true;
   constructor(private routeService: RouteService) {
   }
   open(step, thing) {
-    this.routeService.goTo(step, { 'scanned': thing.name });
+    this.routeService.goTo(step, (this.withArgs) ? { 'scanned': thing.name } : null );
   }
   ngOnChanges(a) { //C'est notre $watch
     let thing = a.thing.currentValue

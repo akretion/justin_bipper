@@ -40,7 +40,7 @@
       <h2><a href="#" (click)="openPack(ship)">{{ ship.name }}</a></h2>
       <p>{{ ship.stateMachine?.state }}<br />
       {{ ship.carrier }}</p>
-      <nextApp [thing]="ship" item-right>dns nextapp</nextApp>
+      <nextApp [thing]="ship" item-right [withArgs]="false">dns nextapp</nextApp>
     </ion-item>
   </ion-item-group>
 
