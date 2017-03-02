@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, NavParams, ToastController} from 'ionic-angular';
 import {AlertController, LoadingController} from 'ionic-angular';
 import {Scan} from '../beep/Scan.model';
@@ -15,6 +15,8 @@ import {Pack, Shipment, Product } from '../statemachine/src/states';
 export class ColisagePage {
   shipment: any;
   model: any = {};
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
+
   constructor(
       public navCtrl: NavController,
       public navParams: NavParams,
@@ -101,5 +103,8 @@ export class ColisagePage {
     this.model = { 'products': []};
     if (withShipment)
       this.shipment = null;
+    if (this.inputBar)
+      this.inputBar.focus(); //it may be not loaded yet
+      //and we don't care because inputBar focus on ngInit
     }
 }

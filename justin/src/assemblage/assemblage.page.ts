@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, NavParams, ToastController, ModalController} from 'ionic-angular';
 import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
@@ -14,6 +14,7 @@ console.log('dans assemblage1');
 export class AssemblagePage {
   model: any = {};
   nextStep: string = '';
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       public navParams: NavParams,
@@ -97,6 +98,8 @@ export class AssemblagePage {
   }
   reset() {
     this.model = { packs: {}};
+    if (this.inputBar)
+      this.inputBar.focus();
   }
   assembler(shipment) {
     console.log('assemblage', shipment);
@@ -114,6 +117,7 @@ export class AssemblagePage {
         msg+= (labels.length == 0) ? 'Nothing to print': 'Printing ' + labels.length + ' labels'
         this.displayWarning(msg);
         labels.forEach( label => this.printServices.printZebra(label.data));
+        this.inputBar.focus();
       })
       .then( () => this.reset(), (x) => {
         loader.dismissAll();

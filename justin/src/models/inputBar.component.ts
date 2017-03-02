@@ -39,6 +39,9 @@ export class inputBarComponent {
     this.model = {};
   }
   ngAfterViewInit() {
+    this.focus()
+  }
+  focus() {
     var el = this.elementRef.nativeElement.querySelector('input');
     setTimeout( () => {
       this.renderer.invokeElementMethod(el, 'focus', []);
