@@ -61,6 +61,7 @@ export class BeepPage {
   }
   removeOne(scan) {
     this.scansProvider.decreaseOne(scan);
+    this.inputBar.focus();
   }
   showConfirm() {
     var confirm = this.alertCtrl.create({
