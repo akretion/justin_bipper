@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, ToastController, LoadingController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {Scan} from './Scan.model';
 import {ScansProvider} from './Scans.provider';
+import {inputBarComponent} from '../models/inputBar.component';
 
 @Component({
   templateUrl: 'beep.html',
@@ -10,6 +11,7 @@ import {ScansProvider} from './Scans.provider';
 export class BeepPage {
   scans: Array<Scan> = [];
   model: any = {};
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       public alertCtrl: AlertController,
@@ -55,6 +57,7 @@ export class BeepPage {
   }
   reset() {
     this.scans = this.scansProvider.reset();
+    this.inputBar.focus();
   }
   removeOne(scan) {
     this.scansProvider.decreaseOne(scan);
