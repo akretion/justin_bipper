@@ -36,7 +36,7 @@ export class ColisagePage {
         this.addIt(scanned);
   }
   displayWarning(msg) {
-    this.toastCtrl.create({
+    return this.toastCtrl.create({
       message: msg,
       duration: 2000
     }).present();
@@ -81,10 +81,10 @@ export class ColisagePage {
           this.nextApp.refresh();
         }
 
-        loader.dismissAll()
-        this.displayWarning(`Saved`);
+        loader.dismissAll();
         this.printServices.printDymo(pack.label);
-      });
+        return this.displayWarning(`Saved`);
+      }).then( () => this.inputBar.focus());
     this.reset(false);
   }
   shipNow() {
