@@ -29,7 +29,6 @@ export class ColisagePage {
       public routeService: RouteService,
     ) {
       this.reset(true);
-      console.log('this', this);
 
       var scanned = this.navParams.get('scanned');
       if (scanned)
@@ -44,11 +43,8 @@ export class ColisagePage {
     return toast.present();
   }
   addIt(scanned) {
-    console.log('dans addit', scanned);
-
     this.colisageProvider.addOne(scanned, this.model.products).then(
       (product: Product) => {
-        console.log('retour addone', product);
         this.model.products.push(product);
         this.shipment = product.shipment;
 
@@ -57,14 +53,11 @@ export class ColisagePage {
       },
       (reason) => {
         this.displayWarning(reason);
-        console.log('toasted');
       }
     );
   }
 
   printAndContinue() {
-    console.log('dans print and continue');
-
     var loader = this.loadingCtrl.create({
       content:'Please wait',
       duration: 3000
