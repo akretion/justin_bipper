@@ -36,10 +36,12 @@ export class ColisagePage {
         this.addIt(scanned);
   }
   displayWarning(msg) {
-    return this.toastCtrl.create({
+    var toast = this.toastCtrl.create({
       message: msg,
       duration: 2000
-    }).present();
+    });
+    toast.onDidDismiss( () => this.inputBar.focus() );
+    return toast.present();
   }
   addIt(scanned) {
     console.log('dans addit', scanned);
