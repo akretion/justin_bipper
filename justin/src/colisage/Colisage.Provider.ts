@@ -48,6 +48,10 @@ export class ColisageProvider {
     }
     return getProduct(barcode)
       .then(prod => ensureShipment(pack, prod))
+      .then(prod => {
+        this.pack.products.push(prod);
+        return prod;
+      })
       .then(prod => prod);
   }
 
