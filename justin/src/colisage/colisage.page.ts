@@ -29,24 +29,22 @@ export class ColisagePage {
       public routeService: RouteService,
     ) {
       this.reset(true);
-      console.log('this', this);
 
       var scanned = this.navParams.get('scanned');
       if (scanned)
         this.addIt(scanned);
   }
   displayWarning(msg) {
-    return this.toastCtrl.create({
+    var toast = this.toastCtrl.create({
       message: msg,
       duration: 2000
-    }).present();
+    });
+    toast.onDidDismiss( () => this.inputBar.focus() );
+    return toast.present();
   }
   addIt(scanned) {
-    console.log('dans addit', scanned);
-
     this.colisageProvider.addOne(scanned, this.model.products).then(
       (product: Product) => {
-        console.log('retour addone', product);
         this.model.products.push(product);
         this.shipment = product.shipment;
 
@@ -55,21 +53,18 @@ export class ColisagePage {
       },
       (reason) => {
         this.displayWarning(reason);
-        console.log('toasted');
       }
     );
   }
 
   printAndContinue() {
-    console.log('dans print and continue');
-
     var loader = this.loadingCtrl.create({
       content:'Please wait',
       duration: 3000
     });
     loader.present();
 
-    this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
+    return this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
     .then(
       (pack) => {
         if (pack.shipment) {
@@ -84,8 +79,8 @@ export class ColisagePage {
         loader.dismissAll();
         this.printServices.printDymo(pack.label);
         return this.displayWarning(`Saved`);
-      }).then( () => this.inputBar.focus());
-    this.reset(false);
+      }).then( () => this.inputBar.focus())
+      .then( () => this.reset(false));
   }
   shipNow() {
     //pack, don't prnt label and go to shipping page directly
