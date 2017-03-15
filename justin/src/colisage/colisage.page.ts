@@ -71,7 +71,7 @@ export class ColisagePage {
     });
     loader.present();
 
-    this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
+    return this.colisageProvider.validatePack(this.model.weight, this.model.products, {'withLabel': true})
     .then(
       (pack) => {
         if (pack.shipment) {
@@ -86,8 +86,8 @@ export class ColisagePage {
         loader.dismissAll();
         this.printServices.printDymo(pack.label);
         return this.displayWarning(`Saved`);
-      }).then( () => this.inputBar.focus());
-    this.reset(false);
+      }).then( () => this.inputBar.focus())
+      .then( () => this.reset(false));
   }
   shipNow() {
     //pack, don't prnt label and go to shipping page directly
