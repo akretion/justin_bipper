@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, ToastController, LoadingController} from 'ionic-angular';
 import {AlertController} from 'ionic-angular';
 import {Scan} from './Scan.model';
 import {ScansProvider} from './Scans.provider';
+import {inputBarComponent} from '../models/inputBar.component';
 
 @Component({
   templateUrl: 'beep.html',
@@ -10,6 +11,7 @@ import {ScansProvider} from './Scans.provider';
 export class BeepPage {
   scans: Array<Scan> = [];
   model: any = {};
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       public alertCtrl: AlertController,
@@ -25,6 +27,12 @@ export class BeepPage {
       return;
     this.scansProvider.addOne(scanned);
   }
+  displayWarning(msg) {
+    this.toastCtrl.create({
+      message: msg,
+      duration: 2000
+    }).present();
+  }
   validate() {
     console.log('send this to the server');
 
@@ -38,26 +46,22 @@ export class BeepPage {
     this.scansProvider.validate().then(
       () => {
         loader.dismissAll()
-        this.toastCtrl.create({
-          message: 'Saved',
-          duration: 2000
-        }).present();
+        this.displayWarning('Saved');
         this.reset();
       },
       (y) => {
         loader.dismissAll()
-        this.toastCtrl.create({
-          message: 'Error ! ' + y,
-          duration: 10000
-        }).present();
+        this.displayWarning('Error ! ' + y);
       }
     );
   }
   reset() {
     this.scans = this.scansProvider.reset();
+    this.inputBar.focus();
   }
   removeOne(scan) {
     this.scansProvider.decreaseOne(scan);
+    this.inputBar.focus();
   }
   showConfirm() {
     var confirm = this.alertCtrl.create({

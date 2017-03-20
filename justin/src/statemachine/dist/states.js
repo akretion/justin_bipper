@@ -1,83 +1,78 @@
-class Order {
-    constructor() {
-        this.shipments = [];
-        this.name = 'SO0001';
-        this.state = {};
-    }
-}
-class Shipment {
+export class Shipment {
     constructor() {
         this.packs = [];
         this.name = 'WH/OUT102';
-        this.address = {};
         this.carrier = '';
         this.products = [];
+        this.partial_allowed = false;
         this.emplacement = {};
         this.stateMachine = new StateMachine();
         this.stateMachine.state = 'init';
         this.stateMachine.events = ([
             { name: 'créer', from: 'init', to: 'en attente', conditions: [], actions: [] },
-            { name: 'setPack', from: 'en attente', to: 'en attente', conditions: [], actions: [] },
-            { name: 'update', from: 'en attente', to: 'à assembler', conditions: [], actions: [] },
-            { name: 'assembler', from: 'à assembler', to: 'assemblé', conditions: [], actions: [] },
-            { name: 'étiqueter', from: 'assemblé', to: 'étiqueté', conditions: [], actions: [] },
-            { name: 'charger', from: 'étiqueté', to: 'chargé', conditions: [], actions: [] },
-        ]);
-        var condActions = [
-            { name: 'setPack', conditions: [], actions: [
-                        (args) => {
+            { name: 'setPack', from: 'en attente', to: 'en attente',
+                conditions: [], actions: [
+                    (args) => {
                         let pack = args.pack;
                         if (this.packs.indexOf(pack) === -1)
                             this.packs.push(pack);
                     }
-                ]
-            },
-            { name: 'update', conditions: [
-                        () => {
+                ] },
+            { name: 'update', from: 'en attente', to: 'à assembler',
+                conditions: [
+                    () => {
                         if (!this.packs.length)
                             return Promise.reject('Pas de packs');
                     },
-                        () => {
-                        console.log('on check que tout soit bien colise');
-                        if (!this.packs.every((pack) => pack.stateMachine.state === 'colisé'))
-                            return Promise.reject('Tous les colis ne sont pas colisés');
+                    () => {
+                        console.log('on check que les packs soit bien assemblable');
+                        return Promise.all(this.packs.map((pack) => pack.stateMachine.can('assembler')));
                     },
-                        () => {
-                        console.log('on check que tous les produits soit colisés');
+                    () => {
+                        console.log('on check que tous les produits soient colisés');
                         if (!this.products.every((product) => product.stateMachine.state === 'colisé'))
                             return Promise.reject('Tous les produits ne sont pas colisés');
                     }
-                ], actions: []
-            },
-            { name: 'assembler', conditions: [
-                        () => Promise.all(this.packs.map((p) => p.stateMachine.can('assembler')))
+                ], actions: [] },
+            { name: 'assembler', from: 'à assembler', to: 'assemblé', conditions: [
+                    () => Promise.all(this.packs.map((p) => p.stateMachine.can('assembler')))
                 ], actions: [
-                        () => this.packs.forEach((p) => p.stateMachine.go('assembler'))
-                ]
-            },
-            { name: 'étiqueter', conditions: [], actions: [
-                        (transporteur) => { this.carrier = transporteur; }
-                ]
-            }
-        ];
+                    () => this.packs.forEach((p) => p.stateMachine.go('assembler'))
+                ] },
+            { name: 'print', from: 'assemblé', to: 'étiqueté', conditions: [], actions: [
+                    (transporteur) => { this.carrier = transporteur; }
+                ] },
+            { name: 'charger', from: 'étiqueté', to: 'chargé', conditions: [], actions: [] },
+        ]);
         this.statesAction = [
             { name: 'en attente', action: () => {
                     var nextStep = new Set();
-                    function tousLesProduitsSontColisés(shipment) {
-                        return shipment.products.every((product) => product.stateMachine.state == 'colisé');
-                    }
-                    function tousLesPacksSontEnTransit(shipment) {
-                        return shipment.packs.every((pack) => pack.locationSM.state == 'transit');
-                    }
-                    if (tousLesProduitsSontColisés(this)) {
-                        if (tousLesPacksSontEnTransit(this)) {
-                            return nextStep.add("assembler");
-                        }
-                        return nextStep.add("destocker");
+                    let prodSteps = new Set();
+                    let shipSteps = new Set();
+                    let packSteps = new Set();
+                    let stepsOfCollection = (collection) => {
+                        let set = new Set();
+                        collection.forEach(item => item.nextSteps().forEach(step => set.add(step)));
+                        return set;
+                    };
+                    prodSteps = stepsOfCollection(this.products);
+                    packSteps = stepsOfCollection(this.packs);
+                    prodSteps.forEach(s => shipSteps.add(s));
+                    packSteps.forEach(s => shipSteps.add(s));
+                    if (prodSteps.size > 0) {
+                        shipSteps.delete('destocker');
+                        shipSteps.delete('assembler');
                     }
                     else {
-                        return nextStep.add("setPack");
+                        if (packSteps.has('destocker')) {
+                            shipSteps.delete('assembler');
+                            shipSteps.delete('stocker');
+                        }
+                        else {
+                            shipSteps.delete('stocker');
+                        }
                     }
+                    return shipSteps;
                 } },
             { name: 'à assembler', action: () => {
                     var nextSteps = new Set();
@@ -88,12 +83,6 @@ class Shipment {
                     return nextSteps;
                 } }
         ];
-        condActions.forEach((conda) => {
-            let evt = this.stateMachine.events.find((e) => e.name == conda.name);
-            evt.conditions = conda.conditions;
-            evt.actions = conda.actions;
-        });
-        console.log('condaAction', this.stateMachine);
     }
     créer() {
         return this.stateMachine.go('créer');
@@ -108,7 +97,7 @@ class Shipment {
         return this.stateMachine.go('assembler');
     }
     étiqueter(transporteur) {
-        return this.stateMachine.go('étiqueter');
+        return this.stateMachine.go('print');
     }
     charger() {
     }
@@ -122,139 +111,101 @@ class Shipment {
     }
 }
 ;
-class Pack {
+export class Pack {
     constructor() {
         this.products = [];
-        this.name = 'PACK0001';
         this.weight = 0;
-        this.locationSM = new StateMachine();
-        this.locationSM.state = 'init';
-        this.locationSM.events = ([
-            { name: 'créer', from: 'init', to: 'transit', conditions: [], actions: [] },
-            { name: 'stocker', from: 'transit', to: 'stock', conditions: [], actions: [] },
-            { name: 'destocker', from: 'stock', to: 'transit', conditions: [], actions: [] },
-            { name: 'assembler', from: 'transit', to: 'transit', conditions: [], actions: [] },
-            { name: 'expedier', from: 'transit', to: 'terminé', conditions: [], actions: [] },
-        ]);
         this.stateMachine = new StateMachine();
         this.stateMachine.state = 'init';
         this.stateMachine.events = ([
-            { name: 'créer', from: 'init', to: 'created', conditions: [], actions: [] },
-            { name: 'setWeight', from: 'created', to: 'created', conditions: [], actions: [] },
-            { name: 'setProduct', from: 'created', to: 'created', conditions: [], actions: [] },
-            { name: 'coliser', from: 'created', to: 'colisé', conditions: [], actions: [] },
-            { name: 'assembler', from: 'colisé', to: 'assemblé', conditions: [], actions: [] },
-        ]);
-        var condActions = [
-            { name: 'setProduct', conditions: [
-                        (args) => {
-                        let product = args.product;
-                        if (product)
-                            product.stateMachine.can('coliser');
-                    }
-                ], actions: [
-                        (args) => {
-                        let product = args.product;
-                        product.coliser(this);
-                    },
-                        (args) => {
-                        let product = args.product;
-                        this.products.push(product);
-                    }
-                ] },
-            { name: 'setWeight', conditions: [],
-                actions: [
-                        (args) => {
-                        let weight = args.weight;
-                        weight = parseInt(weight);
-                        this.weight = weight;
-                    }
-                ] },
-            { name: 'coliser', conditions: [
-                        () => {
-                        if (!this.weight)
+            { name: 'coliser', from: 'init', to: 'transit', conditions: [
+                    (args) => {
+                        let weight = parseFloat(args.weight);
+                        if (!args.weight)
                             return Promise.reject("pas de poids");
+                        if (weight <= 0)
+                            return Promise.reject('poids null');
                     },
-                        () => {
-                        if (!this.products.length)
+                    (args) => {
+                        if (!args.products || !args.products.length)
                             return Promise.reject('Pas de produits');
+                        let ship = args.products[0].shipment;
+                        if (!args.products.every(prod => prod.shipment == ship))
+                            return Promise.reject('All the products are not from the same shipment');
                     },
-                        () => {
-                        if (!this.products.every((p) => p.stateMachine.state == 'colisé'))
-                            return Promise.reject("Tous les colis ne sont pas colisés");
+                    (args) => {
+                        if (!args.products || !args.products.length)
+                            return Promise.reject('Pas de produits');
+                        return Promise.all(args.products.map(prod => prod.stateMachine.can('coliser', { pack: this }))).catch(() => Promise.reject("All the products are not packable"));
                     }
                 ], actions: [
-                        () => this.locationSM.go('créer')
+                    (args) => this.weight = parseFloat(args.weight),
+                    (args) => this.products = args.products,
+                    (args) => this.products.forEach(prod => prod.coliser(this))
                 ] },
-            { name: 'assembler', conditions: [
-                        () => this.locationSM.can('assembler'),
-                ], actions: [] }
-        ];
+            { name: 'stocker', from: 'transit', to: 'stock', conditions: [], actions: [
+                    (args) => {
+                        this.place = args.place;
+                    }
+                ] },
+            { name: 'destocker', from: 'stock', to: 'transit', conditions: [], actions: [
+                    (args) => this.place = null
+                ] },
+            { name: 'assembler', from: 'transit', to: 'assemblé', conditions: [], actions: [] },
+            { name: 'expedier', from: 'assemblé', to: 'terminé', conditions: [], actions: [] },
+        ]);
         this.statesAction = [
-            { name: 'init', action: () => { return "créer"; } },
-            { name: 'created', action: () => {
-                    var steps = new Set();
-                    if (!this.weight)
-                        steps.add('setWeight');
-                    if (!this.products.length)
-                        steps.add('setProduct');
-                    if (steps.size == 0)
-                        steps.add('coliser');
-                    return steps;
+            { name: 'init', action: () => {
+                    return new Set(['coliser']);
                 } },
-            { name: 'colisé', action: () => {
-                    var steps = new Set();
-                    if (this.locationSM.state == 'transit')
-                        steps.add('assembler');
-                    if (this.locationSM.state == 'stock')
-                        steps.add('destocker');
-                    return steps;
+            { name: 'transit', action: () => {
+                    return new Set(['assembler', 'stocker']);
+                } },
+            { name: 'stock', action: () => {
+                    return new Set(['destocker']);
                 } }
         ];
-        condActions.forEach((conda) => {
-            let evt = this.stateMachine.events.find((e) => e.name == conda.name);
-            evt.conditions = conda.conditions;
-            evt.actions = conda.actions;
-        });
     }
-    créer() {
-        return this.stateMachine.go('créer');
-    }
-    setProduct(product) {
-        return this.stateMachine.go('setProduct', { product: product });
-    }
-    setWeight(weight) {
-        return this.stateMachine.go('setWeight', { weight: weight });
-    }
-    coliser() {
-        console.log('dans le colisage', this);
-        return this.stateMachine.go('coliser');
+    coliser(weight, products) {
+        console.log('voici products', products);
+        return this.stateMachine.go('coliser', { weight: weight, products: products });
     }
     assembler() {
         return this.stateMachine.go('assembler');
     }
-    stocker() {
-        return this.locationSM.go('stocker');
+    stocker(place) {
+        return this.stateMachine.go('stocker', { place: place });
     }
     destocker() {
-        return this.locationSM.go('destocker');
+        return this.stateMachine.go('destocker');
     }
     nextSteps() {
         var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state);
         if (!stateAction)
             return [];
-        console.log("action : ", stateAction);
         return Array.from(stateAction.action());
     }
 }
-class Product {
+export class Product {
     constructor() {
-        this.name = 'DEV-98083-23';
-        this.order = 'SO0001';
+        this.name = '';
+        this.isExpected = true;
         this.stateMachine = new StateMachine();
         this.stateMachine.events = [
-            { name: 'receptionner', from: 'init', to: 'receptionné', conditions: [], actions: [] },
-            { name: 'coliser', from: 'receptionné', to: 'colisé', conditions: [], actions: [] }
+            { name: 'produire', from: 'init', to: 'available', conditions: [], actions: [] },
+            { name: 'receptionner', from: 'available', to: 'receptionné', conditions: [], actions: [] },
+            { name: 'coliser', from: 'receptionné', to: 'colisé', conditions: [
+                    (args) => {
+                        let pack = args.pack;
+                        if (!pack)
+                            return Promise.reject('No pack');
+                        return Promise.resolve();
+                    }
+                ], actions: [
+                    (args) => {
+                        this.pack = args.pack;
+                    }
+                ] }
         ];
     }
     receptionner() {
@@ -263,35 +214,28 @@ class Product {
     }
     coliser(pack) {
         console.log('colisage du produit avec le pack ', pack);
-        var conditions = [
-                () => {
-                if (!pack)
-                    return Promise.reject('No pack');
-            }
-        ];
-        var actions = [
-                () => this.pack = pack
-        ];
-        return this.stateMachine.can('coliser').then((f) => f(conditions, actions));
+        return this.stateMachine.go('coliser', { pack: pack });
     }
     nextSteps() {
-        var nextSteps = "";
-        if (this.stateMachine.state == 'init')
-            nextSteps = "receptionner";
+        var nextSteps = [];
+        if (this.stateMachine.state == 'available')
+            nextSteps = ["receptionner"];
         if (this.stateMachine.state == 'receptionné')
-            nextSteps = "coliser";
+            nextSteps = ["coliser"];
         if (this.stateMachine.state == "colisé")
-            nextSteps = null;
-        return [nextSteps];
+            nextSteps = [];
+        if (this.stateMachine.state == 'init')
+            nextSteps = ['produire'];
+        return nextSteps;
     }
 }
-class StateEvent {
+export class StateEvent {
     constructor() {
         this.conditions = [];
         this.actions = [];
     }
 }
-class StateMachine {
+export class StateMachine {
     constructor() {
         this.state = 'init';
     }
@@ -304,7 +248,7 @@ class StateMachine {
     possibleStates() {
         return new Promise((resolve, reject) => {
             let succeeds = [];
-            let proms = this.availableState().map(state => this.can(state.name).then(() => succeeds.push(state.name), (v) => console.log('oesf', v)));
+            let proms = this.availableState().map(state => this.can(state.name).then(() => succeeds.push(state.name), (x) => null));
             Promise.all(proms).then(() => resolve(succeeds));
         });
     }

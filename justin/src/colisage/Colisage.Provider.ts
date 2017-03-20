@@ -14,12 +14,7 @@ export class ColisageProvider {
     ) {
       this.reset();
   }
-
-  get() {
-    return this.pack;
-  }
-  addOne(barcode) {
-    //TODO vérifier que le produit fait parti de cet shipment?
+  addOne(barcode, alreadyScanned) {
     var pack = this.pack;
     var productsProvider = this.productsProvider;
     var products = productsProvider.getProducts(barcode);
@@ -27,7 +22,7 @@ export class ColisageProvider {
 
     function getProduct(barcode) {
       var nextAvailableProduct = products
-        .find( (l) => l.stateMachine.state ==  'receptionné');
+        .find( (l) => l.stateMachine.state == 'received' && alreadyScanned.indexOf(l) == -1);
 
       if (nextAvailableProduct)
         return Promise.resolve(nextAvailableProduct);
@@ -51,64 +46,41 @@ export class ColisageProvider {
 
       return Promise.resolve(product);
     }
-
-    function setProduct(pack, product) {
-      console.log('setProduct', pack, product);
-      if (pack.shipment)
-        pack.shipment.setPack(pack);
-      return pack.setProduct(product);
-    }
-
     return getProduct(barcode)
       .then(prod => ensureShipment(pack, prod))
-      .then(prod => setProduct(pack, prod));
+      .then(prod => {
+        this.pack.products.push(prod);
+        return prod;
+      })
+      .then(prod => prod);
   }
-  validatePack(pack, weight) {
-    return pack.setWeight(weight).then(() => {
+
+  validatePack(weight, products, withLabel) {
+    console.log('weight, products', weight, products);
+    var withLabel = withLabel['withLabel'];
+    var pack = this.pack;
+    return pack.stateMachine.can('coliser', {weight:weight, products: products})
+    .then( () => {
       var payload = {
-        'weight': pack.weight,
-        'products': pack.products.map( x => x.name)
+        'weight': weight,
+        'products': products.map( x => x.name)
       };
       console.log('on envoi payload', payload);
-      return this.odoo.call('bipper.webservice','do_packing', [payload], {})
+      return this.odoo.call('bipper.webservice','do_packing', [payload, withLabel], {})
     }).then(x => {
-      console.log("c'est good", x);
       pack.name = x[0];
       pack.label = x[1];
       //on colise les produits
-
-      return pack.coliser().then(
-        () => this.productsProvider.addPack(pack)
-      ).then(
-        () => {
-          console.log('on check si le pack est dans le ship', pack.shipment, pack.shipment.packs.indexOf(pack))
-          if (pack.shipment.packs.indexOf(pack) == -1)
-            pack.shipment.packs.push(pack);
-          console.log('apres', pack.shipment.packs.indexOf(pack));
-          }
-        );
-    }).then( () => {
+      this.productsProvider.explicitRefresh();
       return pack;
-    }).then(null, (x) => console.log('on leve pas',x));
+    }).then(() => pack.coliser(weight, products)
+    ).then( () => pack.shipment.setPack(pack)
+    ).then( () => this.productsProvider.addPack(pack)
+    ).then( () => pack, (x) => console.log('on leve pas',x));
   }
   reset() {
     //on défait
-    console.log('on defait ', this.pack);
-    if (this.pack) {
-      this.pack.products.forEach(
-        prod => {
-          prod.pack = null;
-          prod.stateMachine.state = 'receptionné';
-      });
-      if (this.pack.shipment) {
-        this.pack.shipment.packs = this.pack.shipment.packs.filter(
-          pack => pack != this.pack
-        );
-      }
-    }
-
     this.pack = this.productsProvider.newPack();
-    this.pack.créer();
     return this.pack;
   }
 };

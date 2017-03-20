@@ -14,16 +14,17 @@
 
 <ion-content padding>
     <ion-list>
-      <ion-item *ngFor="let product of model.pack.products">
+      <ion-item *ngFor="let product of model.products">
         <ion-badge *ngIf="product.isExpected" color="primary">Received</ion-badge>
         <ion-badge *ngIf="!product.isExpected" color="danger">Unkown</ion-badge>
         {{product.name}}
         <br><small>{{ product.category }}</small>
       </ion-item>
     </ion-list>
+  <form name="colisageForm">
   <ion-item>
     <ion-label>Weight</ion-label>
-    <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any" required></ion-input>
+    <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any"></ion-input>
   </ion-item>
 
   <ion-item>
@@ -32,15 +33,17 @@
     </ion-buttons>
 
     <ion-buttons end>
-      <button ion-button (click)="validate()" color="primary">Make package
+      <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.products.length && model.weight)" ion-button color="secondary">Ship now</button>
+      <button (click)="printAndContinue()" ion-button [disabled]="!(model.products.length && model.weight)" color="primary">Make package
           <ion-icon name="send"></ion-icon>
         </button>
     </ion-buttons>
   </ion-item>
+  </form>
 
  <ion-list *ngIf="shipment">
       <ion-list-header>
-        {{ shipment.name }} {{ shipment.carrier }} <button ion-button outline>{{ nextStep }}</button>
+        {{ shipment.name }} {{ shipment.carrier }} <nextApp [withArgs]="false" [thing]="shipment" item-right>dns nextapp</nextApp>
       </ion-list-header>
 
       <ion-item-group>
@@ -52,10 +55,11 @@
                - <span [ngSwitch]="product.stateMachine.state">
                  <span *ngSwitchCase="'init'">?</span>
                  <span *ngSwitchCase="'available'">Produced</span>
-                 <span *ngSwitchCase="'receptionné'">Received</span>
-                 <span *ngSwitchCase="'colisé'">√</span>
+                 <span *ngSwitchCase="'received'">Received</span>
+                 <span *ngSwitchCase="'packed'">Packed</span>
                </span>
-               <br> <small>{{ product.category }}</small>
+              - <span *ngIf="model.products.indexOf(product) != -1">√</span>
+              <br> <small>{{ product.category }}</small>
           </ion-item>
         </ion-item-group>
 

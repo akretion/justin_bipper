@@ -37,16 +37,19 @@ export class LoginPage {
         isLogged => {
           if (isLogged)
               this.loginSuccess();
+          return isLogged
         }
       )
-    ).then( () => odoo.getDbList().then(
+    ).then( (isLogged) => {
+      if (!isLogged)
+        return odoo.getDbList().then(
         x => {
             console.log('voici les bases', x)
             this.dbs = x;
             this.login.db = defaultDb;
         }
       )
-    ).then(null, this.handleError);
+    }).then(null, this.handleError);
   }
 
   onLogin(form) {
@@ -78,6 +81,6 @@ export class LoginPage {
     }
   }
   loginSuccess() {
-    this.route.goTo('rechercher');
+    this.route.goTo('home');
   }
 }

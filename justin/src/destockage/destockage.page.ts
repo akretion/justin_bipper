@@ -1,9 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, ToastController} from 'ionic-angular';
-import {AlertController} from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {inputBarComponent} from '../models/inputBar.component';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 
 @Component({
   templateUrl: 'destockage.html',
@@ -13,16 +13,17 @@ export class DestockagePage {
   model: any = { packs: null};
   nextStep: string = '';
   listeDeCourses= [];
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       private alertCtrl: AlertController,
       private toastCtrl: ToastController,
+      private loadingCtrl: LoadingController,
       private productsProvider: ProductsProvider
     ) {
       console.log('dans le consturteur de destockage');
 
       //trouver que les commandes bloquées
-      console.log('liste', this.listeDeCourses);
       this.reset();
   }
   displayWarning(msg) {
@@ -49,13 +50,23 @@ export class DestockagePage {
         return p.shipment.nextSteps().indexOf('destocker') !== -1;
         }
     );
+    if (this.inputBar)
+      this.inputBar.focus();
   }
   validate() {
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
     var packs = Array.from(this.model.packs.values());
     this.productsProvider.unstock(packs).then(
       () => Promise.all(
             packs.map( p => (p as any).destocker())
       )
-    ).then( () => this.reset() );
+    ).then( () => {
+      this.displayWarning(`Done !`);
+      loader.dismissAll();
+    }).then( () => this.reset() );
   }
 }

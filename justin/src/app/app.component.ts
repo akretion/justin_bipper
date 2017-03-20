@@ -9,6 +9,7 @@ import {ColisagePage} from './../colisage/colisage.page';
 import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
+import {HomePage} from './../home/home.page';
 import {StockPage} from './../stock/stock.page';
 import {DebugPage} from './../debug/debug.page';
 
@@ -23,6 +24,7 @@ import { errorComponent } from '../models/error.handler';
 export class MyApp {
   rootPage: any;
   appRoutes = [
+    {data: {title: "Home" }, component: HomePage, path: 'home', action:'home'},
     {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner'},
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser'},
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker'},

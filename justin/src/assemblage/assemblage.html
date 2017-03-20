@@ -41,9 +41,9 @@
         <ion-badge *ngIf="model.packs[pack.name].ready == false " color="danger">Not ready</ion-badge>
       </h2>
       <p>
-        {{ pack.stateMachine?.state }} - {{ pack.locationSM?.state }}
+        {{ pack.stateMachine?.state }}
         <br><small>{{ pack.category }}</small>
-        <span *ngIf="model.nextStep == 'Assemble' && pack.locationSM.state != 'transit'">
+        <span *ngIf="model.nextStep == 'Assemble' && pack.stateMachine.state != 'transit'">
           <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
         </span>
       </p>

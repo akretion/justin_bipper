@@ -47,36 +47,60 @@ export class ProductsProvider {
       return odoo.call('bipper.webservice', 'get_all_receptions', [], {}).then(
         x => {
           concurrent--;
-          this.packsLookup = new Map();
-          this.shipsLookup = new Map();
-          this.productsLookup = new Map();
-
           this.lastUpdate.next(Date());
           x.forEach(
             s => {
-              var ship = buildShip(s);
-              this.shipsLookup.set(ship.name, ship)
+              var oldShip = this.shipsLookup.get(s.name);
+              if (oldShip) {
+                var ship = updateShip(s, oldShip);
+              } else {
+                var ship = buildShip(s);
+                this.shipsLookup.set(ship.name, ship)
+              }
 
               s.packs.forEach(
                 p => {
-                  var pack = buildPack(p, ship);
-                  this.packsLookup.set(pack.name, pack);
-                }
-              );
-              s.lines.forEach(
-                p => {
-                  if (!this.productsLookup.has(p.name))
-                    this.productsLookup.set(p.name, []);
-                  let pack = this.packsLookup.get(p.pack);
-                  let prod = buildProduct(p, pack, ship);
-                  this.productsLookup.get(p.name).push(prod);
+                  var oldPack = this.packsLookup.get(p.name);
+                  if (oldPack) {
+                    updatePack(p, oldPack);
+                  } else {
+                    var pack = buildPack(p, ship);
+                    this.packsLookup.set(pack.name, pack);
+                  }
                 }
               );
 
+              if (!oldShip) {
+                s.lines.forEach(
+                  p => {
+                    let pack = this.packsLookup.get(p.pack);
+                    let prod = buildProduct(p, pack, ship);
+                    if (!this.productsLookup.has(p.name))
+                      this.productsLookup.set(p.name, []);
+                    this.productsLookup.get(p.name).push(prod);
+                  }
+                );
+              } else {
+                s.lines.reduce((acc, cur) => {
+                  if (!acc.has(cur.name))
+                    acc.set(cur.name, []);
+                  acc.get(cur.name).push(cur);
+                  return acc;
+                }, new Map())
+                // converts to { 'dev-xx-x1': [a,b], 'dev-xx-x2': [c,d,e]}
+                .forEach( (kindOfProduct) => {
+                  kindOfProduct.forEach( (p, idx) => {
+                    let pack = this.packsLookup.get(p.pack);
+                    let prod = this.productsLookup.get(p.name)[idx];
+                    updateProduct(p, prod, pack);
+                  });
+                })
+              }
             });
           }, (err) => {
             concurrent--;
-            this.pauser.next(true);
+            console.log('une erreur ? ');
+//            this.pauser.next(true);
           }
       );
     };
@@ -91,6 +115,10 @@ export class ProductsProvider {
       var ship = new Shipment();
       ship.créer();
       ship.name = s.name;
+      return updateShip(ship, s);
+    }
+
+    function updateShip(ship, s) {
       ship.carrier = s.carrier;
       ship.partial_allowed = s.is_partial;
       return ship;
@@ -99,34 +127,45 @@ export class ProductsProvider {
     function buildProduct(p, pack, shipment) {
       var prod = new Product();
       prod.name = p.name;
-      prod.stateMachine.state = p.state;
       prod.shipment = shipment;
       prod.category = p.category;
       shipment.products.push(prod);
-      if (pack) {
+      return updateProduct(p, prod, pack);
+    }
+    var convState= { 'receptionné': 'received', 'colisé': 'packed'};
+    function updateProduct(p, prod, pack) {
+      prod.stateMachine.state = convState[p.state] || p.state;
+      if (!prod.pack && pack) {
         pack.products.push(prod);
         prod.pack = pack;
-        pack.category = prod.category;
       }
+      if (pack)
+        pack.category = prod.category;
       return prod;
     }
+
     function buildPack(p, shipment) {
       var pack = new Pack();
       pack.name = p.name;
       pack.weight = p.weight;
+      pack.shipment = shipment;
+      shipment.packs.push(pack);
+      return updatePack(p, pack);
+    }
+    function updatePack(p, pack) {
       pack.stateMachine.state = p.state;
       if (!p.state){
         console.log('init state par défaut')
         pack.stateMachine.state = 'init';
       }
       if (p.place) {
-        pack.locationSM.state = 'stock';
+//        console.log('force stock au lieu de  ', pack.stateMachine.state)
+        pack.stateMachine.state = 'stock';
         pack.place = p.place;
       } else {
-        pack.locationSM.state = 'transit';
+//        console.log('force transit au lieu de ', pack.stateMachine.state)
+        pack.stateMachine.state = 'transit';
       }
-      pack.shipment = shipment;
-      shipment.packs.push(pack);
       return pack;
     }
   }
@@ -148,7 +187,7 @@ export class ProductsProvider {
   }
   getReserved() {
     return Array.from(this.packsLookup.values()).filter(
-      (p) => p.locationSM.state == 'stock'
+      (p) => p.stateMachine.state == 'stock'
     );
   }
   newProduct(barcode) {
@@ -169,6 +208,7 @@ export class ProductsProvider {
     list.forEach(l => {
       payload[l.barcode] =l.qty
     });
+    //pas d'explicitRefresh car on sait pas qd la cron aura fini
     return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {}).then(
       null, x => Promise.reject(x.message)
     );
@@ -176,14 +216,14 @@ export class ProductsProvider {
   stock(pack) {
     var payload = { name: pack.name, place: pack.place};
     return this.odoo.call('bipper.webservice', 'set_package_place', [payload], {}).then(
-      x=> console.log('ayé on stacké', pack)
+      () => this.explicitRefresh()
     )
   }
   unstock(packs) {
     var payload = packs.map(p =>{ return {name: p.name }});
 
     return this.odoo.call('bipper.webservice', 'unset_package_place', [payload], {}).then(
-      x=> console.log('ayé on a unstocké', payload)
+      x=> this.explicitRefresh()
     );
   }
   ship(shipment) {
@@ -195,6 +235,7 @@ export class ProductsProvider {
     return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
       x=> {
         console.log('bim ce partit, on imprime lettiquette', x);
+        this.explicitRefresh()
         return x.labels;
       }
     );

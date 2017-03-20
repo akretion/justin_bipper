@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {NavController, NavParams, ToastController, ModalController} from 'ionic-angular';
-import {AlertController} from 'ionic-angular';
+import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
-import {nextAppComponent} from '../models/actionFor.component';
+import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {CarrierPage} from './carrier.page';
 import {PrintServices} from '../models/PrintServices';
@@ -12,14 +12,15 @@ console.log('dans assemblage1');
   templateUrl: 'assemblage.html',
 })
 export class AssemblagePage {
-  pack: any = {};
   model: any = {};
   nextStep: string = '';
+  @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
       public navParams: NavParams,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
+      public loadingCtrl: LoadingController,
       public modalCtrl: ModalController,
       public productsProvider: ProductsProvider,
       public printServices: PrintServices
@@ -55,17 +56,16 @@ export class AssemblagePage {
       this.model.toBeScanned = shipment.packs.length;
 
       this.model.allProductsPacked = shipment.products.every( (p) => {
-        //tous les produits doivent être colisés
-        return p.nextSteps().length == 0; //no next step = colisé
+        //tous les produits doivent être packeds
+        return p.nextSteps().length == 0; //no next step = packed
       });
-      console.log('tous les produits du shipment packed', this.model.allProductsPacked);
 
       shipment.packs.forEach((p) => {
-        /* tous les packs doivent être assemblés */
+        /* tous les packs doivent être shippeds */
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,
-          done: false,
+          done: false
         };
       });
     } else {
@@ -98,9 +98,16 @@ export class AssemblagePage {
   }
   reset() {
     this.model = { packs: {}};
+    if (this.inputBar)
+      this.inputBar.focus();
   }
   assembler(shipment) {
     console.log('assemblage', shipment);
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+    loader.present();
     //il faut update avant
     shipment.update()
       .then( () => shipment.assembler())
@@ -110,8 +117,10 @@ export class AssemblagePage {
         msg+= (labels.length == 0) ? 'Nothing to print': 'Printing ' + labels.length + ' labels'
         this.displayWarning(msg);
         labels.forEach( label => this.printServices.printZebra(label.data));
+        this.inputBar.focus();
       })
       .then( () => this.reset(), (x) => {
+        loader.dismissAll();
         this.displayWarning('An error occured');
         console.log(x); //todo: on devrait logger ça au serveur
       });

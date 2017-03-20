@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { OnChanges } from '@angular/core';
+import { Renderer, ElementRef } from  '@angular/core';
 
 @Component({
   selector: 'input-bar',
@@ -25,7 +26,7 @@ import { OnChanges } from '@angular/core';
 export class inputBarComponent {
   @Output() cb: EventEmitter<any> = new EventEmitter();
   model: any;
-  constructor() {
+  constructor(private renderer:Renderer, private elementRef: ElementRef) {
     this.reset();
     console.log('dans inputbar component');
   }
@@ -36,5 +37,15 @@ export class inputBarComponent {
   }
   reset() {
     this.model = {};
+  }
+  ngAfterViewInit() {
+    this.focus()
+  }
+  focus() {
+    var el = this.elementRef.nativeElement.querySelector('input');
+    setTimeout( () => {
+      this.renderer.invokeElementMethod(el, 'focus', []);
+      el.autofocus = true;
+    },500);
   }
 }
