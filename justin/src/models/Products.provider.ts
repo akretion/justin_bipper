@@ -270,7 +270,7 @@ export class ProductsProvider {
     var payload = [{
         name: shipment.name
     }];
-    return this.odoo.call('bipper.webservice', 'get_picking_documents', payload, {}).then(
+    return this.odoo.call('bipper.webservice', 'get_picking_attachments', payload, {}).then(
       x=>{ console.log('get ship reussix', x); return x.labels; }
     );
   }
