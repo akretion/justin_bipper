@@ -236,7 +236,7 @@ export class ProductsProvider {
       x=> {
         console.log('bim ce partit, on imprime lettiquette', x);
         this.explicitRefresh()
-        return x.labels;
+        return x;
       }
     );
   }
@@ -270,7 +270,7 @@ export class ProductsProvider {
     var payload = [{
         name: shipment.name
     }];
-    return this.odoo.call('bipper.webservice', 'get_carrier_labels', payload, {}).then(
+    return this.odoo.call('bipper.webservice', 'get_picking_documents', payload, {}).then(
       x=>{ console.log('get ship reussix', x); return x.labels; }
     );
   }
