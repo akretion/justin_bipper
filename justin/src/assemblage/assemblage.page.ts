@@ -112,11 +112,19 @@ export class AssemblagePage {
     shipment.update()
       .then( () => shipment.assembler())
       .then( () => this.productsProvider.ship(shipment))
-      .then( (labels) => {
-        var msg = 'Transfert Done.'
-        msg+= (labels.length == 0) ? 'Nothing to print': 'Printing ' + labels.length + ' labels'
+      .then( (x) => {
+        var labels = x.labels;
+        var documents = x.documents;
+        var msg = 'Transfert Done. ';
+        if (0 == (labels.length + documents.length))
+          msg += 'Nothing to print';
+        else {
+          msg += 'Printing ' + labels.length + ' labels';
+          msg += ', ' + documents.length + ' docs';
+        }
         this.displayWarning(msg);
         labels.forEach( label => this.printServices.printZebra(label.data));
+        documents.forEach( doc => this.printServices.printA4(doc.data));
         this.inputBar.focus();
       })
       .then( () => this.reset(), (x) => {

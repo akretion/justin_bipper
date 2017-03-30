@@ -42,6 +42,14 @@
           <ion-input name="dymo_name" type="txt" [(ngModel)]="settings.dymo.name" placeholder="System name on the host"></ion-input>
         </ion-item>
         <ion-item>
+          <ion-label fixed>A4 Server</ion-label>
+          <ion-input name="a4_url" type="url" [(ngModel)]="settings.a4.url" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>A4 Name</ion-label>
+          <ion-input name="a4_name" type="txt" [(ngModel)]="settings.a4.name" placeholder="System name on the host"></ion-input>
+        </ion-item>
+        <ion-item>
           <button ion-button>Save</button>
         </ion-item>
       </form>
