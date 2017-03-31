@@ -232,8 +232,16 @@ export class ProductsProvider {
       shipment.name,
       shipment.packs.map( x => x.name)
     ];
+    var deleteShipment = (shipment) => {
+      // car le serveur ne nous le dira jamais
+      // et on pourra pas réimprimer d'etiquettes
+      this.shipsLookup.delete(shipment.name);
+      shipment.packs.forEach( pack => this.packsLookup.delete(pack.name));
+      shipment.products.forEach( prod => this.productsLookup.delete(prod.name));
+    }
     return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
       x=> {
+        deleteShipment(shipment);
         console.log('bim ce partit, on imprime lettiquette', x);
         this.explicitRefresh()
         return x;
