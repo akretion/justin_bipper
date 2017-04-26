@@ -226,11 +226,12 @@ export class ProductsProvider {
       x=> this.explicitRefresh()
     );
   }
-  ship(shipment) {
-    console.log('on envoi ', shipment);
+  ship(shipment, shipped_packs) {
+    console.log('on envoi ', shipment, shipped_packs);
+    //shipped_packs == [] -> tout le shipment d'un coup
     var payload = [
       shipment.name,
-      shipment.packs.map( x => x.name)
+      shipped_packs.map(x => x.name)
     ];
     var deleteShipment = (shipment) => {
       // car le serveur ne nous le dira jamais

@@ -65,7 +65,8 @@ export class AssemblagePage {
         let ready = (p.nextSteps().indexOf('assembler') !== -1);
         this.model.packs[p.name] = {
           ready: ready,
-          done: false
+          done: false,
+          name: p.name //pour un acces rapide ulterieur
         };
       });
     } else {
@@ -102,7 +103,15 @@ export class AssemblagePage {
       this.inputBar.focus();
   }
   assembler(shipment) {
-    console.log('assemblage', shipment);
+    console.log('assemblage');
+    //si on est en envoi partiel, on envois la liste des packs
+    //shipped packs = les packs à envoyer ou rien (pour tout)
+    var shipped_packs = shipment.packs.filter(
+        p => this.model.packs[p.name].done
+    );
+    if (shipped_packs.length == shipment.packs.length)
+      shipped_packs = []
+
     var loader = this.loadingCtrl.create({
       content:'Please wait',
       duration: 3000
@@ -111,7 +120,7 @@ export class AssemblagePage {
     //il faut update avant
     shipment.update()
       .then( () => shipment.assembler())
-      .then( () => this.productsProvider.ship(shipment))
+      .then( () => this.productsProvider.ship(shipment, shipped_packs))
       .then( (x) => {
         var labels = x.labels;
         var documents = x.documents;
