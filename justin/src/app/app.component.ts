@@ -14,6 +14,7 @@ import {StockPage} from './../stock/stock.page';
 import {DebugPage} from './../debug/debug.page';
 
 import { LoginPage} from '../login/login';
+import { LogoutPage} from '../login/logout';
 import { Product } from '../statemachine/src/states';
 
 import { errorComponent } from '../models/error.handler';
@@ -24,15 +25,18 @@ import { errorComponent } from '../models/error.handler';
 export class MyApp {
   rootPage: any;
   appRoutes = [
-    {data: {title: "Home" }, component: HomePage, path: 'home', action:'home'},
-    {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner'},
-    {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser'},
-    {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker'},
-    {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker'},
-    {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler'},
-    {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher'},
-    {data: {title: "Debug" }, component: DebugPage, path: 'debug', action:'debug'}
+    {data: {title: "Home" }, component: HomePage, path: 'home', action:'home', hide:false},
+    {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner', hide:false},
+    {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser', hide:false},
+    {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
+    {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
+    {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},
+    {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher', hide:false},
+    {data: {title: "Debug" }, component: DebugPage, path: 'debug', action:'debug', hide:false},
+    {data: {title: "Logout" }, component: LogoutPage, path: 'logout', action:'logout', hide:false},
+    {data: {title: "Login" }, component: LoginPage, path: 'login', action:'login', hide:true}
   ];
+  appRoutesWithoutLogin = [];
 
   @ViewChild(Nav) nav;
   constructor(platform: Platform, public routeService: RouteService,
@@ -50,6 +54,8 @@ export class MyApp {
     watcher.subscribe(i => {
       this.openPage(i.page.component, i.data);
     });
+
+    this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.path !='login');
   }
   openPage(page, data) {
     console.log('openPage', data);
