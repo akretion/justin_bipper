@@ -226,17 +226,26 @@ export class ProductsProvider {
       x=> this.explicitRefresh()
     );
   }
-  ship(shipment) {
-    console.log('on envoi ', shipment);
+  ship(shipment, shipped_packs) {
+    console.log('on envoi ', shipment, shipped_packs);
+    //shipped_packs == [] -> tout le shipment d'un coup
     var payload = [
       shipment.name,
-      shipment.packs.map( x => x.name)
+      shipped_packs.map(x => x.name)
     ];
+    var deleteShipment = (shipment) => {
+      // car le serveur ne nous le dira jamais
+      // et on pourra pas réimprimer d'etiquettes
+      this.shipsLookup.delete(shipment.name);
+      shipment.packs.forEach( pack => this.packsLookup.delete(pack.name));
+      shipment.products.forEach( prod => this.productsLookup.delete(prod.name));
+    }
     return this.odoo.call('bipper.webservice', 'ship', payload, {}).then(
       x=> {
+        deleteShipment(shipment);
         console.log('bim ce partit, on imprime lettiquette', x);
         this.explicitRefresh()
-        return x.labels;
+        return x;
       }
     );
   }
@@ -270,8 +279,8 @@ export class ProductsProvider {
     var payload = [{
         name: shipment.name
     }];
-    return this.odoo.call('bipper.webservice', 'get_carrier_labels', payload, {}).then(
-      x=>{ console.log('get ship reussix', x); return x.labels; }
+    return this.odoo.call('bipper.webservice', 'get_picking_attachments', payload, {}).then(
+      x=>{ console.log('get ship reussix', x); return x; }
     );
   }
   get_pack_info(pack) {

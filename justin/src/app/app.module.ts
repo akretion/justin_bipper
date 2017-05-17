@@ -13,6 +13,7 @@ import {DestockagePage} from '../destockage/destockage.page';
 import {StockPage} from './../stock/stock.page';
 import {DebugPage} from '../debug/debug.page';
 import {LoginPage} from '../login/login';
+import {LogoutPage} from '../login/logout';
 import {CarrierPage} from '../assemblage/carrier.page';
 import {HomePage} from '../home/home.page';
 
@@ -38,6 +39,7 @@ import { errorComponent } from '../models/error.handler';
     DestockagePage,
     StockPage,
     LoginPage,
+    LogoutPage,
     DebugPage,
     HomePage,
     nextAppComponent,
@@ -59,6 +61,7 @@ import { errorComponent } from '../models/error.handler';
     DestockagePage,
     StockPage,
     LoginPage,
+    LogoutPage,
     DebugPage,
     HomePage,
   ],

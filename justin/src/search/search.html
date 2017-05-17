@@ -27,7 +27,12 @@
       <h3>Picking : {{ search.hard.picking }}</h3>
       Weight: {{ search.hard.weight }} <br />
       State: {{ search.hard.state}}<br />
-      <button ion-button (click)="printShippingLabel(search.hard.picking)" *ngIf="search.hard.state == 'done'">Print shipping label</button>
+    </ion-item>
+    <ion-item *ngFor="let label of search.hard.attachments.labels">
+           {{ label.name }} <button ion-button (click)="printShippingLabel(label)">Print</button>
+    </ion-item>
+    <ion-item *ngFor="let doc of search.hard.attachments.documents">
+        {{ doc.name }}  <button ion-button (click)="printDocument(doc)">Print</button>
     </ion-item>
   </ion-item-group>
 
@@ -55,7 +60,7 @@
         {{ pack.locationSM?.state }} - {{ pack.place }}
         <br><small>{{ pack.category }}</small></p>
         <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
-        <button ion-button (click)="print(pack)" item-right>Print</button>
+        <button ion-button (click)="print(pack)" item-right>Print Pack</button>
     </ion-item>
   </ion-item-group>
 

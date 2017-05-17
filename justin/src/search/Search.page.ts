@@ -80,17 +80,23 @@ export class SearchPage {
       (infos) => {
         this.search.hard = infos;
         this.search.notFound = false;
+        this.search.hard.attachments = { 'labels': [], 'documents': []};
+        return infos.picking
+    }).then( (picking) => {
+      if (this.search.hard.state != 'done')
+        return;
+      this.productsProvider.get_ship_label({name: picking}).then(
+        (attachments) => {
+          this.search.hard.attachments.labels = attachments.labels;
+          this.search.hard.attachments.documents = attachments.documents;
+      })
     });
   }
-  printShippingLabel(picking) {
-    this.productsProvider.get_ship_label({name: picking}).then(
-      (labels) => {
-        console.log('on a du label !', labels);
-        labels.forEach(
-          label => this.printServices.printZebra(label.data)
-        );
-      }
-    )
+  printShippingLabel(label) {
+    this.printServices.printZebra(label.data);
+  }
+  printDocument(doc) {
+    this.printServices.printA4(doc.data);
   }
   openPack(pack) {
     this.model["scanned"] = pack.name; //because of fucking typescript

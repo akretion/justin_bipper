@@ -4,7 +4,7 @@ import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class PrintServices {
-  printers = ['dymo', 'zebra'];
+  printers = ['dymo', 'zebra', 'a4'];
   constructor(public http: Http) {
     window['http'] = this.http;
   }
@@ -31,6 +31,9 @@ export class PrintServices {
   }
   printDymo(payload) {
     return this.print('dymo', payload);
+  }
+  printA4(payload) {
+    return this.print('a4', payload);
   }
   print(printer, payload) {
     var config = this.load(printer);
