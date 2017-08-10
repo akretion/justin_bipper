@@ -55,8 +55,8 @@ export class Shipment {
       ], actions:[
         () => {
           if (!this.partial_allowed)
-            this.packs.forEach( (p) => p.stateMachine.go('assembler'))
-          }
+            this.packs.forEach( (p) => p.stateMachine.go('assembler') )
+        }
       ]},
     ]);
 
@@ -191,7 +191,7 @@ export class Pack { //carton
         (args) => this.place = null
       ]},
       {name:'assembler', from: 'transit', to: 'shipped', conditions: [], actions:[]},
-      {name:'expedier', from: 'shipped', to:'done', conditions: [], actions:[]},
+      {name:'charger', from: 'shipped', to:'done', conditions: [], actions:[]},
     ]);
 
     this.statesAction = [
@@ -203,6 +203,9 @@ export class Pack { //carton
       }},
       { name:'stock', action: () => {
         return new Set(['destocker']);
+      }},
+      { name:'shipped', action: () => {
+        return new Set(['charger']);
       }}
     ];
   }
@@ -218,6 +221,9 @@ export class Pack { //carton
   }
   destocker() {
     return this.stateMachine.go('destocker');
+  }
+  charger() {
+    return this.stateMachine.go('charger');
   }
   nextSteps() {
     var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state );

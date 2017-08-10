@@ -11,6 +11,7 @@ import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
 import {HomePage} from './../home/home.page';
 import {StockPage} from './../stock/stock.page';
+import {LoadPage} from './../load/load.page';
 import {DebugPage} from './../debug/debug.page';
 
 import { LoginPage} from '../login/login';
@@ -31,6 +32,7 @@ export class MyApp {
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
     {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},
+    {data: {title: "Load" }, component: LoadPage, path: 'load', action:'load', hide:false},
     {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher', hide:false},
     {data: {title: "Debug" }, component: DebugPage, path: 'debug', action:'debug', hide:false},
     {data: {title: "Logout" }, component: LogoutPage, path: 'logout', action:'logout', hide:false},
