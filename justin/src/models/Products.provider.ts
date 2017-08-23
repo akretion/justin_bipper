@@ -292,7 +292,7 @@ export class ProductsProvider {
     );
   }
   load_truck(packs) {
-    var payload = packs.map( p => { return { 'name': p.name }});
+    var payload = [packs.map( p => { return { 'name': p.name }})];
     return this.odoo.call('bipper.webservice', 'do_package_loading', payload, {}).then(
       x => {console.log('packs chargés', x); return x;}
     );
