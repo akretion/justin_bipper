@@ -15,7 +15,6 @@ import {Pack, Shipment, Product } from '../statemachine/src/states';
 export class ColisagePage {
   shipment: any;
   model: any = {};
-  productCount: number = 0;
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
@@ -44,7 +43,6 @@ export class ColisagePage {
     return toast.present();
   }
   addIt(scanned) {
-    this.productCount ++;
     this.colisageProvider.addOne(scanned, this.model.products).then(
       (product: Product) => {
         this.model.products.push(product);
@@ -104,7 +102,6 @@ export class ColisagePage {
   }
 
   reset(withShipment) {
-    this.productCount = 0;
     this.colisageProvider.reset();
     this.model = { 'products': []};
     if (withShipment)
