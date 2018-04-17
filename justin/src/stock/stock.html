@@ -43,6 +43,22 @@
         </ion-buttons>
       </ion-item>
      </ion-card-content>
+
+     <ion-card-content *ngIf="model.pack.shipment">
+      <ion-item>
+        <p>{{ model.pack.shipment.name }}</p>
+      </ion-item>
+      <ion-item>
+        <ion-grid  *ngFor="let pack of model.pack.shipment.packs">
+          <ion-row *ngIf="pack.name != model.pack.name">
+          <!-- TODO: put a filter instead of if -->
+            <ion-col>{{ pack.name }}</ion-col>
+            <ion-col>{{ pack.stateMachine?.state }}</ion-col>
+            <ion-col><span *ngIf="pack.stateMachine?.state == 'stock'">{{ pack.place }}</span></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+     </ion-card-content>
    </ion-card>
 </ion-list>
 </ion-content>
