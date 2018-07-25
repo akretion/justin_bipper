@@ -93,9 +93,12 @@ export class AssemblagePage {
     } else {
       this.model.nextStep = `${this.model.toBeScanned} of ${this.model.shipment.packs.length} to scan`;
     }
-
-    console.log(this.model);
-
+    pack.stateMachine.can('destocker').then( (x) => {
+      //if a stocked product is scanned, we guess the guy has the pack
+      //on hand and it didn't bother to unstock it first
+      pack.destocker();
+      this.model.packs[pack.name].ready = true;
+    });
   }
   reset() {
     this.model = { packs: {}};
