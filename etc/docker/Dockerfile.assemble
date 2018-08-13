@@ -1,0 +1,38 @@
+FROM node
+
+# File Author / Maintainer
+MAINTAINER Marcin Wojtysiak <m.wojtysiak@oliverstore.com>
+
+# update and upgrade system
+RUN apt-get update
+RUN apt-get upgrade -y
+
+#
+# ASSEMBLE
+#
+COPY scripts/assemble.sh /os/bin/
+RUN chmod +x /os/bin/assemble.sh
+
+#
+# TEST
+#
+COPY scripts/test.sh /os/bin/
+RUN chmod +x /os/bin/test.sh
+
+#
+# CLEAN
+#
+COPY scripts/clean.sh /os/bin/
+RUN chmod +x /os/bin/clean.sh
+
+#
+# WATCH
+#
+COPY scripts/start.sh /os/bin/
+RUN chmod +x /os/bin/start.sh
+
+#
+# PACKAGE
+#
+COPY scripts/package.sh /os/bin/
+RUN chmod +x /os/bin/package.sh
