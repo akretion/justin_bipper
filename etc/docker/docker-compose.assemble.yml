@@ -45,11 +45,12 @@ services:
       - source
       - target
     ports:
-      - 8000:8000
+      - 8100:8100
     environment:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
+      - IONIC_CONFIG_DIRECTORY=${IONIC_CONFIG_DIRECTORY}
 
   packager:
     extends:

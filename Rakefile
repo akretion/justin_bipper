@@ -25,7 +25,7 @@ desc "help you to start"
 task :help do
   puts "
 
-  Prodoo
+  Bipper
 
   Prerequise: Have a docker installed vXX
 
@@ -35,14 +35,17 @@ task :help do
   -> to build the docker with or without --build option:
     env CACHE=true rake assemble
 
-  -> to start bipper
+  -> to start bipper:
     rake watch
 
-  -> to package bipper
+  -> to package bipper:
     rake package
 
-  -> to tag and push to repository
+  -> to tag and push to repository:
     rake tag
+
+  -> to clean the project:
+    rake assemble
   "
 end
 
@@ -91,7 +94,7 @@ end
 # ------------------------------------------------------------------------------
 # Tag
 task :tag do
-  version = `grep -m1 version src/package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g'`
+  version = `grep -m1 version src/justin/package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g'`
   begin
     sh "docker image pull #{DOCKER_REGISTRY}/#{DOCKER_ORG_NAME}/#{DOCKER_REPO_NAME}:#{version}"
     # exit 1

@@ -1,20 +1,16 @@
 #!/bin/bash
 
-# command for run gulp debug
-debug="gulp debug"
+# clear target directory
+rm -rf $OS_TARGET/*
 
-# delete contnet of build watch dir
-rm -rf $OS_BUILD/src/build
-rm -rf $OS_BUILD/src/node_modules
-rm -rf $OS_BUILD/src/bower_components
-rm -rf $OS_BUILD/src/.tmp
-rm -rf $OS_BUILD/src/package-lock.json
+# enter justin dir
+cd $OS_BUILD/src/justin
 
-# assemble webapp and put in proper directory
-cd $OS_BUILD/src
+# remove old build
+rm -rf www/*
 
-# copy prodoo config file
-cp src/components/prodooConfig/prodooConfig.js.dev src/components/prodooConfig/prodooConfig.js
+# remove all old node modules
+rm -rf node_modules/
 
 # install all node dep
 npm install
@@ -22,11 +18,11 @@ npm install
 # add path to exec
 PATH=$PATH:./node_modules/.bin/
 
-# install all bower components
-bower install --allow-root
+# move original file to old file
+mv ./ionic.config.json ./ionic.config.old.json
 
-# run gulp debug command
-$debug &
+# copy oliverstore config file to root of project
+cp $OS_BUILD/etc/config/ionic.config.json ./
 
-# start proxy server
-light-server -c $OS_BUILD/etc/config/lightrc.json
+# watch
+ionic-app-scripts serve

@@ -30,9 +30,3 @@ RUN chmod +x /os/bin/clean.sh
 #
 COPY scripts/start.sh /os/bin/
 RUN chmod +x /os/bin/start.sh
-
-#
-# PACKAGE
-#
-COPY scripts/package.sh /os/bin/
-RUN chmod +x /os/bin/package.sh
