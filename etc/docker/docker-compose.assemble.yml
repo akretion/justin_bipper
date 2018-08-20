@@ -36,7 +36,7 @@ services:
   watcher:
     extends:
       service: base_integration
-    command: /os/bin/start.sh
+    command: /os/bin/watch.sh
     hostname: prodoo
     depends_on:
       - source
@@ -50,18 +50,6 @@ services:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
-      - IONIC_CONFIG_DIRECTORY=${IONIC_CONFIG_DIRECTORY}
-
-  packager:
-    extends:
-      service: base_integration
-    command: /os/bin/package.sh
-    depends_on:
-      - target
-    volumes_from:
-      - target
-    environment:
-      - OS_TARGET=${OS_TARGET}
 
   tester:
     extends:
@@ -107,4 +95,4 @@ services:
     extends:
       service: base_volume
     volumes:
-      -  ../../dist:/os/target
+      -  ../../.dist:/os/target
