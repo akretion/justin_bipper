@@ -109,5 +109,11 @@ export class ColisagePage {
     if (this.inputBar)
       this.inputBar.focus(); //it may be not loaded yet
       //and we don't care because inputBar focus on ngInit
-    }
+  
+  }
+
+  removeOne(product) {
+    let idx = this.model.products.findIndex(x => x.name == product.name)
+    this.model.products.splice(idx,1);
+  }
 }
