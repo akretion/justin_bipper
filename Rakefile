@@ -8,6 +8,7 @@ PROJECT_DIR = Pathname.new(".")
 DEV_PROJECT = "#{PROJECT_NAME}dev"
 
 COMPOSE_FILE_ASSEMBLE = PROJECT_DIR + "etc/docker/docker-compose.assemble.yml"
+COMPOSE_FILE_WATCH = PROJECT_DIR + "etc/docker/docker-compose.watch.yml"
 
 DOCKERFILE_PACKAGE = PROJECT_DIR + "etc/docker/Dockerfile"
 
@@ -54,8 +55,6 @@ end
 desc "assemble #{DEV_PROJECT}"
 task :assemble do
   CACHE = ENV["CACHE"] == "true" ? "" : "--build"
-  sh "git submodule init"
-  sh "git submodule update"
   sh "docker-compose -p #{DEV_PROJECT} -f #{COMPOSE_FILE_ASSEMBLE} up #{CACHE} assembler"
   exit `docker inspect -f   "{{ .State.ExitCode }}" #{DEV_PROJECT}_assembler_1`.to_i
 end
@@ -83,9 +82,7 @@ end
 desc "watch #{DEV_PROJECT}"
 task :watch do
   CACHE = ENV["CACHE"] == "true" ? "" : "--build"
-  sh "git submodule init"
-  sh "git submodule update"
-  sh "docker-compose -p #{DEV_PROJECT} -f #{COMPOSE_FILE_ASSEMBLE} up #{CACHE} watcher"
+  sh "docker-compose -p #{DEV_PROJECT} -f #{COMPOSE_FILE_WATCH} up #{CACHE} watcher"
 end
 
 # ------------------------------------------------------------------------------
