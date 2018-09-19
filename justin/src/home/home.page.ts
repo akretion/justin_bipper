@@ -78,8 +78,10 @@ export class HomePage {
     }
 
   }
+
   reset() {
   }
+  
   validate() {
   }
 }
