@@ -25,26 +25,18 @@ BUILD_ID = "latest"
 desc "help you to start"
 task :help do
   puts "
-
   Bipper
-
   Prerequise: Have a docker installed vXX
-
   -> to build the docker use:
     rake assemble
-
   -> to build the docker with or without --build option:
     env CACHE=true rake assemble
-
   -> to start bipper:
     rake watch
-
   -> to package bipper:
     rake package
-
   -> to tag and push to repository:
     rake tag
-
   -> to clean the project:
     rake assemble
   "
