@@ -6,9 +6,9 @@ import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/nextSteps.component';
 
 @Component({
-  templateUrl: 'destockage.html',
+  templateUrl: 'unstock.html',
 })
-export class DestockagePage {
+export class UnstockPage {
   pack: any = {};
   model: any = { packs: null};
   nextStep: string = '';
@@ -21,9 +21,6 @@ export class DestockagePage {
       private loadingCtrl: LoadingController,
       private productsProvider: ProductsProvider
     ) {
-      console.log('dans le consturteur de destockage');
-
-      //trouver que les commandes bloquées
       this.reset();
   }
   displayWarning(msg) {
@@ -47,7 +44,7 @@ export class DestockagePage {
     this.model = { packs: new Map()};
     this.listeDeCourses = this.productsProvider.getReserved().filter(
       p =>  {
-        return p.shipment.nextSteps().indexOf('destocker') !== -1;
+        return p.shipment.nextSteps().indexOf('unstock') !== -1;
         }
     );
     if (this.inputBar)
