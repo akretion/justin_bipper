@@ -1,6 +1,6 @@
 [submodule "src"]
 	path = src
-	url = git@github.com:waf31/justin_bipper.git
+	url = git@github.com:Stores-Discount/justin_bipper.git
 [submodule "justin_bipper"]
 	path = justin_bipper
 	url = git@github.com:Stores-Discount/justin_bipper.git
