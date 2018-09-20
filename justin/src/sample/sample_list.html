@@ -1,0 +1,29 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons start>
+            <button ion-button menuToggle>Toggle Menu</button>
+        </ion-buttons>
+
+        <ion-title>
+            Prepare delivery
+        </ion-title>
+        <input-bar (cb)="addIt($event)">Search bar</input-bar>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+        <ion-item *ngIf="!deliveries.length">
+            Nothing to do
+        </ion-item>
+        <ion-item-group *ngIf="deliveries.length">
+            <ion-item *ngFor="let delivery of deliveries">
+                <a (click)="addIt(delivery.name)">{{ delivery.name }}</a>
+            </ion-item>
+            <ion-buttons start>
+                <button ion-button (click)="refresh()" danger>Refresh</button>
+            </ion-buttons>
+        </ion-item-group>
+    </ion-list>
+</ion-content>

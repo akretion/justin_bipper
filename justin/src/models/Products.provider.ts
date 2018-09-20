@@ -110,6 +110,7 @@ export class ProductsProvider {
       .subscribe(odooFetch)
 
     this.pauser.next(false);
+    window['pauser'] = this.pauser;
 
     function buildShip(s) {
       var ship = new Shipment();
@@ -171,6 +172,9 @@ export class ProductsProvider {
   }
   explicitRefresh() {
     this.pauser.next(false);
+  }
+  explicitPause() {
+    this.pauser.next(true);
   }
   getProducts(prodBarcode) {
     console.log('dans get product', prodBarcode);

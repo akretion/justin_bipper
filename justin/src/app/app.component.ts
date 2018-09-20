@@ -10,6 +10,8 @@ import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
 import {HomePage} from './../home/home.page';
+import {SampleListPage} from '../sample/sample_list.page';
+import {SamplePage} from '../sample/sample.page';
 import {StockPage} from './../stock/stock.page';
 import {LoadPage} from './../load/load.page';
 import {DebugPage} from './../debug/debug.page';
@@ -35,6 +37,8 @@ export class MyApp {
     {data: {title: "Load" }, component: LoadPage, path: 'load', action:'load', hide:false},
     {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher', hide:false},
     {data: {title: "Debug" }, component: DebugPage, path: 'debug', action:'debug', hide:false},
+    {data: {title: "Sample" }, component: SampleListPage, path: 'sample_list', action: 'sample', hide: false },
+    {data: {title: "Sample" }, component: SamplePage, path: 'sample_detail', action: 'sample_detail', hide: true },
     {data: {title: "Logout" }, component: LogoutPage, path: 'logout', action:'logout', hide:false},
     {data: {title: "Login" }, component: LoginPage, path: 'login', action:'login', hide:true}
   ];
@@ -57,7 +61,7 @@ export class MyApp {
       this.openPage(i.page.component, i.data);
     });
 
-    this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.path !='login');
+    this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.hide != true);
   }
   openPage(page, data) {
     console.log('openPage', data);
