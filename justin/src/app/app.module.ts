@@ -17,10 +17,12 @@ import {LoginPage} from '../login/login';
 import {LogoutPage} from '../login/logout';
 import {CarrierPage} from '../assemblage/carrier.page';
 import {HomePage} from '../home/home.page';
-
+import {SampleListPage } from '../sample/sample_list.page';
+import {SamplePage } from '../sample/sample.page';
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
+import {SamplesProvider } from '../models/Samples.provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -44,6 +46,8 @@ import { errorComponent } from '../models/error.handler';
     LogoutPage,
     DebugPage,
     HomePage,
+    SamplePage,
+    SampleListPage,
     nextAppComponent,
     inputBarComponent,
     errorComponent,
@@ -67,11 +71,14 @@ import { errorComponent } from '../models/error.handler';
     LogoutPage,
     DebugPage,
     HomePage,
+    SamplePage,
+    SampleListPage,
   ],
   providers: [
       ProductsProvider,
       ScansProvider,
       ColisageProvider,
+      SamplesProvider,
       RouteService,
       odooService,
       PrintServices,
