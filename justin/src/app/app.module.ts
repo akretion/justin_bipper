@@ -9,7 +9,7 @@ import {BeepPage} from '../beep/beep.page';
 import {ColisagePage} from '../colisage/colisage.page';
 import {SearchPage} from '../search/Search.page';
 import {AssemblagePage} from '../assemblage/assemblage.page';
-import {DestockagePage} from '../destockage/destockage.page';
+import {UnstockPage} from '../unstock/unstock.page';
 import {StockPage} from './../stock/stock.page';
 import {LoadPage} from '../load/load.page';
 import {DebugPage} from '../debug/debug.page';
@@ -37,7 +37,7 @@ import { errorComponent } from '../models/error.handler';
     SearchPage,
     AssemblagePage,
     CarrierPage,
-    DestockagePage,
+    UnstockPage,
     StockPage,
     LoadPage,
     LoginPage,
@@ -60,7 +60,7 @@ import { errorComponent } from '../models/error.handler';
     SearchPage,
     AssemblagePage,
     CarrierPage,
-    DestockagePage,
+    UnstockPage,
     StockPage,
     LoadPage,
     LoginPage,
