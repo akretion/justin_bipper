@@ -49,11 +49,13 @@ export class HomePage {
       'steps', steps,
       'shipstesp', shipSteps, 'packstesp', packSteps)
       if (shipMinusPack.length > 0) {
-        console.log('il reste des trucs a faire avec les produits, on search');
         steps = [];
       } else {
-        console.log('rien a faire pour les produits, on affiche le pack ?');
-        steps = packMinusShip;
+        if (shipSteps.length == 1) {
+          steps = shipSteps; // only ship ?
+        } else {
+          steps = packMinusShip;
+        }
       }
     } else if (prod.length) {
       // on a trouve un produit

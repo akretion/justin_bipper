@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {NavController, ToastController} from 'ionic-angular';
+import {NavController, NavParams, ToastController} from 'ionic-angular';
 import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/nextSteps.component';
@@ -14,6 +14,7 @@ export class StockPage {
   nextStep: string = '';
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
+      public navParams: NavParams,
       public navCtrl: NavController,
       public alertCtrl: AlertController,
       public toastCtrl: ToastController,
@@ -21,6 +22,10 @@ export class StockPage {
       public productsProvider: ProductsProvider
     ) {
       this.reset();
+
+      var scanned = this.navParams.get('scanned');
+      if (scanned)
+        this.addIt(scanned);
   }
   displayWarning(msg) {
     this.toastCtrl.create({
