@@ -14,7 +14,8 @@ import {Pack, Shipment, Product } from '../statemachine/src/states';
 export class StandardProductsPickingPage {
   shipment: Shipment;
   model: any = {};
-
+  productsToShipCounter: number = 0;
+  productsScanned: number = 0;
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
@@ -30,9 +31,9 @@ export class StandardProductsPickingPage {
     ) {
       this.reset(true);
 
-      var scanned = this.navParams.get('scanned');
-      if (scanned)
-        this.addIt(scanned);
+      var shipmentName = this.navParams.get('shipment');
+      if (shipmentName)
+        this.initShipment(shipmentName);
   }
 
   displayWarning(msg) {
@@ -44,22 +45,32 @@ export class StandardProductsPickingPage {
     return toast.present();
   }
 
-  addIt(scanned) {
-    this.shipment = this.standardProductsProvider.getShipment(scanned);
+  initShipment(shipmentName) {
+    this.shipment = this.standardProductsProvider.getShipment(shipmentName);
+    this.productsToShipCounter = this.shipment.products.length;
     console.log(this.shipment)
+  }
 
-    // this.standardProductsPickingProvider.addOne(scanned, this.model.products).then(
-    //   (product: Product) => {
-    //     this.model.products.push(product);
-    //     this.shipment = product.shipment;
+  addIt(scanned) {
+    let productIdx: number = this.shipment.products.findIndex(x => x.name == scanned)
+    console.log(productIdx)
+    if (productIdx != -1) {
+      this.model.products.push(this.shipment.products[productIdx])
+      this.productsScanned++
+      console.log(this.shipment.products[productIdx])
+    } else {
+      this.model.products.push({
+        name: scanned,
+        isExpected: false,
+        shipment: null,
+        pack: null,
+        category: ''
+      })
+    }
 
-    //     if (this.model.products.length == this.shipment.products.length)
-    //       this.model.shipNow = true;
-    //   },
-    //   (reason) => {
-    //     this.displayWarning(reason);
-    //   }
-    // );
+    if (this.productsScanned == this.productsToShipCounter) {
+      this.model.shipNow = true;
+    }
   }
 
 //   printAndContinue() {
@@ -88,24 +99,25 @@ export class StandardProductsPickingPage {
 //       .then( () => this.reset(false));
 //   }
 
-//   shipNow() {
-//     //pack, don't prnt label and go to shipping page directly
-//     var loader = this.loadingCtrl.create({
-//       content:'Please wait',
-//       duration: 3000
-//     });
-//     loader.present();
+  shipNow() {
+    console.log('Funtion not yet implement')
+    //pack, don't prnt label and go to shipping page directly
+    // var loader = this.loadingCtrl.create({
+    //   content:'Please wait',
+    //   duration: 3000
+    // });
+    // loader.present();
 
-//     // redirect to ship
-//     this.standardProductsPickingProvider.validatePack(this.model.weight, this.model.products, {'withLabel': false})
-//     .then(
-//       (pack) => {
-//         loader.dismissAll()
-//         return this.routeService.goTo('assembler', {'scanned': pack.name});
-//       }
-//     );
-//     this.reset(true);
-//   }
+    // // redirect to ship
+    // this.standardProductsPickingProvider.validatePack(this.model.weight, this.model.products, {'withLabel': false})
+    // .then(
+    //   (pack) => {
+    //     loader.dismissAll()
+    //     return this.routeService.goTo('assembler', {'scanned': pack.name});
+    //   }
+    // );
+    // this.reset(true);
+  }
 
   reset(withShipment) {
     // this.standardProductsPickingProvider.reset();
@@ -118,8 +130,8 @@ export class StandardProductsPickingPage {
   
   }
 
-//   removeOne(product) {
-//     let idx = this.model.products.findIndex(x => x.name == product.name)
-//     this.model.products.splice(idx,1);
-//   }
+  removeOne(product) {
+    let idx = this.model.products.findIndex(x => x.name == product.name)
+    this.model.products.splice(idx,1);
+  }
 }

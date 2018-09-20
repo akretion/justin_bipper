@@ -51,50 +51,18 @@ export class StandardProductsPage {
   }
 
   addIt(scanned) {
-    console.log('addit', scanned);
-    var packs = [];
-    var prods = [];
-    var ships = [];
-    var notFound = false;
-
-    let pack = this.standardProductsProvider.getPack(scanned);
-    let ship = this.standardProductsProvider.getShipment(scanned);
-    let prod = this.standardProductsProvider.getProducts(scanned);
-    if (pack) {
-      //on a trouvé un pack
-      ships = [pack.shipment];
-      packs = [pack];
-      prods = pack.products;
-      this.model.searched = "pack";
-      console.log('next step', pack.nextSteps())
-    } else if (ship) {
-      // on a trouvé un shipment
-      ships = [ship];
-      packs = ship.packs;
-      prods = ship.products;
-      this.model.searched = "shipment";
-    } else if (prod.length) {
-      // on a trouve un produit
-      ships = [prod[0].shipment];
-      packs = (prod[0].pack) ? [prod[0].pack]: [];
-      prods = [prod[0]];
-      this.model.searched = "product";
+    var shipment = this.standardProductsProvider.getShipment(scanned)
+    if (shipment){
+      this.selectShipment([scanned, shipment])
     } else {
-      notFound = true;
+      this.displayWarning('Can not find that shipment');
+      this.inputBar.focus();
     }
-
-    this.search = {
-      products: prods,
-      packs: packs,
-      shipments: ships,
-      terms: scanned,
-      notFound: notFound
-    };
-    console.log('searched', this.search);
+    
   }
 
   selectShipment(ship) {
     console.log('selected shipment: ', ship)
-    this.navCtrl.push(StandardProductsPickingPage, {scanned:ship[0]})
+    this.navCtrl.push(StandardProductsPickingPage, {shipment:ship[0]})
   }
 }

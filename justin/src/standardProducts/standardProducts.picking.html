@@ -14,17 +14,16 @@
       
 <ion-content padding>
     
-    <!-- <ion-list>
+    <ion-list>
         <ion-item *ngFor="let product of model.products">
             <ion-badge *ngIf="product.isExpected" color="primary">Received</ion-badge>
             <ion-badge *ngIf="!product.isExpected" color="danger">Unkown</ion-badge>
             {{product.name}}
             <button ion-button item-right outline danger (click)="removeOne(product)">-1</button>
-            <br><small>{{ product.category }}</small>
         </ion-item>
-    </ion-list> -->
+    </ion-list>
 
-    <!-- <form name="colisageForm">
+    <form name="colisageForm" *ngIf="model.shipNow">
         
         <ion-item>
             <ion-label>Weight</ion-label>
@@ -33,28 +32,24 @@
 
         <ion-item>
             <ion-buttons start>
-            <button ion-button (click)="reset(true)" danger>Reset</button>
+                <button ion-button (click)="reset(false)" danger>Reset</button>
             </ion-buttons>
 
             <ion-buttons end>
-            <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.products.length && model.weight)" ion-button color="secondary">Ship now</button>
-            <button (click)="printAndContinue()" ion-button [disabled]="!(model.products.length && model.weight)" color="primary">Make package
-                <ion-icon name="send"></ion-icon>
-                </button>
+                <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.products.length && model.weight)" ion-button color="secondary">Ship now</button>
             </ion-buttons>
         </ion-item>
 
-    </form> -->
+    </form>
 
-    <!-- <ion-list *ngIf="shipment">
-        <ion-list-header>
-            {{ shipment.name }} {{ shipment.carrier }} <nextApp [withArgs]="false" [thing]="shipment" item-right>dns nextapp</nextApp>
-        </ion-list-header>
-
+    <ion-list *ngIf="shipment">
+        
         <ion-item-group>
+
             <ion-item-divider>
-                Products
+                Products to pick
             </ion-item-divider>
+
             <ion-item *ngFor="let product of shipment.products">
                 {{ product.name }}
                     - <span [ngSwitch]="product.stateMachine.state">
@@ -66,27 +61,14 @@
                 - <span *ngIf="model.products.indexOf(product) != -1">√</span>
                 <br> <small>{{ product.category }}</small>
             </ion-item>
-            </ion-item-group>
 
-            <ion-item-group>
-            <ion-item-divider>
-                Packs
-            </ion-item-divider>
-            <ion-item *ngFor="let pack of shipment.packs">
-                <h2>{{ pack.name }} {{ pack.weight }}kg</h2>
-                <p>
-                {{ pack.stateMachine?.state }}<br />
-                {{ pack.category }}
-                {{ pack.locationSM?.state }}
-                </p>
-                <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
-            </ion-item>
-            </ion-item-group>
-    </ion-list> -->
+        </ion-item-group>
 
-    <!-- <div *ngIf="!shipment">
+    </ion-list>
+
+    <div *ngIf="!shipment">
         No shipment found pack
-    </div> -->
+    </div>
 
 </ion-content>
       
