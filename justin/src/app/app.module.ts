@@ -18,6 +18,7 @@ import {LogoutPage} from '../login/logout';
 import {CarrierPage} from '../assemblage/carrier.page';
 import {HomePage} from '../home/home.page';
 import {StandardProductsPage} from '../standardProducts/standardProducts.page';
+import {StandardProductsPickingPage} from '../standardProducts/standardProducts.picking.page';
 
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
@@ -47,6 +48,7 @@ import { errorComponent } from '../models/error.handler';
     DebugPage,
     HomePage,
     StandardProductsPage,
+    StandardProductsPickingPage,
     nextAppComponent,
     inputBarComponent,
     errorComponent,
@@ -71,6 +73,7 @@ import { errorComponent } from '../models/error.handler';
     DebugPage,
     HomePage,
     StandardProductsPage,
+    StandardProductsPickingPage,
   ],
   providers: [
       ProductsProvider,

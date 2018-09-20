@@ -6,6 +6,7 @@ import {nextAppComponent} from '../models/nextSteps.component';
 import {RouteService} from '../models/route.Service';
 import {StandardProductsProvider} from '../models/StandardProducts.provider';
 import {Product, Pack, Shipment} from '../statemachine/src/states';
+import {StandardProductsPickingPage} from './standardProducts.picking.page';
 
 @Component({
   templateUrl: 'standardProducts.html',
@@ -94,5 +95,6 @@ export class StandardProductsPage {
 
   selectShipment(ship) {
     console.log('selected shipment: ', ship)
+    this.navCtrl.push(StandardProductsPickingPage, {scanned:ship[0]})
   }
 }
