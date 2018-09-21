@@ -4,18 +4,21 @@ import {AlertController, LoadingController} from 'ionic-angular';
 import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {RouteService} from '../models/route.Service';
-import {StandardProductsProvider} from '../models/StandardProducts.provider';
-
+import {StandardProductsProvider} from '../models/StandardProducts.provider_old';
+import {Product, Pack, Shipment} from '../statemachine/src/states';
 import {StandardProductsPickingPage} from './standardProducts.picking.page';
 
 @Component({
   templateUrl: 'standardProducts.html',
 })
 export class StandardProductsPage {
+  shipment: any;
   model: any = {};
-  pickings: any = {}
+  search: any = {};
+  shipings: Array<Shipment> = [];
+
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
-  // @ViewChild(nextAppComponent) nextApp:nextAppComponent;
+  @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
   constructor(
       public navCtrl: NavController,
@@ -26,20 +29,16 @@ export class StandardProductsPage {
       public routeService: RouteService,
       private standardProductsProvider: StandardProductsProvider
     ) {
-
+      this.search = {products: [], packs: [], shipments: [], terms:""};
   }
 
   ionViewDidLoad(){
-    this.standardProductsProvider.fetch().then(
+    this.standardProductsProvider.getShipment().then(
       x => {
-        this.pickings = x
-        console.log(this.pickings)
-      },
-      err => {
-        this.displayWarning(err);
+        this.shipings = x
+        console.log(x)
       }
     )
-
   }
 
   displayWarning(msg) {
@@ -51,8 +50,19 @@ export class StandardProductsPage {
     return toast.present();
   }
 
-  selectPicking(item) {
-    console.log('selected picking: ', item)
-    this.navCtrl.push(StandardProductsPickingPage, {picking:item})
+  addIt(scanned) {
+    var shipment = this.standardProductsProvider.getShipment(scanned)
+    if (shipment){
+      this.selectShipment([scanned, shipment])
+    } else {
+      this.displayWarning('Can not find that shipment');
+      this.inputBar.focus();
+    }
+    
+  }
+
+  selectShipment(ship) {
+    console.log('selected shipment: ', ship)
+    this.navCtrl.push(StandardProductsPickingPage, {shipment:ship[0]})
   }
 }

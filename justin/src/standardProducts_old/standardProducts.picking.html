@@ -5,7 +5,7 @@
         </ion-buttons>
     
         <ion-title>
-            Picking: {{picking.name}}
+            Picking: {{shipment.name}}
         </ion-title>
         <input-bar (cb)="addIt($event)">Search bar</input-bar>
     </ion-toolbar>
@@ -23,7 +23,7 @@
         </ion-item>
     </ion-list>
 
-    <form name="colisageForm" *ngIf="model.procced">
+    <form name="colisageForm" *ngIf="model.shipNow">
         
         <ion-item>
             <ion-label>Weight</ion-label>
@@ -32,21 +32,17 @@
 
         <ion-item>
             <ion-buttons start>
-                <button ion-button (click)="doPick()" danger>Pick</button>
-            </ion-buttons>
-
-            <ion-buttons >
-                <button *ngIf="model.pickDone" (click)="doPack()" [disabled]="!(model.pickDone && model.weight)" ion-button color="primary">Pack</button>
+                <button ion-button (click)="reset(false)" danger>Reset</button>
             </ion-buttons>
 
             <ion-buttons end>
-                <button *ngIf="model.pickDone" (click)="doShip()" [disabled]="!model.packDone" ion-button color="primary">Ship</button>
+                <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.products.length && model.weight)" ion-button color="secondary">Ship now</button>
             </ion-buttons>
         </ion-item>
 
     </form>
 
-    <ion-list>
+    <ion-list *ngIf="shipment">
         
         <ion-item-group>
 
@@ -54,16 +50,25 @@
                 Products to pick
             </ion-item-divider>
 
-            <ion-item *ngFor="let product of picking.move_lines">
+            <ion-item *ngFor="let product of shipment.products">
                 {{ product.name }}
-                <br />
-                <small>Total to pick:</small>
-                <ion-badge color="primary">{{product.product_qty}}</ion-badge>
+                    - <span [ngSwitch]="product.stateMachine.state">
+                    <span *ngSwitchCase="'init'">?</span>
+                    <span *ngSwitchCase="'available'">Produced</span>
+                    <span *ngSwitchCase="'received'">Received</span>
+                    <span *ngSwitchCase="'packed'">Packed</span>
+                    </span>
+                - <span *ngIf="model.products.indexOf(product) != -1">√</span>
+                <br> <small>{{ product.category }}</small>
             </ion-item>
 
         </ion-item-group>
 
     </ion-list>
+
+    <div *ngIf="!shipment">
+        No shipment found pack
+    </div>
 
 </ion-content>
       
