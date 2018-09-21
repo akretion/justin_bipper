@@ -4,6 +4,7 @@ export class Shipment {
   name = 'WH/OUT102';
   carrier = '';
   products = [];
+  picking_id = 0;
   partial_allowed = false;
   emplacement = {
     //inexistant avant rassemblement
@@ -240,6 +241,7 @@ export class Pack { //carton
   pack: Pack;
   category: String;
   stateMachine: StateMachine;
+  move_id = 0;
   constructor() {
     this.stateMachine = new StateMachine();
     this.stateMachine.events = <Array<StateEvent>>[

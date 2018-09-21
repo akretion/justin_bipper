@@ -1,15 +1,15 @@
 import {Injectable} from '@angular/core';
-import {ProductsProvider} from '../models/Products.provider';
+import {StandardProductsProvider} from '../models/StandardProducts.provider';
 import {odooService} from '../angular-odoo/odoo';
 
 import {Pack, Shipment, Product } from '../statemachine/src/states';
 
 @Injectable()
-export class ColisageProvider {
+export class StandardProductsPickingProvider {
   pack: any;
   ship: any;
   constructor(
-    private productsProvider: ProductsProvider,
+    private productsProvider: StandardProductsProvider,
     private odoo: odooService
     ) {
       this.reset();
@@ -19,10 +19,10 @@ export class ColisageProvider {
     var productsProvider = this.productsProvider;
     var products = productsProvider.getProducts(barcode);
     //products may contain duplicate keys
-
+    console.log(products)
     function getProduct(barcode) {
       var nextAvailableProduct = products
-        .find( (l) => l.stateMachine.state == 'received' && alreadyScanned.indexOf(l) == -1);
+        .find( (l) => l.stateMachine.state == 'init' && alreadyScanned.indexOf(l) == -1);
 
       if (nextAvailableProduct)
         return Promise.resolve(nextAvailableProduct);
@@ -55,12 +55,14 @@ export class ColisageProvider {
       .then(prod => prod);
   }
 
-  validatePack_old(weight, products, withLabel) {
-    console.log('weight, products', weight, products);
+  validatePack(weight, products, withLabel) {
     var withLabel = withLabel['withLabel'];
     var pack = this.pack;
-    return pack.stateMachine.can('coliser', {weight:weight, products: products})
-    .then( () => {
+
+
+    var dupa:any = pack.stateMachine.can('coliser', {weight:weight, products: products})
+    console.log(dupa)
+    return dupa.then( () => {
       var payload = {
         'weight': weight,
         'products': products.map( x => x.name)
@@ -79,7 +81,7 @@ export class ColisageProvider {
     ).then( () => pack, (x) => console.log('on leve pas',x));
   }
 
-  validatePack(weight, products, withLabel) {
+  validatePack_old(weight, products, withLabel) {
     console.log('weight, products', weight, products);
     var withLabel = withLabel['withLabel'];
     var pack = this.pack;

@@ -23,6 +23,7 @@ import {StandardProductsPickingPage} from '../standardProducts/standardProducts.
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {StandardProductsProvider} from '../models/StandardProducts.provider';
+import {StandardProductsPickingProvider} from '../standardProducts/StandardProductsPicking.Provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
@@ -82,7 +83,8 @@ import { errorComponent } from '../models/error.handler';
       RouteService,
       odooService,
       PrintServices,
-      StandardProductsProvider
+      StandardProductsProvider,
+      StandardProductsPickingProvider
   ]
 })
 export class AppModule{}

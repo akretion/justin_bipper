@@ -110,6 +110,7 @@ export class Shipment {
         return Array.from(stateAction.action());
     }
 }
+;
 export class Pack {
     constructor() {
         this.products = [];
