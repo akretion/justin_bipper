@@ -16,9 +16,20 @@
     
     <ion-list>
         <ion-item *ngFor="let product of model.products">
-            <ion-badge *ngIf="product.isExpected" color="primary">Received</ion-badge>
+            <!-- <ion-badge *ngIf="product.isExpected" color="primary">Received</ion-badge>
             <ion-badge *ngIf="!product.isExpected" color="danger">Unkown</ion-badge>
+            {{product.name}} -->
+ 
+            <span *ngIf="product.product_pickied_qty ==  product.product_qty">
+                <ion-badge secondary>{{ product.product_pickied_qty }}</ion-badge> of <ion-badge secondary>{{ product.product_qty }}</ion-badge>
+            </span>
+
+            <span *ngIf="product.product_pickied_qty > product.product_qty">
+                <ion-badge color="danger">{{ product.product_pickied_qty }}</ion-badge> of <ion-badge color="danger">{{ product.product_qty }}</ion-badge>
+            </span>
+
             {{product.name}}
+
             <button ion-button item-right outline danger (click)="removeOne(product)">-1</button>
         </ion-item>
     </ion-list>
@@ -32,16 +43,16 @@
 
         <ion-item>
             <ion-buttons start>
-                <button ion-button (click)="doPick()" danger>Pick</button>
+                <button ion-button (click)="doPick()" [disabled]="!(model.weight)" color="danger">Ship</button>
             </ion-buttons>
 
-            <ion-buttons >
+            <!-- <ion-buttons >
                 <button *ngIf="model.pickDone" (click)="doPack()" [disabled]="!(model.pickDone && model.weight)" ion-button color="primary">Pack</button>
             </ion-buttons>
 
             <ion-buttons end>
                 <button *ngIf="model.pickDone" (click)="doShip()" [disabled]="!model.packDone" ion-button color="primary">Ship</button>
-            </ion-buttons>
+            </ion-buttons> -->
         </ion-item>
 
     </form>
