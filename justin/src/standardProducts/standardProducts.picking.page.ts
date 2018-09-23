@@ -62,6 +62,7 @@ export class StandardProductsPickingPage {
     if (idx != -1) {
       // get product object
       let product = this.picking.move_lines[idx];
+      console.log(product)
       
       let idxModel: number = this.model.products.findIndex(x => x.name == product.name);
       
