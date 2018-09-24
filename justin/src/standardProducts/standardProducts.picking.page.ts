@@ -147,6 +147,9 @@ export class StandardProductsPickingPage {
       x => {
         if (x) {
           this.model.shipDone = true;
+          // TODO: waiting for label ready
+          // this.printServices.printDymo(x[1]);
+          this.displayWarning(`Saved`);
           this.navCtrl.push(StandardProductsPage)
         }
       },
