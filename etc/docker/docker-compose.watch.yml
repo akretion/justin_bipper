@@ -18,50 +18,25 @@ services:
 
 # #####################################################
 # Integration services
-  assembler:
+  watcher:
     extends:
       service: base_integration
-    command: /os/bin/assemble.sh
+    command: /os/bin/watch.sh
+    hostname: bipper
     depends_on:
       - source
       - target
     volumes_from:
       - source
       - target
+    network_mode: "host"
+    ports:
+      - 8100:8100
     environment:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
-
-  tester:
-    extends:
-      service: base_integration
-    command: /os/bin/test.sh
-    depends_on:
-      - source
-      - target
-    volumes_from:
-      - source
-      - target
-    environment:
-      - OS_TARGET=${OS_TARGET}
-      - OS_APP=${OS_APP}
-      - OS_BUILD=${OS_BUILD}
-
-  cleaner:
-    extends:
-      service: base_integration
-    command: /os/bin/clean.sh
-    depends_on:
-      - source
-      - target
-    volumes_from:
-      - source
-      - target
-    environment:
-      - OS_TARGET=${OS_TARGET}
-      - OS_APP=${OS_APP}
-      - OS_BUILD=${OS_BUILD}
+      - WATCH_DO_CLEAN=${WATCH_DO_CLEAN}
 
 # #####################################################
 # Volume services
