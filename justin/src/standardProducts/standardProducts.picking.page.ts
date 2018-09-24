@@ -112,26 +112,8 @@ export class StandardProductsPickingPage {
     this.standardProductsProvider.doPick(this.model).then(
       x => {
         console.log(x)
-        let weight = this.model.weight
-        this.model = x
-        this.model.weight = weight;
+        this.model = x;
         this.model.pickDone = true;
-        this.model.procced = true;
-        this.doPack();
-      },
-      err => {
-        console.log(err)
-      }
-    )
-  }
-
-  doPack() {
-    this.model.weight = this.model.weight;
-    this.standardProductsProvider.doPack(this.model).then(
-      x => {
-        console.log(x)
-        this.model = x
-        this.model.packDone = true;
         this.model.procced = true;
         this.doShip();
       },
@@ -143,7 +125,7 @@ export class StandardProductsPickingPage {
 
   doShip() {
     this.model.weight = this.model.weight;
-    this.standardProductsProvider.doShip(this.model.picking_name, this.model.package[1]).then(
+    this.standardProductsProvider.doShip(this.model.picking_name, this.model.package).then(
       x => {
         if (x) {
           this.model.shipDone = true;
@@ -171,7 +153,6 @@ export class StandardProductsPickingPage {
     this.model['picking_name'] = ''
     this.model['procced'] = false
     this.model['pickDone'] = false
-    this.model['packDone'] = false
     this.model['shipDone'] = false
 
     // this.inputBar.focus();
