@@ -56,7 +56,7 @@ export class StandardProductsPickingPage {
 
   addIt(scanned) {
     // get index of product
-    let idx: number = this.picking.move_lines.findIndex(x => x.name == scanned);
+    let idx: number = this.picking.move_lines.findIndex(x => x.default_code == scanned);
 
     // check if scanned product is in products to pick array
     if (idx != -1) {
@@ -64,7 +64,7 @@ export class StandardProductsPickingPage {
       let product = this.picking.move_lines[idx];
       console.log(product)
       
-      let idxModel: number = this.model.products.findIndex(x => x.name == product.name);
+      let idxModel: number = this.model.products.findIndex(x => x.default_code == product.default_code);
       
       if (idxModel == -1) {
         product['product_pickied_qty'] = 1
@@ -73,7 +73,7 @@ export class StandardProductsPickingPage {
         this.model.products[idxModel].product_pickied_qty++;
       }
 
-      idxModel = this.model.products.findIndex(x => x.name == product.name);
+      idxModel = this.model.products.findIndex(x => x.default_code == product.default_code);
 
       if (this.model.products[idxModel].product_pickied_qty == this.model.products[idxModel].product_qty) {
         // increment scanned products counter
@@ -129,8 +129,8 @@ export class StandardProductsPickingPage {
       x => {
         if (x) {
           this.model.shipDone = true;
-          // TODO: waiting for label ready
-          // this.printServices.printDymo(x[1]);
+          console.log(x)
+          this.printServices.printDymo(x[1]);
           this.displayWarning(`Saved`);
           this.navCtrl.push(StandardProductsPage)
         }
