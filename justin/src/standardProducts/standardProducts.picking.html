@@ -36,26 +36,11 @@
     </ion-list>
 
     <form name="colisageForm" *ngIf="model.procced">
-        
-        <ion-item>
-            <ion-label>Weight</ion-label>
-            <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any"></ion-input>
-        </ion-item>
-
         <ion-item>
             <ion-buttons start>
-                <button ion-button (click)="doPick()" [disabled]="!(model.weight)" color="danger">Ship</button>
+                <button ion-button (click)="doPick()" color="danger">Ship</button>
             </ion-buttons>
-
-            <!-- <ion-buttons >
-                <button *ngIf="model.pickDone" (click)="doPack()" [disabled]="!(model.pickDone && model.weight)" ion-button color="primary">Pack</button>
-            </ion-buttons>
-
-            <ion-buttons end>
-                <button *ngIf="model.pickDone" (click)="doShip()" [disabled]="!model.packDone" ion-button color="primary">Ship</button>
-            </ion-buttons> -->
         </ion-item>
-
     </form>
 
     <ion-list>
