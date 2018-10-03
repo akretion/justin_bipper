@@ -4,6 +4,7 @@ import {AlertController, LoadingController} from 'ionic-angular';
 import {inputBarComponent} from '../models/inputBar.component';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {RouteService} from '../models/route.Service';
+import {ProductsProvider} from '../models/Products.provider';
 import {StandardProductsProvider} from '../models/StandardProducts.provider';
 
 import {StandardProductsPickingPage} from './standardProducts.picking.page';
@@ -24,9 +25,10 @@ export class StandardProductsPage {
       private toastCtrl: ToastController,
       public loadingCtrl: LoadingController,
       public routeService: RouteService,
-      private standardProductsProvider: StandardProductsProvider
+      private standardProductsProvider: StandardProductsProvider,
+      private productsProvider: ProductsProvider
     ) {
-
+      productsProvider.explicitPause();
   }
 
   ionViewDidLoad(){

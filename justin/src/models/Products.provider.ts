@@ -172,6 +172,11 @@ export class ProductsProvider {
   explicitRefresh() {
     this.pauser.next(false);
   }
+
+  explicitPause() {
+    this.pauser.next(true);
+  }
+
   getProducts(prodBarcode) {
     console.log('dans get product', prodBarcode);
     return this.productsLookup.get(prodBarcode) || [];

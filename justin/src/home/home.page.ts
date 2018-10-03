@@ -24,6 +24,7 @@ export class HomePage {
     ) {
       console.log('dans le consturteur de home');
       this.searched = {};
+      productsProvider.explicitRefresh();
   }
   addIt(scanned) {
     console.log('il a scanned', scanned);
