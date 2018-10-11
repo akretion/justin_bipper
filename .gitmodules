@@ -1,4 +1,3 @@
 [submodule "src"]
 	path = src
-	url = https://github.com/akretion/justin_bipper.git
-	branch = master
+	url = git@github.com:Stores-Discount/justin_bipper.git
