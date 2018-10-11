@@ -140,7 +140,6 @@ export class StandardProductsPickingPage {
     });
     loader.present();
 
-    this.model.weight = this.model.weight;
     this.standardProductsProvider.doShip(this.model.picking_name, this.model.package).then(
       x => {
         if (x) {
