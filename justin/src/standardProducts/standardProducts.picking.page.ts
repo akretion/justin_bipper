@@ -62,8 +62,8 @@ export class StandardProductsPickingPage {
     if (idx != -1) {
       // get product object
       let product = this.picking.move_lines[idx];
-      console.log(product)
-      
+
+      // check if product was already scanned
       let idxModel: number = this.model.products.findIndex(x => x.default_code == product.default_code);
       
       if (idxModel == -1) {
@@ -72,17 +72,18 @@ export class StandardProductsPickingPage {
       } else {
         this.model.products[idxModel].product_pickied_qty++;
       }
-
+      // get index of product that was pushed or changed
       idxModel = this.model.products.findIndex(x => x.default_code == product.default_code);
 
+      // if picked qty is equel to value of product to pick then increment scanned products counter
       if (this.model.products[idxModel].product_pickied_qty == this.model.products[idxModel].product_qty) {
-        // increment scanned products counter
         this.productsScanned++
       }
 
       // check if we can procced to next step
       if (this.productsScanned == this.picking.move_lines.length){
         this.model.procced = true;
+        // one more step of validation that we have picked all the qty that we need to pick
         this.model.products.forEach(element => {
           console.log(element)
           if (element.product_pickied_qty != element.product_qty) {
@@ -90,19 +91,27 @@ export class StandardProductsPickingPage {
           }
         });
       }
+
     } else {
+      // we picked wrong product, so we create fake product with isExpected flag as false
       let newProd: any = {}
       newProd['isExpected'] = false
       newProd['name'] = scanned
       newProd['product_pickied_qty'] = 1
       newProd['product_qty'] = 0
       this.model.products.push(newProd)
+      this.model.procced = false;
     }
   }
 
   doPick() {
+    var loader = this.loadingCtrl.create({
+      content:'Please wait'
+    });
+    loader.present();
+
+    // iterate over products that was picked and remove those that have flag isExpected set up to false
     this.model.products.forEach(element => {
-      console.log(element)
       if (!element.isExpected) {
         let idx: number = this.model.products.findIndex(x => x.move_id == element.move_id)
         this.model.products.splice(idx,1)
@@ -112,6 +121,7 @@ export class StandardProductsPickingPage {
     this.standardProductsProvider.doPick(this.model).then(
       x => {
         console.log(x)
+        loader.dismissAll();
         this.model = x;
         this.model.pickDone = true;
         this.model.procced = true;
@@ -119,15 +129,22 @@ export class StandardProductsPickingPage {
       },
       err => {
         console.log(err)
+        loader.dismissAll();
       }
     )
   }
 
   doShip() {
+    var loader = this.loadingCtrl.create({
+      content:'Please wait'
+    });
+    loader.present();
+
     this.model.weight = this.model.weight;
     this.standardProductsProvider.doShip(this.model.picking_name, this.model.package).then(
       x => {
         if (x) {
+          loader.dismissAll();
           this.model.shipDone = true;
           console.log(x)
           this.printServices.printDymo(x[1]);
@@ -137,12 +154,9 @@ export class StandardProductsPickingPage {
       },
       err => {
         console.log(err)
+        loader.dismissAll();
       }
     )
-  }
-
-  private newMethod(x: any) {
-    console.log(x);
   }
 
   reset() {
