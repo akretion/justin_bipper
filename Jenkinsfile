@@ -33,13 +33,7 @@ pipeline {
     stage('package') {
       steps {
         script {
-          if (env.BRANCH_NAME == 'master') {
-            // In branch master
-            echo 'packaging on ecs'
-            sh 'rake package'
-          } else {
-            echo 'Not on branch Master, skipping'
-          }
+          sh 'rake package'
         }
         echo "Build duration: ${currentBuild.duration}"
       }
@@ -51,13 +45,7 @@ pipeline {
     stage('tag') {
       steps {
         script {
-          if (env.BRANCH_NAME == 'master') {
-            // In branch master
-            echo 'taging on ecs'
-            sh 'rake tag'
-          } else {
-            echo 'Not on branch Master, skipping'
-          }
+          sh 'rake tag'
         }
         echo "Build duration: ${currentBuild.duration}"
       }
