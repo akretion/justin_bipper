@@ -19,12 +19,6 @@ pipeline {
         echo "Start the test on ${env.BRANCH_NAME}, Build id: ${currentBuild.displayName}"
         sh 'rake test'
       }
-      // Post Junit result
-      //post {
-      //  always {
-      //    junit 'test/test-results.xml'
-      //  }
-      //}
     }
 
     /*
@@ -33,7 +27,13 @@ pipeline {
     stage('package') {
       steps {
         script {
-          sh 'rake package'
+          if (env.BRANCH_NAME == 'master') {
+            // In branch master
+            echo 'packaging on ecs'
+            sh 'rake package'
+          } else {
+            echo 'Not on branch Master, skipping'
+          }
         }
         echo "Build duration: ${currentBuild.duration}"
       }
@@ -45,7 +45,13 @@ pipeline {
     stage('tag') {
       steps {
         script {
-          sh 'rake tag'
+          if (env.BRANCH_NAME == 'master') {
+            // In branch master
+            echo 'taging on ecs'
+            sh 'rake tag'
+          } else {
+            echo 'Not on branch Master, skipping'
+          }
         }
         echo "Build duration: ${currentBuild.duration}"
       }
