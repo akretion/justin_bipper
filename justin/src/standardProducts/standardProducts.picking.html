@@ -54,6 +54,8 @@
             <ion-item *ngFor="let product of picking.move_lines">
                 {{ product.name }}
                 <br />
+                <small>Location:</small>
+                <ion-badge color="primary">{{product.rack_location}}</ion-badge>
                 <small>Total to pick:</small>
                 <ion-badge color="primary">{{product.product_qty}}</ion-badge>
             </ion-item>

@@ -6,39 +6,39 @@
   "proxies": [
     {
       "path": "/web/session/authenticate",
-      "proxyUrl": "http://localhost:8080/web/session/authenticate"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/session/authenticate"
     },
     {
       "path": "/web/session/destroy",
-      "proxyUrl": "http://localhost:8080/web/session/destroy"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/session/destroy"
     },
     {
       "path": "/web/dataset/search_read",
-      "proxyUrl": "http://localhost:8080/web/dataset/search_read"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/dataset/search_read"
     },
     {
       "path": "/web/session/get_session_info",
-      "proxyUrl": "http://localhost:8080/web/session/get_session_info"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/session/get_session_info"
     },
     {
       "path": "/web/webclient/version_info",
-      "proxyUrl": "http://localhost:8080/web/webclient/version_info"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/webclient/version_info"
     },
     {
       "path": "/web/database/list",
-      "proxyUrl": "http://localhost:8080/web/database/list"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/database/list"
     },
     {
       "path": "/jsonrpc",
-      "proxyUrl": "http://localhost:8080/jsonrpc"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/jsonrpc"
     },
     {
       "path": "/web/dataset/call_kw",
-      "proxyUrl": "http://localhost:8080/web/dataset/call_kw"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/dataset/call_kw"
     },
     {
       "path": "/web/webclient/version_info",
-      "proxyUrl": "http://localhost:8080/web/webclient/version_info"
+      "proxyUrl": "http://docker03.oliverstore.com:60160/web/webclient/version_info"
     }
 
   ]
