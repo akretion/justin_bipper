@@ -58,6 +58,7 @@
                 <ion-badge color="primary">{{product.rack_location}}</ion-badge>
                 <small>Total to pick:</small>
                 <ion-badge color="primary">{{product.product_qty}}</ion-badge>
+                - <span *ngIf="model.products.indexOf(product) != -1">√</span>
             </ion-item>
 
         </ion-item-group>

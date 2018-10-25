@@ -207,5 +207,6 @@ export class StandardProductsPickingPage {
       });
     }
 
+    this.inputBar.focus();
   }
 }
