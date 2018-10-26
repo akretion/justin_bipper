@@ -1,4 +1,4 @@
 [submodule "src"]
 	path = src
 	url = git@github.com:Stores-Discount/justin_bipper.git
-	branch = master
+	branch = develop
