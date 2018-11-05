@@ -110,7 +110,6 @@ export class Shipment {
         return Array.from(stateAction.action());
     }
 }
-;
 export class Pack {
     constructor() {
         this.products = [];
@@ -120,6 +119,7 @@ export class Pack {
         this.stateMachine.events = ([
             { name: 'coliser', from: 'init', to: 'transit', conditions: [
                     (args) => {
+                        console.log(weight)
                         let weight = parseFloat(args.weight);
                         if (!args.weight)
                             return Promise.reject("pas de poids");

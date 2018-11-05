@@ -16,6 +16,8 @@ import {DebugPage} from './../debug/debug.page';
 
 import { LoginPage} from '../login/login';
 import { LogoutPage} from '../login/logout';
+import { StandardProductsPage} from '../standardProducts/standardProducts.page';
+import { StandardProductsPickingPage} from '../standardProducts/standardProducts.picking.page';
 import { Product } from '../statemachine/src/states';
 
 import { errorComponent } from '../models/error.handler';
@@ -29,6 +31,8 @@ export class MyApp {
     {data: {title: "Home" }, component: HomePage, path: 'home', action:'home', hide:false},
     {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner', hide:false},
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser', hide:false},
+    {data: {title: 'Standard Products' }, component: StandardProductsPage, path: 'standardProducts', action:'standardProducts', hide:false},
+    {data: {title: 'Picking' }, component: StandardProductsPickingPage, path: 'standardProductsPicking', action:'standardProductsPicking', hide:true},
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
     {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},

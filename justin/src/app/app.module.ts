@@ -17,9 +17,13 @@ import {LoginPage} from '../login/login';
 import {LogoutPage} from '../login/logout';
 import {CarrierPage} from '../assemblage/carrier.page';
 import {HomePage} from '../home/home.page';
+import {StandardProductsPage} from '../standardProducts/standardProducts.page';
+import {StandardProductsPickingPage} from '../standardProducts/standardProducts.picking.page';
 
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
+import {StandardProductsProvider} from '../models/StandardProducts.provider';
+import {StandardProductsPickingProvider} from '../standardProducts/StandardProductsPicking.Provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
@@ -44,6 +48,8 @@ import { errorComponent } from '../models/error.handler';
     LogoutPage,
     DebugPage,
     HomePage,
+    StandardProductsPage,
+    StandardProductsPickingPage,
     nextAppComponent,
     inputBarComponent,
     errorComponent,
@@ -67,6 +73,8 @@ import { errorComponent } from '../models/error.handler';
     LogoutPage,
     DebugPage,
     HomePage,
+    StandardProductsPage,
+    StandardProductsPickingPage,
   ],
   providers: [
       ProductsProvider,
@@ -75,6 +83,8 @@ import { errorComponent } from '../models/error.handler';
       RouteService,
       odooService,
       PrintServices,
+      StandardProductsProvider,
+      StandardProductsPickingProvider
   ]
 })
 export class AppModule{}
