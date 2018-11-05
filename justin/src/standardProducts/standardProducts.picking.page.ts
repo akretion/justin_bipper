@@ -15,8 +15,6 @@ import {StandardProductsPage} from './standardProducts.page';
 export class StandardProductsPickingPage {
   picking: any = {};
   model: any = {};
-  productsToShipCounter: number = 0;
-  productsScanned: number = 0;
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
@@ -72,25 +70,6 @@ export class StandardProductsPickingPage {
       } else {
         this.model.products[idxModel].product_pickied_qty++;
       }
-      // get index of product that was pushed or changed
-      idxModel = this.model.products.findIndex(x => x.default_code == product.default_code);
-
-      // if picked qty is equel to value of product to pick then increment scanned products counter
-      if (this.model.products[idxModel].product_pickied_qty == this.model.products[idxModel].product_qty) {
-        this.productsScanned++
-      }
-
-      // check if we can procced to next step
-      if (this.productsScanned == this.picking.move_lines.length){
-        this.model.procced = true;
-        // one more step of validation that we have picked all the qty that we need to pick
-        this.model.products.forEach(element => {
-          console.log(element)
-          if (element.product_pickied_qty != element.product_qty) {
-            this.model.procced = false;
-          }
-        });
-      }
 
     } else {
       // we picked wrong product, so we create fake product with isExpected flag as false
@@ -98,9 +77,34 @@ export class StandardProductsPickingPage {
       newProd['isExpected'] = false
       newProd['name'] = scanned
       newProd['product_pickied_qty'] = 1
-      newProd['product_qty'] = 0
+      newProd['product_qty'] = 1
       this.model.products.push(newProd)
       this.model.procced = false;
+    }
+
+    let BreakException = {};
+
+    try {
+      
+      if (this.model.products.length !== this.picking.move_lines.length){
+        throw BreakException;
+      }
+
+      this.model.products.forEach(product => {
+        if (!product.isExpected){
+          throw BreakException;
+        }
+
+        if (product.product_pickied_qty != product.product_qty){
+          throw BreakException;
+        }
+      });
+
+      this.model.procced = true;
+
+    } catch (e) {
+      this.model.procced = false;
+      if (e !== BreakException) throw e;
     }
   }
 
@@ -175,36 +179,36 @@ export class StandardProductsPickingPage {
     let idx = this.model.products.findIndex(x => x.name == product.name)
     
     if (product.product_pickied_qty == product.product_qty && product.product_qty == 1) {
-      let rmProduct: any = this.model.products.splice(idx,1)
-      if (rmProduct[0].isExpected) {
-        this.productsScanned--;
-        this.model.procced = false;
-        if (this.productsScanned != this.picking.move_lines.length) {
-          this.model.shipNow = false;
-        }
-      }
-    } else if (product.product_pickied_qty == 1) {
-      let rmProduct: any = this.model.products.splice(idx,1)
-      if (rmProduct[0].isExpected) {
-        this.productsScanned--;
-        this.model.procced = false;
-        if (this.productsScanned != this.picking.move_lines.length) {
-          this.model.shipNow = false;
-        }
-      }
+      this.model.products.splice(idx,1)
+
     } else {
       this.model.products[idx].product_pickied_qty--;
     }
 
     // check if we can procced to next step
-    if (this.productsScanned == this.picking.move_lines.length){
-      this.model.procced = true;
-      this.model.products.forEach(element => {
-        console.log(element)
-        if (element.product_pickied_qty != element.product_qty) {
-          this.model.procced = false;
+    let BreakException = {};
+
+    try {
+      
+      if (this.model.products.length !== this.picking.move_lines.length){
+        throw BreakException;
+      }
+
+      this.model.products.forEach(product => {
+        if (!product.isExpected){
+          throw BreakException;
+        }
+
+        if (product.product_pickied_qty != product.product_qty){
+          throw BreakException;
         }
       });
+
+      this.model.procced = true;
+
+    } catch (e) {
+      this.model.procced = false;
+      if (e !== BreakException) throw e;
     }
 
     this.inputBar.focus();
