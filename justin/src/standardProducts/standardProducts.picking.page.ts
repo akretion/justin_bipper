@@ -34,6 +34,11 @@ export class StandardProductsPickingPage {
       var picking = this.navParams.get('picking');
       if (picking)
         this.initPicking(picking);
+      else {
+        // go back to BL list
+        this.navCtrl.push(StandardProductsPage)
+        this.displayWarning(`Wrong data`);
+      }
   }
 
   displayWarning(msg) {
@@ -47,6 +52,7 @@ export class StandardProductsPickingPage {
 
   initPicking(picking) {
     this.picking = picking
+    this.picking.move_lines = this.picking.move_lines.sort(this.standardProductsProvider.compare)
     this.model.picking_id = picking.id
     this.model.picking_name = picking.name
     console.log('Loaded picking: ',picking)
@@ -149,9 +155,15 @@ export class StandardProductsPickingPage {
         if (x) {
           loader.dismissAll();
           this.model.shipDone = true;
-          console.log(x)
+
+          // print label
           this.printServices.printDymo(x[1]);
           this.displayWarning(`Saved`);
+          
+          // remove picking from cache
+          this.standardProductsProvider.removePicking(this.picking.id);
+          
+          // go back to BL list
           this.navCtrl.push(StandardProductsPage)
         }
       },
@@ -171,8 +183,6 @@ export class StandardProductsPickingPage {
     this.model['procced'] = false
     this.model['pickDone'] = false
     this.model['shipDone'] = false
-
-    // this.inputBar.focus();
   }
 
   removeOne(product) {
