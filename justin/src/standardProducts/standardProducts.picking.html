@@ -52,12 +52,10 @@
             </ion-item-divider>
 
             <ion-item *ngFor="let product of picking.move_lines">
-                {{ product.name }}
+                [{{product.default_code}}]{{ product.name }}
                 <br />
                 <small>Location:</small>
                 <ion-badge color="primary">{{product.rack_location}}</ion-badge>
-                <small>Code:</small>
-                <ion-badge color="primary">{{product.default_code}}</ion-badge>
                 <small>Total to pick:</small>
                 <ion-badge color="primary">{{product.product_qty}}</ion-badge>
                 - <span *ngIf="model.products.indexOf(product) != -1">√</span>
