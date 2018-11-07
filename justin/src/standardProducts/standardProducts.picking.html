@@ -29,7 +29,7 @@
                 <ion-badge>{{ product.product_pickied_qty }}</ion-badge> of <ion-badge>{{ product.product_qty }}</ion-badge>
             </span>
 
-            {{product.name}}
+            {{product.default_code}}
 
             <button ion-button item-right outline danger (click)="removeOne(product)">-1</button>
         </ion-item>
@@ -52,8 +52,11 @@
             </ion-item-divider>
 
             <ion-item *ngFor="let product of picking.move_lines">
-                [{{product.default_code}}]{{ product.name }}
+                {{ product.name }}
                 <br />
+                <small>Barcode:</small>
+                <ion-badge color="primary">{{product.default_code}}</ion-badge>  
+                <br />              
                 <small>Location:</small>
                 <ion-badge color="primary">{{product.rack_location}}</ion-badge>
                 <small>Total to pick:</small>

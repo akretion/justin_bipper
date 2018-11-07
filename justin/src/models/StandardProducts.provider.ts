@@ -44,6 +44,8 @@ export class StandardProductsProvider {
     // remove object from array
     this.pickings.pickings.splice(idx,1)
     
+    // decrease total sample 
+    this.pickings.totall--;
     // if pickings are empty delete object key to initiate reload
     if (this.pickings.pickings.length == 0){
       delete this.pickings.pickings;
