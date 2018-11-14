@@ -55,30 +55,6 @@ export class ColisageProvider {
       .then(prod => prod);
   }
 
-  validatePack_old(weight, products, withLabel) {
-    console.log('weight, products', weight, products);
-    var withLabel = withLabel['withLabel'];
-    var pack = this.pack;
-    return pack.stateMachine.can('coliser', {weight:weight, products: products})
-    .then( () => {
-      var payload = {
-        'weight': weight,
-        'products': products.map( x => x.name)
-      };
-      console.log('on envoi payload', payload);
-      return this.odoo.call('bipper.webservice','do_packing', [payload, withLabel], {})
-    }).then(x => {
-      pack.name = x[0];
-      pack.label = x[1];
-      //on colise les produits
-      this.productsProvider.explicitRefresh();
-      return pack;
-    }).then(() => pack.coliser(weight, products)
-    ).then( () => pack.shipment.setPack(pack)
-    ).then( () => this.productsProvider.addPack(pack)
-    ).then( () => pack, (x) => console.log('on leve pas',x));
-  }
-
   validatePack(weight, products, withLabel) {
     console.log('weight, products', weight, products);
     var withLabel = withLabel['withLabel'];
