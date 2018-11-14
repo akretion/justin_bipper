@@ -7,22 +7,33 @@
         <ion-title>
             Shipping, total: {{pickings.totall}}
         </ion-title>
-        <!-- <input-bar (cb)="addIt($event)">Search bar</input-bar> -->
+        <input-bar (cb)="addIt($event)">Search bar</input-bar>
     </ion-toolbar>
 </ion-header>
-      
-      
+
 <ion-content padding>
-    <ion-card *ngFor="let item of pickings.pickings" (click)="selectPicking(item)">
+    <ion-card *ngIf="doReprint">
+        <ion-card-header>
+                <ion-badge secondary>{{search.name}}</ion-badge>
+        </ion-card-header>
+
+        <button ion-button color="secondary" outline (click)="goBack()">Go back</button>
+        <button ion-button color="danger" outline (click)="rePrint()">Print address label</button>
+    </ion-card>
+
+    <div *ngIf="!doReprint">
+        <ion-card *ngFor="let item of pickings.pickings" (click)="selectPicking(item)">
             <ion-card-header>
                 {{item.name}}
             </ion-card-header>
-    
-        <ion-list>
-            <ion-item>
-                Totall products to pick: <ion-badge secondary>{{item.move_lines.length}}</ion-badge>
-            </ion-item>
-        </ion-list>
-    </ion-card>
+        
+            <ion-list>
+                <ion-item>
+                    Totall products to pick: <ion-badge secondary>{{item.move_lines.length}}</ion-badge>
+                </ion-item>
+            </ion-list>
+        </ion-card>
+    </div>
+
 </ion-content>
       

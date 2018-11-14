@@ -34,7 +34,11 @@ export class StandardProductsProvider {
     });
 
     return promise;
-    // return this.odoo.call('bipper.webservice', 'get_stockpicking_spl', [], {})
+  }
+
+  reprintData(pickingName) {
+    // declare promise
+    return  this.odoo.call('bipper.webservice', 'get_reprint_data_std', [pickingName], {})
   }
 
   removePicking(id) {
