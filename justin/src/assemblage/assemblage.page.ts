@@ -40,13 +40,16 @@ export class AssemblagePage {
   showModal(shipment) {
     this.modalCtrl.create(CarrierPage, {shipment: shipment}).present()
   }
+
   addIt(scanned) {
     if (!scanned)
       return;
+    
     let pack = this.productsProvider.getPack(scanned);
-
+    
     if (!pack)
       return this.displayWarning(`${scanned} not found`);
+    
     if (this.model.packs[pack.name] && this.model.packs[pack.name].done)
       return this.displayWarning(`${scanned} already scanned`);
 
@@ -94,19 +97,33 @@ export class AssemblagePage {
       this.model.nextStep = `${this.model.toBeScanned} of ${this.model.shipment.packs.length} to scan`;
     }
     pack.stateMachine.can('destocker').then( (x) => {
-      //if a stocked product is scanned, we guess the guy has the pack
-      //on hand and it didn't bother to unstock it first
-      pack.destocker();
+      // //if a stocked product is scanned, we guess the guy has the pack
+      // //on hand and it didn't bother to unstock it first
+      // pack.destocker();
+      // this.model.packs[pack.name].ready = true;
+      this.productsProvider.unstock([pack]).then(
+        () => pack.destocker()
+      );
       this.model.packs[pack.name].ready = true;
     });
   }
+
   reset() {
     this.model = { packs: {}};
     if (this.inputBar)
       this.inputBar.focus();
   }
+
   assembler(shipment) {
     console.log('assemblage');
+
+    var loader = this.loadingCtrl.create({
+      content:'Please wait',
+      duration: 3000
+    });
+
+    loader.present();
+
     //si on est en envoi partiel, on envois la liste des packs
     //shipped packs = les packs à envoyer ou rien (pour tout)
     var shipped_packs = shipment.packs.filter(
@@ -115,12 +132,6 @@ export class AssemblagePage {
     if (shipped_packs.length == shipment.packs.length)
       shipped_packs = []
 
-    var loader = this.loadingCtrl.create({
-      content:'Please wait',
-      duration: 3000
-    });
-    loader.present();
-    //il faut update avant
     shipment.update()
       .then( () => shipment.assembler())
       .then( () => this.productsProvider.ship(shipment, shipped_packs))
