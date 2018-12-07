@@ -132,7 +132,9 @@ export class ProductsProvider {
       shipment.products.push(prod);
       return updateProduct(p, prod, pack);
     }
+    
     var convState= { 'receptionné': 'received', 'colisé': 'packed'};
+    
     function updateProduct(p, prod, pack) {
       prod.stateMachine.state = convState[p.state] || p.state;
       if (!prod.pack && pack) {
@@ -159,16 +161,17 @@ export class ProductsProvider {
         pack.stateMachine.state = 'init';
       }
       if (p.place) {
-//        console.log('force stock au lieu de  ', pack.stateMachine.state)
-        pack.stateMachine.state = 'stock';
         pack.place = p.place;
+        pack.stateMachine.state = 'stock';
+
       } else {
-//        console.log('force transit au lieu de ', pack.stateMachine.state)
         pack.stateMachine.state = 'transit';
       }
+
       return pack;
     }
   }
+
   explicitRefresh() {
     this.pauser.next(false);
   }
@@ -181,20 +184,25 @@ export class ProductsProvider {
     console.log('dans get product', prodBarcode);
     return this.productsLookup.get(prodBarcode) || [];
   }
+
   getShipment(shipBarcode) {
     return this.shipsLookup.get(shipBarcode);
   }
+
   getPack(packBarcode) {
     return this.packsLookup.get(packBarcode);
   }
+
   addPack(pack) {
     return this.packsLookup.set(pack.name, pack);
   }
+
   getReserved() {
     return Array.from(this.packsLookup.values()).filter(
       (p) => p.stateMachine.state == 'stock'
     );
   }
+
   newProduct(barcode) {
     let product = new Product();
     product.name = barcode;
@@ -202,10 +210,12 @@ export class ProductsProvider {
     product.stateMachine.state = 'available';
     return product;
   }
+
   newPack() {
     let pack = new Pack();
     return pack;
   }
+
   doReception(list) {
     /* receptionne la liste */
     console.log('list', list);
@@ -218,12 +228,14 @@ export class ProductsProvider {
       null, x => Promise.reject(x.message)
     );
   }
+
   stock(pack) {
     var payload = { name: pack.name, place: pack.place};
     return this.odoo.call('bipper.webservice', 'set_package_place', [payload], {}).then(
       () => this.explicitRefresh()
     )
   }
+
   unstock(packs) {
     var payload = packs.map(p =>{ return {name: p.name }});
 
@@ -231,6 +243,7 @@ export class ProductsProvider {
       x=> this.explicitRefresh()
     );
   }
+
   ship(shipment, shipped_packs) {
     console.log('on envoi ', shipment, shipped_packs);
     //shipped_packs == [] -> tout le shipment d'un coup
@@ -254,6 +267,7 @@ export class ProductsProvider {
       }
     );
   }
+
   get_carrier(shipment) {
     var payload = {
       'name': shipment.name
@@ -262,6 +276,7 @@ export class ProductsProvider {
       x=>{ console.log('carreiers', x); return x; }
     );
   }
+
   set_carrier(shipment, carrier) {
     var payload = [{
         name: shipment.name
@@ -272,6 +287,7 @@ export class ProductsProvider {
       x=>{ console.log('set carrier reussix', x); return x; }
     );
   }
+
   get_pack_label(pack) {
     var payload = [{
         name: pack.name,
@@ -280,6 +296,7 @@ export class ProductsProvider {
       x=>{ console.log('get pack label reussix', x); return x; }
     );
   }
+
   get_ship_label(shipment) {
     var payload = [{
         name: shipment.name
@@ -288,6 +305,7 @@ export class ProductsProvider {
       x=>{ console.log('get ship reussix', x); return x; }
     );
   }
+
   get_pack_info(pack) {
     var payload = [{
       name: pack.name
@@ -296,6 +314,7 @@ export class ProductsProvider {
       x=>{ console.log('get pack info reussix', x); return x; }
     );
   }
+
   load_truck(packs) {
     var payload = [packs.map( p => { return { 'name': p.name }})];
     return this.odoo.call('bipper.webservice', 'do_package_loading', payload, {}).then(
