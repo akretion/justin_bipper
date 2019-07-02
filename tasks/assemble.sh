@@ -1,19 +1,30 @@
 #!/bin/bash
 
-# clear target directory
-/os/bin/clean.sh
+# 
+# INCLUDES 
+# 
 
-# assemble webapp and put in proper directory
-cd $OS_BUILD/src/justin
+source extras/bash/bash-utils.sh
 
-# install all node dep
-npm install
+# 
+# VARS
+# 
 
-# add path to exec
-PATH=$PATH:./node_modules/.bin/
 
-# build the project
-npm run build
+# 
+# LOGIC
+# 
 
-# copy build project to dist directory
-cp -R www/* $OS_TARGET
+Stage "Assemble"
+
+Step "Build the docker image"
+
+git submodule init
+git submodule update
+docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml up --build assembler
+
+Check_errors $?
+
+Done
+
+exit 0

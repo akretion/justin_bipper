@@ -1,24 +1,28 @@
 #!/bin/bash
 
-# clear target directory
-echo "Cleaning the target directory"
-rm -rf $OS_TARGET/*
+# 
+# INCLUDES 
+# 
 
-# enter justin dir
-cd $OS_BUILD/src/justin
+source extras/bash/bash-utils.sh
 
-# remove old build
-echo "Cleaning the local build directory"
-rm -rf www/*
+# 
+# VARS
+# 
 
-# remove all old node modules
-echo "Cleaning the node modules directory"
-rm -rf node_modules/
 
-# check if original project config was modified
-echo "Cleaning the source structure"
-if [ -f ./ionic.config.old.json ]; then
-  # restore original project config file
-  rm -rf ./ionic.config.json
-  mv ./ionic.config.old.json ./ionic.config.json
-fi
+# 
+# LOGIC
+# 
+
+Stage "Cleaning"
+
+Step "Build the docker image"
+
+docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml up cleaner 
+
+Check_errors $?
+
+Done
+
+exit 0

@@ -1,0 +1,17 @@
+server {
+   listen 80;
+   server_name _;
+   root "/os/app";
+   index index.html;
+   location / {
+       try_files $uri $uri/  =404;
+   }
+
+   location /web {
+        proxy_pass {{ getenv "BIPPER_PROXY_URL" "http://odoo.olst.io/web" | print }}/web; 
+   }
+   
+   location /jsonrpc {
+        proxy_pass {{ getenv "BIPPER_PROXY_URL" "http://odoo.olst.io/jsonrpc" | print }}/jsonrpc; 
+   }
+}
