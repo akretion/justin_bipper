@@ -12,16 +12,6 @@ pipeline {
     }
 
     /*
-     * Testing stage
-     */
-    stage('testing') {
-      steps {
-        echo "Start the test on ${env.BRANCH_NAME}, Build id: ${currentBuild.displayName}"
-        sh 'rake test'
-      }
-    }
-
-    /*
      * package stage
      */
     stage('package') {
@@ -56,5 +46,16 @@ pipeline {
         echo "Build duration: ${currentBuild.duration}"
       }
     }
+
+    /*
+     * publish stage
+     */
+    stage('publish') {
+      steps {
+        echo 'publish on ecs'
+        sh 'rake publish'
+      }
+    }
+
   }
 }

@@ -1,32 +1,30 @@
 #!/bin/bash
 
-# set working dir
-cd $OS_BUILD/src/justin
+# 
+# INCLUDES 
+# 
 
-# add path to exec
-PATH=$PATH:./node_modules/.bin/
+source extras/bash/bash-utils.sh
 
-if [ "$WATCH_DO_CLEAN" = true ] ; then
-    # delete contnet of build watch dir
-    /os/bin/clean.sh
+# 
+# VARS
+# 
 
-    # install all node dep
-    npm install
 
-fi
+# 
+# LOGIC
+# 
 
-# check if original project config was modified
-if [ -f ./ionic.config.old.json ]; then
-    # restore original project config file
-    rm -rf ./ionic.config.json
-    mv ./ionic.config.old.json ./ionic.config.json
-fi
+Stage "Watch"
 
-# move original file to old file
-mv $OS_BUILD/src/justin/ionic.config.json $OS_BUILD/src/justin/ionic.config.old.json
+Step "Build the docker image"
 
-# copy oliverstore config file to root of project
-cp $OS_BUILD/etc/config/ionic.config.json $OS_BUILD/src/justin/
+git submodule init
+git submodule update
+docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml up --build watcher
 
-# watch
-ionic-app-scripts serve
+Check_errors $?
+
+Done
+
+exit 0

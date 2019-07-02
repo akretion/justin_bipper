@@ -1,29 +1,30 @@
-FROM node
+FROM node:8
+
+# File Author / Maintainer
+MAINTAINER Marcin Wojtysiak <m.wojtysiak@oliverstore.com>
 
 # update and upgrade system
 RUN apt-get update
 RUN apt-get upgrade -y
 
+# Get gomplate
+RUN curl -o /usr/local/bin/gomplate -sSL https://github.com/hairyhenderson/gomplate/releases/download/v3.5.0/gomplate_linux-amd64-slim
+RUN chmod 755 /usr/local/bin/gomplate
+
 #
 # ASSEMBLE
 #
-COPY tasks/assemble.sh /os/bin/
+COPY scripts/assemble.sh /os/bin/
 RUN chmod +x /os/bin/assemble.sh
-
-#
-# TEST
-#
-COPY tasks/test.sh /os/bin/
-RUN chmod +x /os/bin/test.sh
 
 #
 # CLEAN
 #
-COPY tasks/clean.sh /os/bin/
+COPY scripts/clean.sh /os/bin/
 RUN chmod +x /os/bin/clean.sh
 
 #
 # WATCH
 #
-COPY tasks/watch.sh /os/bin/
+COPY scripts/watch.sh /os/bin/
 RUN chmod +x /os/bin/watch.sh
