@@ -218,15 +218,18 @@ export class ProductsProvider {
 
   doReception(list) {
     /* receptionne la liste */
-    console.log('list', list);
     var payload = {}
+    
     list.forEach(l => {
       payload[l.barcode] =l.qty
     });
-    //pas d'explicitRefresh car on sait pas qd la cron aura fini
-    return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {}).then(
-      null, x => Promise.reject(x.message)
-    );
+    
+    //return promise object for future handle
+    // DO NOT DELETE FOR NOW
+    //.then(
+    //  null, x => Promise.reject(x.message)
+    //)
+    return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {});
   }
 
   stock(pack) {
