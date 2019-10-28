@@ -4,6 +4,7 @@ import { ToastController, LoadingController} from 'ionic-angular';
 
 import { odooService } from '../angular-odoo/odoo';
 import { RouteService } from '../models/route.Service';
+import { DeadManSwitchService } from '../models/deadManSwitch.Service';
 
 @Component({
   templateUrl: 'login.html',
@@ -17,11 +18,15 @@ export class LoginPage {
 
   constructor(
       public route: RouteService,
+      public deadManSwitch: DeadManSwitchService,
       public odoo: odooService,
       public toastCtrl: ToastController,
       public loadingCtrl: LoadingController) {
     console.log('login page ctrl');
     var defaultDb = null;
+
+    // no need to detect activity on this page.
+    deadManSwitch.stop();
 
     this.handleError = (err) => {
       console.log('yeah ! une erreur', err);
@@ -82,5 +87,6 @@ export class LoginPage {
   }
   loginSuccess() {
     this.route.goTo('home');
+    this.deadManSwitch.start();
   }
 }

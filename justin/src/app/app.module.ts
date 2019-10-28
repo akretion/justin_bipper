@@ -28,6 +28,7 @@ import {PrintServices} from './../models/PrintServices';
 
 import { odooService } from '../angular-odoo/odoo';
 import { errorComponent } from '../models/error.handler';
+import { DeadManSwitchService } from '../models/deadManSwitch.Service';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { errorComponent } from '../models/error.handler';
       ScansProvider,
       ColisageProvider,
       RouteService,
+      DeadManSwitchService,
       odooService,
       PrintServices,
   ]

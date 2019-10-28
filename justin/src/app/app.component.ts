@@ -3,6 +3,8 @@ import {Platform, Nav, MenuController, App} from 'ionic-angular';
 import {StatusBar} from 'ionic-native';
 
 import {RouteService} from './../models/route.Service';
+import { DeadManSwitchService } from '../models/deadManSwitch.Service';
+import { odooService } from '../angular-odoo/odoo';
 
 import {BeepPage} from './../beep/beep.page';
 import {ColisagePage} from './../colisage/colisage.page';
@@ -18,7 +20,7 @@ import { LoginPage} from '../login/login';
 import { LogoutPage} from '../login/logout';
 import { Product } from '../statemachine/src/states';
 
-import { errorComponent } from '../models/error.handler';
+import { ToastController } from 'ionic-angular';
 
 @Component({
   templateUrl: '../menu/menu.html',
@@ -41,10 +43,16 @@ export class MyApp {
   appRoutesWithoutLogin = [];
 
   @ViewChild(Nav) nav;
-  constructor(platform: Platform, public routeService: RouteService,
-  public menuCtrl: MenuController) {
+  constructor(
+    platform: Platform,
+    public routeService: RouteService,
+    public toastCtrl: ToastController,
+    public deadManSwitch: DeadManSwitchService,
+    public odooService: odooService,
+    public menuCtrl: MenuController) {
     routeService.setRoutes(this.appRoutes);
     var watcher;
+    
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -58,6 +66,16 @@ export class MyApp {
     });
 
     this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.path !='login');
+    deadManSwitch.setCallback( () => {
+      toastCtrl.create({
+        message: 'Logout due to inactivity',
+        duration: 6000
+      }).present();
+      return this.routeService.goTo('logout');
+    });
+    // if we are already logged in, login page is not loaded
+    // so we have to activate deadManSwitch here.
+    deadManSwitch.start();
   }
   openPage(page, data) {
     console.log('openPage', data);
