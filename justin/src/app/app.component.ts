@@ -10,8 +10,10 @@ import {BeepPage} from './../beep/beep.page';
 import {ColisagePage} from './../colisage/colisage.page';
 import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
-import {DestockagePage} from './../destockage/destockage.page';
+import {UnstockPage} from './../unstock/unstock.page';
 import {HomePage} from './../home/home.page';
+import {SampleListPage} from '../sample/sample_list.page';
+import {SamplePage} from '../sample/sample.page';
 import {StockPage} from './../stock/stock.page';
 import {LoadPage} from './../load/load.page';
 import {DebugPage} from './../debug/debug.page';
@@ -30,12 +32,14 @@ export class MyApp {
     {data: {title: "Home" }, component: HomePage, path: 'home', action:'home', hide:false},
     {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner', hide:false},
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser', hide:false},
-    {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
+    {data: {title: "Unstock"}, component: UnstockPage, path:'unstock', action:'unstock', hide:false},
     {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},
     {data: {title: "Load" }, component: LoadPage, path: 'load', action:'load', hide:false},
     {data: {title: "Inspect" }, component: SearchPage, path: 'search', action:'rechercher', hide:false},
     {data: {title: "Debug" }, component: DebugPage, path: 'debug', action:'debug', hide:false},
+    {data: {title: "Sample" }, component: SampleListPage, path: 'sample_list', action: 'sample', hide: false },
+    {data: {title: "Sample" }, component: SamplePage, path: 'sample_detail', action: 'sample_detail', hide: true },
     {data: {title: "Logout" }, component: LogoutPage, path: 'logout', action:'logout', hide:false},
     {data: {title: "Login" }, component: LoginPage, path: 'login', action:'login', hide:true}
   ];
@@ -64,7 +68,6 @@ export class MyApp {
       this.openPage(i.page.component, i.data);
     });
 
-    this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.path !='login');
     deadManSwitch.setCallback( () => {
       toastCtrl.create({
         message: 'Logout due to inactivity',
@@ -75,7 +78,10 @@ export class MyApp {
     // if we are already logged in, login page is not loaded
     // so we have to activate deadManSwitch here.
     deadManSwitch.start();
-  }
+
+    this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.hide != true);
+
+    }
   openPage(page, data) {
     console.log('openPage', data);
     this.menuCtrl.enable(true);
