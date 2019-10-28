@@ -11,6 +11,7 @@ import {ColisagePage} from './../colisage/colisage.page';
 import {SearchPage} from './../search/Search.page';
 import {AssemblagePage} from './../assemblage/assemblage.page';
 import {DestockagePage} from './../destockage/destockage.page';
+import {GroupingPage} from './../grouping/grouping.page';
 import {HomePage} from './../home/home.page';
 import {StockPage} from './../stock/stock.page';
 import {LoadPage} from './../load/load.page';
@@ -30,6 +31,7 @@ export class MyApp {
     {data: {title: "Home" }, component: HomePage, path: 'home', action:'home', hide:false},
     {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner', hide:false},
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser', hide:false},
+    { data: { title: 'Grouping' }, component: GroupingPage, path: 'grouping', action: 'grouper', hide: false },
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
     {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},
