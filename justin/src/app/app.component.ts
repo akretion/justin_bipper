@@ -18,7 +18,6 @@ import {DebugPage} from './../debug/debug.page';
 
 import { LoginPage} from '../login/login';
 import { LogoutPage} from '../login/logout';
-import { Product } from '../statemachine/src/states';
 
 import { ToastController } from 'ionic-angular';
 

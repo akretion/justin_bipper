@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
 import { ToastController, LoadingController} from 'ionic-angular';
 
 import { odooService } from '../angular-odoo/odoo';
