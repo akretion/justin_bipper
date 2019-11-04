@@ -15,7 +15,7 @@ _DIST_DIR="${GPS_PROJECT_DIR}/.dist"
 _BUILD_ARGS_OPTS="\
   --build-arg  COMPONENT_NAME=${GPS_COMPONENT_NAME}\
   --build-arg  COMPONENT_TYPE=${GPS_COMPONENT_TYPE}\
-  --build-arg  BIPPER_PROXY_URL=odoo.olst.io\
+  --build-arg  PRODOO_PROXY_URL=odoo.olst.io\
 "
 
 # 
@@ -28,6 +28,7 @@ Step "Login to AWS ECR"
 eval `aws ecr get-login --profile ostore-registry-reader --region eu-west-1 --no-include-email`
 
 Step "Build the docker image"
+docker rmi ${GPS_PROJECT_DOCKER_IMAGE_URL}:latest
 docker build --no-cache --force-rm  -f ${GPS_PROJECT_DIR}/etc/docker/Dockerfile  ${_BUILD_ARGS_OPTS}  -t ${GPS_PROJECT_DOCKER_IMAGE_URL} ${GPS_PROJECT_DIR}
 
 Check_errors $?
@@ -35,3 +36,4 @@ Check_errors $?
 Done
 
 exit 0
+
