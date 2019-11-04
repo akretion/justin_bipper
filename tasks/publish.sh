@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # 
 # INCLUDES 
@@ -24,10 +23,10 @@ _AWS_REGION=${GPS_AWS_REGION:-eu-west-1}
 _AWS_OPTS="$_AWS_OPTS --region ${_AWS_REGION}"
 
 
-# Retrieve version package.json file in root of the project
+# Retrieve version from branch name
 #   tags/v1.0.0 => 1.0.0
 Step "Extract version number form version tag[$GPS_VERSION_TAG]"
-_TAG_VERSION=$(grep -m1 version package.json | awk -F: '{ print $2 }' | sed 's/[", ]//g')
+_TAG_VERSION="${GPS_VERSION_TAG}"
 
 # 
 # LOGIC

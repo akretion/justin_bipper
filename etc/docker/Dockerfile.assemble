@@ -1,8 +1,5 @@
 FROM node:8
 
-# File Author / Maintainer
-MAINTAINER Marcin Wojtysiak <m.wojtysiak@oliverstore.com>
-
 # update and upgrade system
 RUN apt-get update
 RUN apt-get upgrade -y
