@@ -38,7 +38,7 @@ export class MyApp {
     {data: {title: 'Standard Products' }, component: StandardProductsPage, path: 'standardProducts', action:'standardProducts', hide:false},
     {data: {title: 'Picking' }, component: StandardProductsPickingPage, path: 'standardProductsPicking', action:'standardProductsPicking', hide:true},
     {data: {title: "Unstock"}, component: UnstockPage, path:'destockage', action:'destocker', hide:false},
-    {data: {title: 'Grouping'}, component: GroupingPage, path: 'grouping', action: 'grouper', hide: false },
+    {data: {title: 'Group' }, component: GroupingPage, path: 'grouping', action: 'group', hide: false },
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
     {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},
