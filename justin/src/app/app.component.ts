@@ -31,7 +31,7 @@ export class MyApp {
     {data: {title: "Home" }, component: HomePage, path: 'home', action:'home', hide:false},
     {data: {title: 'Receipt' }, component: BeepPage, path:'bip', action:'receptionner', hide:false},
     {data: {title: 'Packing' }, component: ColisagePage, path: 'colisage', action:'coliser', hide:false},
-    { data: { title: 'Grouping' }, component: GroupingPage, path: 'grouping', action: 'grouper', hide: false },
+    { data: { title: 'Group' }, component: GroupingPage, path: 'grouping', action: 'group', hide: false },
     {data: {title: "Unstock"}, component: DestockagePage, path:'destockage', action:'destocker', hide:false},
     {data: {title: "Stock"}, component: StockPage, path:'stock', action:'stocker', hide:false},
     {data: {title: "Ship"}, component: AssemblagePage, path:'assemblage', action: 'assembler', hide:false},

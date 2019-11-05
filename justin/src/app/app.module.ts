@@ -10,6 +10,7 @@ import {ColisagePage} from '../colisage/colisage.page';
 import {SearchPage} from '../search/Search.page';
 import {AssemblagePage} from '../assemblage/assemblage.page';
 import {DestockagePage} from '../destockage/destockage.page';
+import { GroupingPage } from '../grouping/grouping.page';
 import {StockPage} from './../stock/stock.page';
 import {LoadPage} from '../load/load.page';
 import {DebugPage} from '../debug/debug.page';
@@ -21,6 +22,7 @@ import {HomePage} from '../home/home.page';
 import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
+import {GroupingProvider} from '../grouping/Grouping.Provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -39,6 +41,7 @@ import { DeadManSwitchService } from '../models/deadManSwitch.Service';
     AssemblagePage,
     CarrierPage,
     DestockagePage,
+    GroupingPage,
     StockPage,
     LoadPage,
     LoginPage,
@@ -62,6 +65,7 @@ import { DeadManSwitchService } from '../models/deadManSwitch.Service';
     AssemblagePage,
     CarrierPage,
     DestockagePage,
+    GroupingPage,
     StockPage,
     LoadPage,
     LoginPage,
@@ -73,6 +77,7 @@ import { DeadManSwitchService } from '../models/deadManSwitch.Service';
       ProductsProvider,
       ScansProvider,
       ColisageProvider,
+      GroupingProvider,
       RouteService,
       DeadManSwitchService,
       odooService,

@@ -98,7 +98,9 @@ export class AssemblagePage {
       //on hand and it didn't bother to unstock it first
       pack.destocker();
       this.model.packs[pack.name].ready = true;
-    });
+    }, () => {
+      // dummy to avoid zone error if no handler for reject (like it can't be destocker)
+    });;
   }
   reset() {
     this.model = { packs: {}};
