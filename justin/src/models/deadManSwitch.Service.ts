@@ -12,7 +12,7 @@ export class DeadManSwitchService {
     obs: any;
     pauser: any;
     callback: Function;
-    INACTIVITY_DURATION = 2 * 1000 * 60; // 2 minutes
+    INACTIVITY_DURATION = 10 * 1000 * 60; // 10 minutes
     constructor(
         public alertCtrl: AlertController
     ) {
