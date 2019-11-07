@@ -9,7 +9,7 @@ import {BeepPage} from '../beep/beep.page';
 import {ColisagePage} from '../colisage/colisage.page';
 import {SearchPage} from '../search/Search.page';
 import {AssemblagePage} from '../assemblage/assemblage.page';
-import {DestockagePage} from '../destockage/destockage.page';
+import {UnstockPage} from '../unstock/unstock.page';
 import {StockPage} from './../stock/stock.page';
 import {LoadPage} from '../load/load.page';
 import {DebugPage} from '../debug/debug.page';
@@ -24,6 +24,7 @@ import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {StandardProductsProvider} from '../models/StandardProducts.provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
+import {SamplesProvider } from '../models/Samples.provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -31,6 +32,7 @@ import {PrintServices} from './../models/PrintServices';
 
 import { odooService } from '../angular-odoo/odoo';
 import { errorComponent } from '../models/error.handler';
+import { DeadManSwitchService } from '../models/deadManSwitch.Service';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,7 @@ import { errorComponent } from '../models/error.handler';
     SearchPage,
     AssemblagePage,
     CarrierPage,
-    DestockagePage,
+    UnstockPage,
     StockPage,
     LoadPage,
     LoginPage,
@@ -65,7 +67,7 @@ import { errorComponent } from '../models/error.handler';
     SearchPage,
     AssemblagePage,
     CarrierPage,
-    DestockagePage,
+    UnstockPage,
     StockPage,
     LoadPage,
     LoginPage,
@@ -79,7 +81,9 @@ import { errorComponent } from '../models/error.handler';
       ProductsProvider,
       ScansProvider,
       ColisageProvider,
+      SamplesProvider,
       RouteService,
+      DeadManSwitchService,
       odooService,
       PrintServices,
       StandardProductsProvider

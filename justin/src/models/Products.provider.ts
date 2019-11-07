@@ -99,8 +99,10 @@ export class ProductsProvider {
             });
           }, (err) => {
             concurrent--;
-            console.log('une erreur ? ');
-//            this.pauser.next(true);
+            if (err.title == 'session_expired') {
+              console.log('we know for sure we have to go back to login page');
+              this.pauser.next(true); //pause
+            }
           }
       );
     };
@@ -110,6 +112,7 @@ export class ProductsProvider {
       .subscribe(odooFetch)
 
     this.pauser.next(false);
+    window['pauser'] = this.pauser;
 
     function buildShip(s) {
       var ship = new Shipment();
