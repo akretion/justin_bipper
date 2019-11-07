@@ -24,7 +24,6 @@ import {ScansProvider} from '../beep/Scans.provider';
 import {ProductsProvider} from '../models/Products.provider';
 import {StandardProductsProvider} from '../models/StandardProducts.provider';
 import {ColisageProvider} from '../colisage/Colisage.Provider';
-import {SamplesProvider } from '../models/Samples.provider';
 import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
@@ -81,7 +80,6 @@ import { DeadManSwitchService } from '../models/deadManSwitch.Service';
       ProductsProvider,
       ScansProvider,
       ColisageProvider,
-      SamplesProvider,
       RouteService,
       DeadManSwitchService,
       odooService,
