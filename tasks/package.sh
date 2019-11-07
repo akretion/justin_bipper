@@ -15,7 +15,7 @@ _DIST_DIR="${GPS_PROJECT_DIR}/.dist"
 _BUILD_ARGS_OPTS="\
   --build-arg  COMPONENT_NAME=${GPS_COMPONENT_NAME}\
   --build-arg  COMPONENT_TYPE=${GPS_COMPONENT_TYPE}\
-  --build-arg  PRODOO_PROXY_URL=odoo.olst.io\
+  --build-arg  BIPPER_PROXY_URL=odoo.olst.io\
 "
 
 # 

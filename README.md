@@ -6,7 +6,7 @@ To build bipper artefact we need to follow some rules and procedure:
  - basic env settings are in `.env` file, this file i used in assmeble, watch  processes.
  - rake watch use local http server to run and proccess the request, he is also responsible to proxy the request to odoo dev env
  - config file of the local http server is placed in `etc/config/bipper/ionic.config.json`
- - variable `WATCH_DO_CLEAN` who is placed in `.env` file is used in rake watch command, the purpose of this var is to tell if we want to reassamble the prodoo or we skip this and proceed with the execution of command
+ - variable `WATCH_DO_CLEAN` who is placed in `.env` file is used in rake watch command, the purpose of this var is to tell if we want to reassamble the bipper or we skip this and proceed with the execution of command
 - command `rake tag` is taking the version number from `package.json` file that is placed in the root of the project directory
 
 ** Process of build bipper **

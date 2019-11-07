@@ -5,7 +5,7 @@ LABEL MAINTAINER OliverStore<informatique@oliverstore.com>
 ARG COMPONENT_NAME
 ARG COMPONENT_TYPE
 
-# Prodoo build args
+# Bipper build args
 ARG BIPPER_PROXY_URL
 
 ENV OS_COMPONENT_NAME $COMPONENT_NAME
