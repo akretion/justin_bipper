@@ -1,0 +1,73 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons start>
+            <button ion-button menuToggle>Toggle Menu</button>
+        </ion-buttons>
+
+        <ion-title>
+            Group packs
+        </ion-title>
+        <input-bar (cb)="addIt($event)">Search bar</input-bar>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-list>
+        <ion-item *ngFor="let pack of model.packs">
+            <h2>{{ pack.name }} {{ pack.weight }}kg</h2>
+            <button ion-button item-right outline danger (click)="remove(pack)">-1</button>
+            <br><small>{{ pack.category }}</small>
+        </ion-item>
+    </ion-list>
+  
+    <form name="colisageForm">
+        <ion-item>
+            <ion-label>Weight</ion-label>
+            <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any">
+            </ion-input>
+        </ion-item>
+
+        <ion-item>
+            <ion-buttons start>
+                <button ion-button (click)="reset(true)" danger>Reset</button>
+            </ion-buttons>
+
+            <ion-buttons end>
+                <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.packs.length >=2 && model.weight)"
+                    ion-button color="secondary">Ship now</button>
+                <button (click)="printAndContinue()" ion-button [disabled]="!(model.packs.length >=2 && model.weight)"
+                    color="primary">Make package
+                    <ion-icon name="send"></ion-icon>
+                </button>
+            </ion-buttons>
+        </ion-item>
+    </form>
+    
+    <ion-list *ngIf="model.shipment">
+        <ion-list-header>
+            {{ model.shipment.name }} {{ model.shipment.carrier }} {{ model.shipmentTotalWeight }}kg <nextApp [withArgs]="false" [thing]="model.shipment" item-right>dns
+                nextapp</nextApp>
+        </ion-list-header>
+
+        <ion-item-group>
+            <ion-item-divider>
+                Packs
+            </ion-item-divider>
+            <ion-item *ngFor="let pack of model.shipment.packs">
+                <h2>{{ pack.name }} {{ pack.weight }}kg</h2>
+                <p>
+                    {{ pack.stateMachine?.state }}<br />
+                    {{ pack.category }}
+                    {{ pack.locationSM?.state }}
+                - <span *ngIf="model.packs.indexOf(pack) != -1">√</span>
+                </p>
+                <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
+            </ion-item>
+        </ion-item-group>
+    </ion-list>
+    <div *ngIf="!model.shipment">
+        No shipment found
+    </div>
+
+</ion-content>
