@@ -59,8 +59,11 @@ export class AssemblagePage {
       this.model.toBeScanned = shipment.packs.length;
 
       this.model.allProductsPacked = shipment.products.every( (p) => {
-        //tous les produits doivent être packeds
-        return p.nextSteps().length == 0; //no next step = packed
+        //all the products should be packed
+        // so only action available on products are unpack
+        let nextSteps = p.nextSteps();
+        // it's an array and it should contain only one item
+        return nextSteps.indexOf('unpack') == 0 && nextSteps.length == 1;
       });
 
       shipment.packs.forEach((p) => {

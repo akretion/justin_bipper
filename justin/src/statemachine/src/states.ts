@@ -105,7 +105,8 @@ export class Shipment {
         prodSteps.forEach( s => shipSteps.add(s) );
         packSteps.forEach( s => shipSteps.add(s) );
 
-        if (prodSteps.size > 0) {
+        let allProductsDone = prodSteps.has('unpack') && prodSteps.size == 1;
+        if (!allProductsDone) {
           //des produits sont pas fini
           //y-t-il des packs en stock ?
           shipSteps.delete('destocker');
