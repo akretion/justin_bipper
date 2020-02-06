@@ -71,9 +71,17 @@ export class Shipment {
           // change state of old packs to grouped
           let packs = args.packs;
           let newPack = args.newPack;
-          let products = args.packs.flatMap(p => p.products);
+          let products = args.packs.flatMap((p: Pack) => p.products);
           return Promise.all(
-            packs.map((p) => p.stateMachine.go('group'))
+            packs.map((p: Pack) => {
+              let ret = p.stateMachine.go('group')
+              // remove packs from this shipment
+              // we don't want to see them after a group
+              let idx = this.packs.indexOf(p);
+              if (idx >= 0)
+                this.packs.splice(idx, 1);
+              return ret;
+            })
           ).then(() => {
             // create a new pack and colise it
             let weight = parseFloat(args.weight);
@@ -374,7 +382,8 @@ export class StateMachine {
         return Promise.resolve((conditions, actions) => {
           return every(nextState.actions).then(
             () => {
-              return this.state = nextState.to
+              this.state = nextState.to
+              return this.state;
             }
           );
         })
