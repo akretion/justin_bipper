@@ -29,11 +29,12 @@ export class ColisagePage {
       public routeService: RouteService,
     ) {
       this.reset(true);
-
+      this.model.weight = 0;
       var scanned = this.navParams.get('scanned');
       if (scanned)
         this.addIt(scanned);
   }
+
   displayWarning(msg) {
     var toast = this.toastCtrl.create({
       message: msg,
@@ -42,10 +43,13 @@ export class ColisagePage {
     toast.onDidDismiss( () => this.inputBar.focus() );
     return toast.present();
   }
+
   addIt(scanned) {
     this.colisageProvider.addOne(scanned, this.model.products).then(
       (product: Product) => {
+        this.model['weight'] = this.model.weight + product.weight/1000;
         this.model.products.push(product);
+
         this.shipment = product.shipment;
 
         if (this.model.products.length == this.shipment.products.length)
@@ -82,6 +86,7 @@ export class ColisagePage {
       }).then( () => this.inputBar.focus())
       .then( () => this.reset(false));
   }
+
   shipNow() {
     //pack, don't prnt label and go to shipping page directly
     var loader = this.loadingCtrl.create({
