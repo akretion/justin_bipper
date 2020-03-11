@@ -54,4 +54,17 @@
         </ion-item>
       </form>
     </ion-card>
+
+    <ion-card>
+      <form (ngSubmit)="saveAppSettings(appSettings)">
+        <ion-card-header>Application setup</ion-card-header>
+        <ion-item>
+          <ion-label>Automatic logout</ion-label>
+          <ion-toggle name="app_autoLogout"[(ngModel)]="appSettings.app.autoLogout"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <button ion-button>Save</button>
+        </ion-item>
+      </form>
+    </ion-card>
 </ion-content>
