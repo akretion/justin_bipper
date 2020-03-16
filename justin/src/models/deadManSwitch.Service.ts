@@ -3,6 +3,7 @@ import { AlertController } from 'ionic-angular';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Subject } from 'rxjs/Subject';
+import { AppServices } from './../models/AppServices';
 
 @Injectable()
 export class DeadManSwitchService {
@@ -14,6 +15,7 @@ export class DeadManSwitchService {
     callback: Function;
     INACTIVITY_DURATION = 10 * 1000 * 60; // 10 minutes
     constructor(
+        private appServices: AppServices,
         public alertCtrl: AlertController
     ) {
         this.obs = Observable.fromEvent(document, 'click');
@@ -27,7 +29,13 @@ export class DeadManSwitchService {
             });
     }
     start() {
-        this.pauser.next(false);
+        if (this.appServices.getConfig('app').autoLogout){
+            this.pauser.next(false);
+            console.log('DM service is ON')
+        } else {
+            console.log('DM service is OFF')
+        }
+        
     }
     stop() {
         // called by logout

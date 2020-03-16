@@ -30,6 +30,7 @@ import {RouteService} from '../models/route.Service';
 import {nextAppComponent} from '../models/nextSteps.component';
 import {inputBarComponent} from '../models/inputBar.component';
 import {PrintServices} from './../models/PrintServices';
+import {AppServices} from './../models/AppServices';
 
 import { odooService } from '../angular-odoo/odoo';
 import { errorComponent } from '../models/error.handler';
@@ -89,6 +90,7 @@ import { DeadManSwitchService } from '../models/deadManSwitch.Service';
       DeadManSwitchService,
       odooService,
       PrintServices,
+      AppServices,
       StandardProductsProvider
   ]
 })

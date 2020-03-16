@@ -283,6 +283,7 @@ export class Pack { //carton
 
  export class Product { //chaque produit est unique
   name = '';
+  weight = 0;
   shipment: Shipment;
   isExpected = true;
   pack: Pack;

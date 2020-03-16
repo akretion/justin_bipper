@@ -19,7 +19,7 @@ export class ColisageProvider {
     var productsProvider = this.productsProvider;
     var products = productsProvider.getProducts(barcode);
     //products may contain duplicate keys
-
+    console.log(products)
     function getProduct(barcode) {
       var nextAvailableProduct = products
         .find( (l) => l.stateMachine.state == 'received' && alreadyScanned.indexOf(l) == -1);

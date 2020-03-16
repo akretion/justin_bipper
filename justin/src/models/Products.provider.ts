@@ -130,6 +130,7 @@ export class ProductsProvider {
     function buildProduct(p, pack, shipment) {
       var prod = new Product();
       prod.name = p.name;
+      prod.weight = p.weight;
       prod.shipment = shipment;
       prod.category = p.category;
       shipment.products.push(prod);
