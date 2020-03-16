@@ -99,8 +99,10 @@ export class ProductsProvider {
             });
           }, (err) => {
             concurrent--;
-            console.log('une erreur ? ');
-//            this.pauser.next(true);
+            if (err.title == 'session_expired') {
+              console.log('we know for sure we have to go back to login page');
+              this.pauser.next(true); //pause
+            }
           }
       );
     };
@@ -110,6 +112,7 @@ export class ProductsProvider {
       .subscribe(odooFetch)
 
     this.pauser.next(false);
+    window['pauser'] = this.pauser;
 
     function buildShip(s) {
       var ship = new Shipment();
@@ -127,6 +130,7 @@ export class ProductsProvider {
     function buildProduct(p, pack, shipment) {
       var prod = new Product();
       prod.name = p.name;
+      prod.weight = p.weight;
       prod.shipment = shipment;
       prod.category = p.category;
       shipment.products.push(prod);
@@ -218,15 +222,18 @@ export class ProductsProvider {
 
   doReception(list) {
     /* receptionne la liste */
-    console.log('list', list);
     var payload = {}
+    
     list.forEach(l => {
       payload[l.barcode] =l.qty
     });
-    //pas d'explicitRefresh car on sait pas qd la cron aura fini
-    return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {}).then(
-      null, x => Promise.reject(x.message)
-    );
+    
+    //return promise object for future handle
+    // DO NOT DELETE FOR NOW
+    //.then(
+    //  null, x => Promise.reject(x.message)
+    //)
+    return this.odoo.call( 'bipper.webservice', 'do_lot_reception', [payload], {});
   }
 
   stock(pack) {

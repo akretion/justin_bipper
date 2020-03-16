@@ -7,6 +7,7 @@ export class ScansProvider {
   list: Array<Scan> = [];
   constructor(public productsProvider: ProductsProvider) {
   }
+
   public remove(barcode):Scan {
     var scan;
     var idx = this.list.findIndex((s: Scan) => s.barcode == barcode);
@@ -25,14 +26,17 @@ export class ScansProvider {
     }
     return scan
   }
+
   get() {
     return this.list;
   }
+
   addOne(barcode) {
     var scan = this.remove(barcode);
     scan.qty++;
     this.list.unshift(scan);
   }
+
   decreaseOne(scan:Scan) {
     scan.qty--;
     if (scan.qty == 0){
@@ -40,20 +44,23 @@ export class ScansProvider {
       this.list.splice(idx,1);
     }
   }
+
   reset() {
     this.list = [];
     return this.list;
   }
+  
   validate() {
     return this.productsProvider.doReception(this.list).then(
       () => {
-      this.list.forEach( scan => {
-        if (!scan.products)
-          return;
-        for (let i = Math.min(scan.qty, scan.expected) - 1; i >= 0; i = i-1) {
-            scan.products[i].receptionner();
-        }
-      });
-    });
+        this.list.forEach( scan => {
+          if (!scan.products)
+            return;
+          for (let i = Math.min(scan.qty, scan.expected) - 1; i >= 0; i = i-1) {
+              scan.products[i].receptionner();
+          }
+        });
+      }
+    );
   }
 };

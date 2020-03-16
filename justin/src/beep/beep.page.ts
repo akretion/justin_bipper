@@ -12,6 +12,7 @@ export class BeepPage {
   scans: Array<Scan> = [];
   model: any = {};
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
+  
   constructor(
       public navCtrl: NavController,
       public alertCtrl: AlertController,
@@ -21,27 +22,28 @@ export class BeepPage {
     this.model = {};
     this.scans = this.scansProvider.get();
   }
+
   addIt(scanned) {
     console.log('dans addit', scanned);
     if (!scanned)
       return;
     this.scansProvider.addOne(scanned);
   }
+
   displayWarning(msg) {
     this.toastCtrl.create({
       message: msg,
       duration: 2000
     }).present();
   }
+
   validate() {
     console.log('send this to the server');
 
     var loader = this.loadingCtrl.create({
-      content:'Please wait',
-      duration: 3000
+      content:'Please wait'
     });
     loader.present();
-
 
     this.scansProvider.validate().then(
       () => {
@@ -55,14 +57,17 @@ export class BeepPage {
       }
     );
   }
+  
   reset() {
     this.scans = this.scansProvider.reset();
     this.inputBar.focus();
   }
+
   removeOne(scan) {
     this.scansProvider.decreaseOne(scan);
     this.inputBar.focus();
   }
+
   showConfirm() {
     var confirm = this.alertCtrl.create({
       title: "Confirmation",
