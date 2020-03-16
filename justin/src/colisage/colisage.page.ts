@@ -47,7 +47,7 @@ export class ColisagePage {
   addIt(scanned) {
     this.colisageProvider.addOne(scanned, this.model.products).then(
       (product: Product) => {
-        this.model['weight'] = (this.model.weight + product.weight/1000).toPrecision(3);
+        this.model['weight'] = parseFloat((this.model.weight + product.weight/1000).toPrecision(3));
         this.model.products.push(product);
 
         this.shipment = product.shipment;
