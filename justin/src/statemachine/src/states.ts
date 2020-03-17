@@ -6,13 +6,6 @@ export class Shipment {
   products = [];
   picking_id = 0;
   partial_allowed = false;
-  emplacement = {
-    //inexistant avant rassemblement
-    //en zone d'expedition
-    //en zone de chargement
-    //en zone client
-    //en zone reserve ?
-  }
   stateMachine: StateMachine;
   statesAction: Array<any>;
   constructor() {
@@ -36,12 +29,10 @@ export class Shipment {
           return Promise.reject('Pas de packs');
         },
         () => {
-          console.log('on check que les packs soit bien assemblable');
           if (!this.partial_allowed)
             return Promise.all(this.packs.map( (pack) => pack.stateMachine.can('assembler')));
          },
         () => {
-          console.log('on check que tous les produits soient packeds');
           if (this.partial_allowed)
             return Promise.resolve('partial allowed');
           if (!this.products.every( (product) => product.stateMachine.state === 'packed'))
@@ -59,6 +50,47 @@ export class Shipment {
             this.packs.forEach( (p) => p.stateMachine.go('assembler') )
         }
       ]},
+      { name:'group', from: 'waiting', to: 'waiting', conditions: [
+        (args) => {
+          let weight = parseFloat(args.weight);
+          if (!args.weight)
+            return Promise.reject("pas de poids");
+          if (weight <= 0)
+            return Promise.reject('poids null');
+        },
+        (args) => {
+          if(!args.packs.every(pack => pack.shipment == args.packs[0].shipment))
+            return Promise.reject('All the packs are not from the same shipment');
+        },
+        (args) => {
+          // ensure all pack can group. ie None of them has been shipped
+          return Promise.all(args.packs.map( p => p.stateMachine.can('group')));
+        }
+      ], actions: [
+        (args) => {
+          // change state of old packs to grouped
+          let packs = args.packs;
+          let newPack = args.newPack;
+          let products = args.packs.flatMap((p: Pack) => p.products);
+          return Promise.all(
+            packs.map((p: Pack) => {
+              let ret = p.stateMachine.go('group')
+              // remove packs from this shipment
+              // we don't want to see them after a group
+              let idx = this.packs.indexOf(p);
+              if (idx >= 0)
+                this.packs.splice(idx, 1);
+              return ret;
+            })
+          ).then(() => {
+            // create a new pack and colise it
+            let weight = parseFloat(args.weight);
+            return newPack.coliser(weight, products).then(
+              () => this.setPack(newPack)
+            );
+          });
+        }
+      ]}
     ]);
 
     this.statesAction = [
@@ -81,7 +113,8 @@ export class Shipment {
         prodSteps.forEach( s => shipSteps.add(s) );
         packSteps.forEach( s => shipSteps.add(s) );
 
-        if (prodSteps.size > 0) {
+        let allProductsDone = prodSteps.has('unpack') && prodSteps.size == 1;
+        if (!allProductsDone) {
           //des produits sont pas fini
           //y-t-il des packs en stock ?
           shipSteps.delete('destocker');
@@ -108,7 +141,6 @@ export class Shipment {
             pack.nextSteps().map( (ste) => nextSteps.add(ste) )
           }
         );
-        console.log('voici notre trouvaille');
         return nextSteps;
       }}
     ];
@@ -131,6 +163,9 @@ export class Shipment {
   }
   charger() {
 //    this.stateMachine.go('');
+  }
+  group(weight, packs, newPack) {
+    return this.stateMachine.go('group', { packs: packs, weight: weight, newPack: newPack});
   }
   nextSteps() {
     var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state );
@@ -176,7 +211,7 @@ export class Pack { //carton
             return Promise.reject('Pas de produits');
           return Promise.all(
             args.products.map(prod => prod.stateMachine.can('coliser', {pack: this}))
-          ).catch( () => Promise.reject("All the products are not packable"));
+          ).catch( (err) => Promise.reject("All the products are not packable"+ err));
         }
       ], actions:[
         (args) => this.weight = parseFloat(args.weight),
@@ -193,6 +228,16 @@ export class Pack { //carton
       ]},
       {name:'assembler', from: 'transit', to: 'shipped', conditions: [], actions:[]},
       {name:'charger', from: 'shipped', to:'done', conditions: [], actions:[]},
+      {name:'group', from: 'transit', to: 'groupped', conditions: [], actions: [
+        (args) => { // unpack all the products of the current pack
+          var products = this.products;
+          return Promise.all(
+            products.map(prod => prod.unpack())
+          ).then(()=> {
+            this.products = [];
+          });
+        }
+      ]}
     ]);
 
     this.statesAction = [
@@ -200,18 +245,17 @@ export class Pack { //carton
         return new Set(['coliser']);
       }},
       { name:'transit', action: () => {
-        return new Set(['assembler','stocker']);
+        return new Set(['assembler','stocker', 'group']);
       }},
       { name:'stock', action: () => {
         return new Set(['destocker']);
       }},
       { name:'shipped', action: () => {
         return new Set(['charger']);
-      }}
+      }},
     ];
   }
   coliser(weight, products: Array<Product>) {
-    console.log('voici products', products);
     return this.stateMachine.go('coliser', {weight: weight, products: products});
   }
   assembler() {
@@ -225,6 +269,9 @@ export class Pack { //carton
   }
   charger() {
     return this.stateMachine.go('charger');
+  }
+  group() {
+    return this.stateMachine.go('group');
   }
   nextSteps() {
     var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state );
@@ -259,16 +306,22 @@ export class Pack { //carton
           (args) => {
             this.pack = args.pack;
           }
+      ]},
+      { name: 'unpack', from: 'packed', to: 'received', conditions: [], actions: [
+        () => {
+          this.pack = null;
+        }
       ]}
     ];
   }
   receptionner() {
-    console.log('on receptionne');
     return this.stateMachine.go('receptionner');
   }
   coliser(pack:Pack) {
-    console.log('colisage du produit avec le pack ',pack);
     return this.stateMachine.go('coliser', {pack: pack});
+  }
+  unpack() {
+    return this.stateMachine.go('unpack');
   }
   nextSteps() {
     var nextSteps = [];
@@ -277,7 +330,7 @@ export class Pack { //carton
     if (this.stateMachine.state == 'received')
         nextSteps = ["coliser"];
     if (this.stateMachine.state == "packed")
-        nextSteps = [];
+        nextSteps = ["unpack"];
     if (this.stateMachine.state == 'init')
         nextSteps = ['produire'];
     return nextSteps;
@@ -318,8 +371,9 @@ export class StateMachine {
   }
   public can(event, args = {}) {
     var nextState = this.nextState(event)
-    if (!nextState)
-      return Promise.reject("Invalid state. Available: " +  this.availableState().map(x=>x.name).join(', '));
+    if (!nextState) {
+      return Promise.reject("Invalid state " + event + " Available: " + this.availableState().map(x => x.name).join(', '));
+    }
 
     function every(tab) {
       return Promise.all(tab.map( f => f(args)));
@@ -328,7 +382,10 @@ export class StateMachine {
       () => {
         return Promise.resolve((conditions, actions) => {
           return every(nextState.actions).then(
-            () => this.state = nextState.to
+            () => {
+              this.state = nextState.to
+              return this.state;
+            }
           );
         })
       }
@@ -348,6 +405,8 @@ export class StateMachine {
     });*/
   }
   public go(event, args = {}) {
-    return this.can(event, args).then( (f) => f());
+    return this.can(event, args).then( (f) => {
+      return f(null, null)
+    });
   }
 }
