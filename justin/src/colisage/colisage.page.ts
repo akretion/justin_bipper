@@ -108,7 +108,7 @@ export class ColisagePage {
 
   reset(withShipment) {
     this.colisageProvider.reset();
-    this.model = { 'products': []};
+    this.model = { 'products': [], 'weight':0};
     if (withShipment)
       this.shipment = null;
     if (this.inputBar)
