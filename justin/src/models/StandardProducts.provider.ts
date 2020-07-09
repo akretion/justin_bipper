@@ -2,12 +2,13 @@ import {Injectable} from "@angular/core";
 import {Http} from '@angular/http';
 
 import {odooService} from '../angular-odoo/odoo';
+import { AppServices } from './../models/AppServices';
 
 @Injectable()
 export class StandardProductsProvider {
   private pickings: any = {}
 
-  constructor(public http: Http, public odoo: odooService) {
+  constructor(public http: Http, public odoo: odooService, private appServices: AppServices) {
     console.log('Init standard product provider');
   }
 
@@ -18,7 +19,11 @@ export class StandardProductsProvider {
       if ('pickings' in this.pickings){
         resolve(this.pickings)
       } else {
-        this.odoo.call('bipper.webservice', 'get_stockpicking_spl', [], {}).then(
+        let payload = {
+          size: 20,
+          filter_with_today: this.appServices.getConfig('samples').filter
+        }
+        this.odoo.call('bipper.webservice', 'get_stockpicking_spl', [payload], {}).then(
           x => {
             // cache the resoult
             this.pickings = x;

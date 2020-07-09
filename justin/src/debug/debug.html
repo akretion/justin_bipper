@@ -63,6 +63,10 @@
           <ion-toggle name="app_autoLogout"[(ngModel)]="appSettings.app.autoLogout"></ion-toggle>
         </ion-item>
         <ion-item>
+          <ion-label>Samples display filter (with or with out today entrence)</ion-label>
+          <ion-toggle name="samples_filter"[(ngModel)]="appSettings.samples.filter"></ion-toggle>
+        </ion-item>
+        <ion-item>
           <button ion-button>Save</button>
         </ion-item>
       </form>

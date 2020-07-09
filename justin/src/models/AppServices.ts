@@ -4,7 +4,7 @@ import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class AppServices {
-  keys = ['app'];
+  keys = ['app','samples'];
   constructor() {
   }
 
