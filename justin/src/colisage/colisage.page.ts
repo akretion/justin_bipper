@@ -29,7 +29,6 @@ export class ColisagePage {
       public routeService: RouteService,
     ) {
       this.reset(true);
-      this.model.weight = 0;
       var scanned = this.navParams.get('scanned');
       if (scanned)
         this.addIt(scanned);
@@ -47,9 +46,8 @@ export class ColisagePage {
   addIt(scanned) {
     this.colisageProvider.addOne(scanned, this.model.products).then(
       (product: Product) => {
-        this.model['weight'] = parseFloat((this.model.weight + product.weight/1000).toPrecision(3));
         this.model.products.push(product);
-
+        this.updateWeight();
         this.shipment = product.shipment;
 
         if (this.model.products.length == this.shipment.products.length)
@@ -59,6 +57,10 @@ export class ColisagePage {
         this.displayWarning(reason);
       }
     );
+  }
+  updateWeight() {
+    this.model.weight = this.model.products.map(p => p.weight / 1000)
+      .reduce((a, b) => a + b, 0);
   }
 
   printAndContinue() {
@@ -120,5 +122,6 @@ export class ColisagePage {
   removeOne(product) {
     let idx = this.model.products.findIndex(x => x.name == product.name)
     this.model.products.splice(idx,1);
+    this.updateWeight()
   }
 }
