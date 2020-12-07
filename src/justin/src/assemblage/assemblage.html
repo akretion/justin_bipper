@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Ship
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+
+<div *ngIf="model.shipment">
+  <ion-item-group>
+    <ion-item-divider>
+       {{ model.shipment.name }}
+    </ion-item-divider>
+    <ion-item>
+       <p>Send with {{ model.shipment.carrier }}
+         <button ion-button (click)="showModal(model.shipment)" item-right>Change</button>
+        </p>
+       <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)" block>Ship</button>
+       <ion-badge *ngIf="model.allProductsPacked == false" color="danger">Some products are not packed</ion-badge>
+       <ion-badge *ngIf="model.ready == false " color="danger">Not ready : waiting another action</ion-badge>
+   </ion-item>
+ </ion-item-group>
+
+ <ion-item-group>
+     <ion-item-divider>
+        Packs
+     </ion-item-divider>
+
+     <ion-item *ngFor="let pack of model.shipment.packs">
+     <!-- utilité d'avoir les state ? -->
+      <h2>{{ pack.name }}
+        <span *ngIf="model.packs[pack.name].done" color="primary">√</span>
+        <ion-badge *ngIf="model.packs[pack.name].ready == false " color="danger">Not ready</ion-badge>
+      </h2>
+      <p>
+        {{ pack.stateMachine?.state }}
+        <span *ngIf="pack.stateMachine?.state == 'stock'">{{ pack.place }}</span>
+        <br><small>{{ pack.category }}</small>
+        <span *ngIf="model.nextStep == 'Assemble' && pack.stateMachine.state != 'transit'">
+          <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
+        </span>
+      </p>
+   </ion-item>
+
+</ion-item-group>
+
+</div>
+</ion-content>
