@@ -25,7 +25,7 @@ _BUILD_ARGS_OPTS="\
 Stage "Package"
 
 Step "Login to AWS ECR"
-eval `aws ecr get-login --profile ostore-registry-reader --region eu-west-1 --no-include-email`
+eval `aws ecr get-login --region eu-west-1 --profile default | sed -e 's/-e\ none//g'`
 
 Step "Build the docker image"
 docker rmi ${GPS_PROJECT_DOCKER_IMAGE_URL}:latest

@@ -2,7 +2,7 @@ require "pathname"
 
 # ------------------------------------------------------------------------------
 # RAKE CONFIG
-PROJECT_DIR = Pathname.new(".")
+PROJECT_DIR = Pathname.getwd()
 PROJECT_NAME = "bipper"
 PROJECT_TYPE = "application"
 GPS_ENV_PREFIX = "GPS_"
