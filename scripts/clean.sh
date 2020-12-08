@@ -5,7 +5,7 @@ echo "Cleaning the target directory"
 rm -rf $OS_TARGET/*
 
 # enter justin dir
-cd $OS_BUILD/src/justin
+cd $OS_BUILD/src
 
 # remove old build
 echo "Cleaning the local build directory"
