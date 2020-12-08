@@ -11,7 +11,7 @@ pipeline {
     stage("package") {
          
       when {
-        tag '*'
+        tag pattern: ".*", comparator: "REGEXP"
       }
 
       steps {
@@ -23,7 +23,7 @@ pipeline {
     stage("publish") {
 
       when {
-        tag '*'
+        tag pattern: ".*", comparator: "REGEXP"
       }
 
       steps {

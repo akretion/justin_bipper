@@ -1,0 +1,16 @@
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar color="primary">
+      <ion-title>Applications</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="outer-content">
+    <ion-list>
+        <button ion-item *ngFor="let page of appRoutesWithoutLogin" menuClose
+           (click)="openPage(page.component)">{{page.data.title}}</button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+<h2>Booom</h2>
+<ion-nav #content [root]="rootPage"></ion-nav>
+<error-handler>Err ?</error-handler>

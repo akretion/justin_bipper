@@ -4,7 +4,7 @@
 /os/bin/clean.sh
 
 # assemble webapp and put in proper directory
-cd $OS_BUILD/src/justin
+cd $OS_BUILD/src
 
 # install all node dep
 npm install

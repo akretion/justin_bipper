@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Login</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <form #loginForm="ngForm" novalidate (submit)="onLogin(loginForm)">
+      <ion-item>
+        <ion-label floating color="primary">Username and password</ion-label>
+        <ion-input [(ngModel)]="login.userpass" name="userpass" type="password" #username="ngModel" spellcheck="false" autocapitalize="off" required>
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label floating color="primary">Database</ion-label>
+        <ion-select [(ngModel)]="login.db" #db="ngModel" name="db">
+          <ion-option *ngFor="let db of dbs" value="{{db}}">{{db}}</ion-option>
+        </ion-select>
+      </ion-item>
+
+
+      <ion-row responsive-sm>
+        <ion-col>
+          <button ion-button type="submit" color="primary" block>Login</button>
+        </ion-col>
+      </ion-row>
+    </form>
+  </ion-list>
+
+</ion-content>

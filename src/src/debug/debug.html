@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Debug
+      </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+    <button (click)="refresh()">Refresh</button>
+    <table>
+      <tr><th>Shipments</th><td>{{ shipQty }}</td></tr>
+      <tr><th>Products</th><td>{{ prodQty }}</td></tr>
+      <tr><th>Packs</th><td>{{ packQty }}</td></tr>
+      <tr><th>LastUpdate</th><td>{{ lastUpdate | async }}</td></tr>
+    </table>
+
+
+    <hr>
+    <ion-card>
+      <form (ngSubmit)="saveSettings(settings)">
+        <ion-card-header>Printing setup</ion-card-header>
+        <ion-item>
+          <ion-label fixed>Zebra Server</ion-label>
+          <ion-input name="zebra_url" type="url" [(ngModel)]="settings.zebra.url" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>Zebra name</ion-label>
+          <ion-input name="zebra_name" type="text" [(ngModel)]="settings.zebra.name" placeholder="System name on the host"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>Dymo Server</ion-label>
+          <ion-input name="dymo_url" type="url" [(ngModel)]="settings.dymo.url" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>Dymo Name</ion-label>
+          <ion-input name="dymo_name" type="txt" [(ngModel)]="settings.dymo.name" placeholder="System name on the host"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>A4 Server</ion-label>
+          <ion-input name="a4_url" type="url" [(ngModel)]="settings.a4.url" placeholder="network address"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label fixed>A4 Name</ion-label>
+          <ion-input name="a4_name" type="txt" [(ngModel)]="settings.a4.name" placeholder="System name on the host"></ion-input>
+        </ion-item>
+        <ion-item>
+          <button ion-button>Save</button>
+        </ion-item>
+      </form>
+    </ion-card>
+
+    <ion-card>
+      <form (ngSubmit)="saveAppSettings(appSettings)">
+        <ion-card-header>Application setup</ion-card-header>
+        <ion-item>
+          <ion-label>Automatic logout</ion-label>
+          <ion-toggle name="app_autoLogout"[(ngModel)]="appSettings.app.autoLogout"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label>Samples display filter (with or with out today entrence)</ion-label>
+          <ion-toggle name="samples_filter"[(ngModel)]="appSettings.samples.filter"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <button ion-button>Save</button>
+        </ion-item>
+      </form>
+    </ion-card>
+</ion-content>

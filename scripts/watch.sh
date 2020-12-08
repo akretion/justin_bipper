@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # set working dir
-cd $OS_BUILD/src/justin
+cd $OS_BUILD/src
 
 # add path to exec
 PATH=$PATH:./node_modules/.bin/
@@ -23,10 +23,10 @@ if [ -f ./ionic.config.old.json ]; then
 fi
 
 # move original file to old file
-mv $OS_BUILD/src/justin/ionic.config.json $OS_BUILD/src/justin/ionic.config.old.json
+mv $OS_BUILD/src/ionic.config.json $OS_BUILD/src/ionic.config.old.json
 
 # copy oliverstore config file to root of project
-cp $OS_BUILD/etc/config/bipper/ionic.config.json $OS_BUILD/src/justin/
+cp $OS_BUILD/etc/config/bipper/ionic.config.json $OS_BUILD/src/
 
 # watch
 ionic-app-scripts serve

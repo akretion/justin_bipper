@@ -1,0 +1,32 @@
+
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Load truck
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let pack of model.packs">
+      {{pack.name}}
+      <button ion-button item-right outline danger (click)="removeOne(pack)">-1</button>
+    </ion-item>
+  </ion-list>
+
+  <ion-toolbar position="bottom">
+    <ion-buttons start>
+      <button ion-button (click)="showConfirm()" danger>Reset</button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button (click)="validate()" color="primary">Validate<ion-icon name="send"></ion-icon></button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-content>

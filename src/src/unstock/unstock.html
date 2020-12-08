@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+      <ion-buttons start>
+        <button ion-button menuToggle>Toggle Menu</button>
+      </ion-buttons>
+
+      <ion-title>
+        Unstock
+      </ion-title>
+      <input-bar (cb)="addIt($event)">Search bar</input-bar>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngIf="!listeDeCourses.length">
+      Nothing to unstock
+    </ion-item>
+    <ion-item-group *ngIf="listeDeCourses.length">
+      <ion-item-divider>
+        Packs
+      </ion-item-divider>
+      <ion-item *ngFor="let pack of listeDeCourses">
+         {{ pack.name }} - {{ pack.place }}
+         <span *ngIf="model.packs.has(pack.name)" color="primary">√</span>
+         <br><small>{{ pack.category }}</small>
+      </ion-item>
+       <ion-buttons start>
+         <button ion-button (click)="reset()" danger>Reset</button>
+       </ion-buttons>
+
+       <ion-buttons end>
+         <button ion-button (click)="validate()" color="primary">Validate
+             <ion-icon name="send"></ion-icon>
+           </button>
+       </ion-buttons>
+     </ion-item-group >
+  </ion-list>
+</ion-content>
