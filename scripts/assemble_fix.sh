@@ -9,6 +9,8 @@ cd $OS_BUILD/src
 # decompress node libs package
 tar xf node_packages.tar.xz
 
+npm install
+
 # add path to exec
 PATH=$PATH:./node_modules/.bin/
 
