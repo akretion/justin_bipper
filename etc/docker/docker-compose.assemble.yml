@@ -21,7 +21,7 @@ services:
   assembler:
     extends:
       service: base_integration
-    command: /os/bin/assemble.sh
+    command: /os/bin/assemble_fix.sh
     depends_on:
       - source
       - target
