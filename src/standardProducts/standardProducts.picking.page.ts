@@ -15,6 +15,8 @@ import {StandardProductsPage} from './standardProducts.page';
 export class StandardProductsPickingPage {
   picking: any = {};
   model: any = {};
+  addressLabel: any;
+  finishHim: boolean = false;
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
@@ -157,19 +159,23 @@ export class StandardProductsPickingPage {
           this.model.shipDone = true;
 
           // print label
-          this.printServices.printDymo(x[1]);
+          this.addressLabel = x[1];
+          this.printServices.printDymo(this.addressLabel);
           this.displayWarning(`Saved`);
           
           // remove picking from cache
           this.standardProductsProvider.removePicking(this.picking.id);
           
-          // go back to BL list
-          this.navCtrl.push(StandardProductsPage)
+
+          this.finishHim = true;
+          // // go back to BL list
+          // this.navCtrl.push(StandardProductsPage)
         }
       },
       err => {
-        console.log(err)
+        console.log(err);
         loader.dismissAll();
+        this.displayWarning(err);
       }
     )
   }
@@ -222,5 +228,15 @@ export class StandardProductsPickingPage {
     }
 
     this.inputBar.focus();
+  }
+
+  rePrint() {
+    this.printServices.printDymo(this.addressLabel);
+    this.displayWarning('Send label to printer');
+  }
+
+  goBack(){
+     // go back to BL list
+     this.navCtrl.push(StandardProductsPage)
   }
 }

@@ -87,10 +87,12 @@ export class StandardProductsPage {
     this.printServices.printDymo(this.search.pdf);
     this.displayWarning('Send label to printer');
   }
+
   goBack(){
     this.search = {}
     this.doReprint = false;
   }
+  
   selectPicking(item) {
     console.log('selected picking: ', item)
     this.navCtrl.push(StandardProductsPickingPage, {picking:item})
