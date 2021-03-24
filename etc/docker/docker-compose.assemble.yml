@@ -32,6 +32,7 @@ services:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
+      - OS_EXTRAS=${OS_EXTRAS}
 
   cleaner:
     extends:
@@ -77,6 +78,7 @@ services:
       -  ../../src:/os/build/src
       -  ../../etc:/os/build/etc
       -  ../../test:/os/build/test
+      -  ../../extras:/os/build/extras
 
   target:
     extends:

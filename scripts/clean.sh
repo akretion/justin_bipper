@@ -1,24 +1,29 @@
 #!/bin/bash
 
-# clear target directory
-echo "Cleaning the target directory"
+source $OS_EXTRAS/bash/bash-utils.sh
+
+Stage "Cleanup project"
+
+Step "Cleanup env"
+
+Task "Cleaning the target directory"
 rm -rf $OS_TARGET/*
 
-# enter justin dir
+Task "Enter src directory" 
 cd $OS_BUILD/src
 
-# remove old build
-echo "Cleaning the local build directory"
+Task "Cleaning the local build directory"
 rm -rf www/*
 
-# remove all old node modules
-echo "Cleaning the node modules directory"
+Task "Cleaning the node modules directory"
 rm -rf node_modules/
 
-# check if original project config was modified
-echo "Cleaning the source structure"
+Step "Cleanup source structure"
+
 if [ -f ./ionic.config.old.json ]; then
-  # restore original project config file
+  Task "Restore original project config file"
   rm -rf ./ionic.config.json
   mv ./ionic.config.old.json ./ionic.config.json
 fi
+
+Step "End of cleanup stage"

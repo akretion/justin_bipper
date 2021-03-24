@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $OS_EXTRAS/files/bash/helpers.bash
+source $OS_EXTRAS/bash/bash-utils.sh
 
 Stage "Run"
 
