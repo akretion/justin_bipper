@@ -6,7 +6,13 @@
 # assemble webapp and put in proper directory
 cd $OS_BUILD/src
 
-# install all node dep
+# check if vendors libs exist
+echo "Check and extract vendors libs"
+if [ -f ./node_packages.tar.xz ]; then
+  # decompress node libs package
+  tar xf node_packages.tar.xz
+fi
+
 npm install
 
 # add path to exec
