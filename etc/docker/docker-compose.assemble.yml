@@ -48,6 +48,7 @@ services:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
+      - OS_EXTRAS=${OS_EXTRAS}
       
   watcher:
     extends:
@@ -68,6 +69,7 @@ services:
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
       - WATCH_DO_CLEAN=${WATCH_DO_CLEAN}
+      - OS_EXTRAS=${OS_EXTRAS}
       
 # #####################################################
 # Volume services
