@@ -59,7 +59,7 @@ services:
     volumes_from:
       - source
       - target
-    network_mode: host
+    # network_mode: host
     ports:
       - 8100:8100
     environment:
