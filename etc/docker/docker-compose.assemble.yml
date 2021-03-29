@@ -80,7 +80,7 @@ services:
       -  ../../src:/os/build/src
       -  ../../etc:/os/build/etc
       -  ../../test:/os/build/test
-      -  ../../extras:/os/build/extras
+      -  ../../extras:/os/extras
 
   target:
     extends:
