@@ -1,19 +1,32 @@
 #!/bin/bash
 
-# clear target directory
+source $OS_EXTRAS/bash/bash-utils.sh
+
+# Run Cleanup stage before continue with assemble process
 /os/bin/clean.sh
 
-# assemble webapp and put in proper directory
+Stage "Assemble"
+Step "Install libs"
+Task "Enter build directory"
 cd $OS_BUILD/src
 
-# install all node dep
-npm install
+Task "Check if exist compressed file with build libs, if yes decompress it, if not donwload build libs"
+if [ -f ./node_packages.tar.xz ]; then
+  Task "Decompress build libs"
+  tar xf node_packages.tar.xz
+else
+  Task "Install build libs "
+  npm install
+fi
 
-# add path to exec
+Task "Add build libs bin folder to exec PATH"
 PATH=$PATH:./node_modules/.bin/
 
-# build the project
+Step "Build app"
+Task "Start build process"
 npm run build
 
-# copy build project to dist directory
+Task "Copy app to target"
 cp -R www/* $OS_TARGET
+
+Step "End of assemble stage"

@@ -11,8 +11,8 @@ RUN chmod 755 /usr/local/bin/gomplate
 #
 # ASSEMBLE
 #
-COPY scripts/assemble_fix.sh /os/bin/
-RUN chmod +x /os/bin/assemble_fix.sh
+COPY scripts/assemble.sh /os/bin/
+RUN chmod +x /os/bin/assemble.sh
 
 #
 # CLEAN

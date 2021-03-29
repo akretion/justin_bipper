@@ -21,7 +21,7 @@ services:
   assembler:
     extends:
       service: base_integration
-    command: /os/bin/assemble_fix.sh
+    command: /os/bin/assemble.sh
     depends_on:
       - source
       - target
@@ -32,6 +32,7 @@ services:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
+      - OS_EXTRAS=${OS_EXTRAS}
 
   cleaner:
     extends:
@@ -47,6 +48,7 @@ services:
       - OS_TARGET=${OS_TARGET}
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
+      - OS_EXTRAS=${OS_EXTRAS}
       
   watcher:
     extends:
@@ -67,6 +69,7 @@ services:
       - OS_APP=${OS_APP}
       - OS_BUILD=${OS_BUILD}
       - WATCH_DO_CLEAN=${WATCH_DO_CLEAN}
+      - OS_EXTRAS=${OS_EXTRAS}
       
 # #####################################################
 # Volume services
@@ -77,6 +80,7 @@ services:
       -  ../../src:/os/build/src
       -  ../../etc:/os/build/etc
       -  ../../test:/os/build/test
+      -  ../../extras:/os/build/extras
 
   target:
     extends:
