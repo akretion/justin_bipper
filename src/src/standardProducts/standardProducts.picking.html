@@ -40,12 +40,19 @@
     </ion-list>
 
     <form name="colisageForm" *ngIf="model.procced">
-        <ion-item>
+        <ion-item >
             <ion-buttons start>
-                <button ion-button (click)="doPick()" color="danger">Ship</button>
+                <button *ngIf="!finishHim"ion-button (click)="doPick()" color="danger">Ship</button>
+                <button *ngIf="finishHim" ion-button color="secondary" outline (click)="goBack()">Close</button>
+                <button *ngIf="finishHim" ion-button color="danger" outline (click)="rePrint()">Print address label</button>
             </ion-buttons>
         </ion-item>
     </form>
+
+    <!-- <ion-card *ngIf="finishHim">
+        <button ion-button color="secondary" outline (click)="goBack()">Close</button>
+        <button ion-button color="danger" outline (click)="rePrint()">Print address label</button>
+    </ion-card> -->
 
     <ion-list>
         
