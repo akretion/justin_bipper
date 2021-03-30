@@ -33,7 +33,7 @@ def run_task(name, envs = nil)
     "GPS_PROJECT_DIR" => "#{PROJECT_DIR}",
     "GPS_PROJECT_DOCKER_IMAGE_URL" => "#{DOCKER_IMAGE_REPO_URL}",
     "GPS_AWS_PROFILE" => "ostore-operator",
-    "DEV_PROJECT" => "#{PROJECT_NAME}dev"
+    "DEV_PROJECT" => "#{PROJECT_NAME}_dev"
 
   }.each do |k, v|
     envvars[k.to_s] = v

@@ -18,8 +18,8 @@ source extras/bash/bash-utils.sh
 Stage "Cleaning"
 
 Step "Build the docker image"
-
-docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml up cleaner 
+docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml rm -f cleaner
+docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml --env-file ./.env up --build --force-rm cleaner 
 
 Check_errors $?
 
