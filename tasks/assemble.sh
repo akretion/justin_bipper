@@ -38,18 +38,18 @@ docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose
 Check_errors $?
 
 Task "Get ID of build image"
-BUILD_IMAGE_ID="$(docker image ls -f "label= os:component:name=$GPS_COMPONENT_NAME" -f "label=os:component:build_id=$COMPONENT_BUILD_ID" --format "{{ .ID }}" | head -1)"
+BUILD_IMAGE_ID="$(docker image ls -f "label=os:component:name=$GPS_COMPONENT_NAME" -f "label=os:component:build_id=$COMPONENT_BUILD_ID" --format "{{ .ID }}" | head -1)"
 Task "Docker build ID image is: $BUILD_IMAGE_ID"
 Task "End build image step"
 
 Step "Start assemble process"
-docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml --env-file $CURRENT_WORKING_PATH'/.env' up ${CONTAINER_NAME}
+docker-compose -p ${DEV_PROJECT} -f ${GPS_PROJECT_DIR}/etc/docker/docker-compose.assemble.yml --env-file $CURRENT_WORKING_PATH'/.env' up --remove-orphans ${CONTAINER_NAME} 
 Check_errors $?
 Task "End assemble step"
 
 Step "Cleanup step"
-Task "Remove assembler container "
-docker rm -f $DEV_PROJECT'_'$CONTAINER_NAME'_1'
+Task "Remove related containers "
+docker container rm -f $(docker container ls -aqf "name=(${DEV_PROJECT})\w+")
 
 Task "Remove docker image"
 docker rmi -f $BUILD_IMAGE_ID
