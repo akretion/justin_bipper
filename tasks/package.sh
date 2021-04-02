@@ -40,7 +40,7 @@ then
 else
   Task "Last build ID: ${OLD_BUILD_LATEST}"
   Task "Delete old image"
-  docker rmi $OLD_BUILD_LATEST
+  docker rmi -f $OLD_BUILD_LATEST
   Check_errors $?
 fi
 Task "End remove step"
