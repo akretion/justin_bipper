@@ -34,11 +34,13 @@ Step "Remove old latest build"
 
 Task "Check is old latest image exist"
 OLD_BUILD_LATEST=$(docker images -q ${GPS_PROJECT_DOCKER_IMAGE_URL}:latest)
+OLD_BUILD_LATEST_NAME=$(docker images --format "{{.Repository}}:{{.Tag}}" ${GPS_PROJECT_DOCKER_IMAGE_URL}:latest)
 if [ -z "$OLD_BUILD_LATEST" ]
 then
   Task "Old build not exist, skip this"
 else
   Task "Last build ID: ${OLD_BUILD_LATEST}"
+  Task "Last build NAME: ${OLD_BUILD_LATEST_NAME}"
   Task "Delete old image"
   docker rmi -f $OLD_BUILD_LATEST
   Check_errors $?
