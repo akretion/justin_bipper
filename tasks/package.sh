@@ -24,14 +24,33 @@ _BUILD_ARGS_OPTS="\
 
 Stage "Package"
 
-Step "Login to AWS ECR"
+Step "AWS ECR"
+
+Task "Login to AWS ECR"
 eval `aws ecr get-login --region eu-west-1 --profile default | sed -e 's/-e\ none//g'`
+Task "End AWS ECR step"
 
-Step "Build the docker image"
-docker rmi ${GPS_PROJECT_DOCKER_IMAGE_URL}:latest
+Step "Remove old latest build"
+
+Task "Check is old latest image exist"
+OLD_BUILD_LATEST=$(docker images -q ${GPS_PROJECT_DOCKER_IMAGE_URL}:latest)
+if [ -z "$OLD_BUILD_LATEST" ]
+then
+  Task "Old build not exist, skip this"
+else
+  Task "Last build ID: ${OLD_BUILD_LATEST}"
+  Task "Delete old image"
+  docker rmi $OLD_BUILD_LATEST
+  Check_errors $?
+fi
+Task "End remove step"
+
+Step "Build artefact"
+
+Task"Build new latest image"
 docker build --no-cache --force-rm  -f ${GPS_PROJECT_DIR}/etc/docker/Dockerfile  ${_BUILD_ARGS_OPTS} -t ${GPS_PROJECT_DOCKER_IMAGE_URL} ${GPS_PROJECT_DIR}
-
 Check_errors $?
+Task "End build artefact step"
 
 Done
 
