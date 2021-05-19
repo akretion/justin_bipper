@@ -55,6 +55,7 @@ export class AssemblagePage {
 
     if (!this.model.shipment) {
       let shipment = pack.shipment
+      console.log(shipment);
       this.model.shipment = shipment;
       this.model.toBeScanned = shipment.packs.length;
 
