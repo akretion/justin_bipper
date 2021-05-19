@@ -21,6 +21,7 @@
     </ion-item-divider>
     <ion-item>
        <p>Send with {{ model.shipment.carrier }}
+        <ion-badge *ngIf="model.shipment.export_label_warning == true " color="danger">Export label</ion-badge>
          <button ion-button (click)="showModal(model.shipment)" item-right>Change</button>
         </p>
        <button ion-button *ngIf="model.ready && model.nextStep == 'Assemble'" primary (click)="assembler(model.shipment)" block>Ship</button>
