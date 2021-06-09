@@ -26,12 +26,13 @@ export class CarrierPage {
     return this.productsProvider.set_carrier(this.shipment, carrier).then(
       (x) => {
         this.shipment.carrier = carrier.name
+        this.shipment.export_label_warning = carrier.export_label_warning
       }
     ).then(
       () => this.close()
     );
   }
   close() {
-    this.view.dismiss();
+    this.view.dismiss(this.shipment);
   }
 }
