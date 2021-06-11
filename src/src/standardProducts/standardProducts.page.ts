@@ -18,6 +18,9 @@ export class StandardProductsPage {
   pickings: any = {};
   doReprint: Boolean = false;
   search: any = {};
+  remain_picks: any = {};
+
+
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   // @ViewChild(nextAppComponent) nextApp:nextAppComponent;
 
