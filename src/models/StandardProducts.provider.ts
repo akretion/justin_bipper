@@ -3,12 +3,12 @@ import {Http} from '@angular/http';
 
 import {odooService} from '../angular-odoo/odoo';
 import { AppServices } from './../models/AppServices';
+import {StandardProductsPage} from '../standardProducts/standardProducts.page';
 
 @Injectable()
 export class StandardProductsProvider {
   private pickings: any = {}
-
-  constructor(public http: Http, public odoo: odooService, private appServices: AppServices) {
+  constructor(public http: Http, public odoo: odooService, private appServices: AppServices, private standardProductsPage: StandardProductsPage) {
     console.log('Init standard product provider');
   }
 
@@ -27,6 +27,7 @@ export class StandardProductsProvider {
           x => {
             // cache the resoult
             this.pickings = x;
+            this.standardProductsPage.remain_picks = 0;
 
             // resolve
             resolve(this.pickings)
