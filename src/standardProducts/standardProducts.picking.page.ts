@@ -28,7 +28,6 @@ export class StandardProductsPickingPage {
       public loadingCtrl: LoadingController,
       private printServices: PrintServices,
       public routeService: RouteService,
-      private standardProductsPage: StandardProductsPage,
       private standardProductsProvider: StandardProductsProvider
     ) {
       
@@ -139,7 +138,7 @@ export class StandardProductsPickingPage {
         this.model.pickDone = true;
         this.model.procced = true;
         this.doShip();
-        this.standardProductsPage.remain_picks = this.standardProductsPage.remain_picks + 1;
+        this.standardProductsProvider.remain_picks = this.standardProductsProvider.remain_picks + 1;
       },
       err => {
         console.log(err)
