@@ -23,8 +23,8 @@
   
     <form name="colisageForm">
         <ion-item>
-            <ion-label>Weight</ion-label>
-            <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any">
+            <ion-label>Weight YOLO</ion-label>
+            <ion-input (ionChange)="onChange($event)" [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any">
             </ion-input>
         </ion-item>
 
