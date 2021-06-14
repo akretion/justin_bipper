@@ -144,4 +144,10 @@ export class GroupingPage {
             return prev + cur.weight;
         }, 0)
     }
+
+    onChange(weight) {
+        console.log('onChange weight');
+        console.log("------------>>>>>>>>>>>>>>>>>>>>>>>>> :  ",weight);
+        
+    }
 }
