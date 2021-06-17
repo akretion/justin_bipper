@@ -4,8 +4,8 @@
             <button ion-button menuToggle>Toggle Menu</button>
         </ion-buttons>
     
-        <ion-title>
-            Shipping, total: {{pickings.totall}}
+        <ion-title size="small">
+            Shipping T: {{pickings.totall}} | D: {{standardProductsProvider.remain_picks}}
         </ion-title>
         <input-bar (cb)="addIt($event)">Search bar</input-bar>
     </ion-toolbar>

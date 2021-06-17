@@ -138,6 +138,7 @@ export class StandardProductsPickingPage {
         this.model.pickDone = true;
         this.model.procced = true;
         this.doShip();
+        this.standardProductsProvider.remain_picks = this.standardProductsProvider.remain_picks + 1;
       },
       err => {
         console.log(err)

@@ -7,7 +7,7 @@ import { AppServices } from './../models/AppServices';
 @Injectable()
 export class StandardProductsProvider {
   private pickings: any = {}
-
+  remain_picks: any = {};
   constructor(public http: Http, public odoo: odooService, private appServices: AppServices) {
     console.log('Init standard product provider');
   }
@@ -27,7 +27,7 @@ export class StandardProductsProvider {
           x => {
             // cache the resoult
             this.pickings = x;
-
+            this.remain_picks = x.done_today;
             // resolve
             resolve(this.pickings)
           },
