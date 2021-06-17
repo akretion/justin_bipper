@@ -145,9 +145,29 @@ export class GroupingPage {
         }, 0)
     }
 
-    onChange(weight) {
-        console.log('onChange weight');
-        console.log("------------>>>>>>>>>>>>>>>>>>>>>>>>> :  ",weight);
-        
-    }
+    weight_limit_exceed(){
+        // check the weigh limit set in odoo delivery.carrier, if not set no restriction
+
+        if (this.model.weight >= this.model.shipment.max_weight ){
+            return true
+        }
+        else {
+            return false
+        }
+        // if (this.model.shipment.carrier == "DPD_Relais") {
+        //     if (this.model.weight >= 20){
+        //         return true
+        //     }
+        //     else {
+        //         return false
+        //     }
+        // }
+        // else (this.model.shipment.carrier == "DPD_Classic")
+        //     if (this.model.weight >= 30) {
+        //         return true
+        //     }
+        //     else {
+        //         return false
+        //     }
+        }
 }
