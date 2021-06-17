@@ -3,6 +3,7 @@ export class Shipment {
   packs: Array<Pack> = [];
   name = 'WH/OUT102';
   carrier = '';
+  export_label_warning = false;
   products = [];
   picking_id = 0;
   partial_allowed = false;

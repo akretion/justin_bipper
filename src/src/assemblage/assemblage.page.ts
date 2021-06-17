@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {NavController, NavParams, ToastController, ModalController} from 'ionic-angular';
+import {NavController, NavParams, ToastController, ModalController, Modal} from 'ionic-angular';
 import {AlertController, LoadingController} from 'ionic-angular';
 import {ProductsProvider} from '../models/Products.provider';
 import {nextAppComponent} from '../models/nextSteps.component';
@@ -14,6 +14,7 @@ console.log('dans assemblage1');
 export class AssemblagePage {
   model: any = {};
   nextStep: string = '';
+  changeCarrierModal: any = Modal;
   @ViewChild(inputBarComponent) inputBar:inputBarComponent;
   constructor(
       public navCtrl: NavController,
@@ -37,8 +38,13 @@ export class AssemblagePage {
       duration: 2000
     }).present();
   }
+
   showModal(shipment) {
-    this.modalCtrl.create(CarrierPage, {shipment: shipment}).present()
+    this.changeCarrierModal = this.modalCtrl.create(CarrierPage, {shipment: shipment})
+    this.changeCarrierModal.onDidDismiss(data => {
+      // do something with the returned data
+    });
+    this.changeCarrierModal.present()
   }
 
   addIt(scanned) {
@@ -55,6 +61,7 @@ export class AssemblagePage {
 
     if (!this.model.shipment) {
       let shipment = pack.shipment
+      console.log(shipment);
       this.model.shipment = shipment;
       this.model.toBeScanned = shipment.packs.length;
 

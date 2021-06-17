@@ -118,11 +118,13 @@ export class ProductsProvider {
       var ship = new Shipment();
       ship.créer();
       ship.name = s.name;
+      ship.export_label_warning = s.export_label_warning;
       return updateShip(ship, s);
     }
 
     function updateShip(ship, s) {
       ship.carrier = s.carrier;
+      ship.export_label_warning = s.export_label_warning;
       ship.partial_allowed = s.is_partial;
       return ship;
     }
