@@ -22,10 +22,11 @@
     </ion-list>
   
     <form name="colisageForm">
-        <ion-item>
-            <ion-label>Weight YOLO</ion-label>
-            <ion-input (ionChange)="onChange($event)" [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any">
+        <ion-item >
+            <ion-label>Weight</ion-label>
+            <ion-input [(ngModel)]="model.weight" name="weight" placeholder="Package weight" type="number" step="any">
             </ion-input>
+
         </ion-item>
 
         <ion-item>
@@ -36,7 +37,7 @@
             <ion-buttons end>
                 <button *ngIf="model.shipNow" (click)="shipNow()" [disabled]="!(model.packs.length >=2 && model.weight)"
                     ion-button color="secondary">Ship now</button>
-                <button (click)="printAndContinue()" ion-button [disabled]="!(model.packs.length >=2 && model.weight)"
+                <button (click)="printAndContinue()" ion-button [disabled]="!(model.packs.length >=2 && model.weight && !weight_limit_exceed)"
                     color="primary">Make package
                     <ion-icon name="send"></ion-icon>
                 </button>
@@ -46,7 +47,7 @@
     
     <ion-list *ngIf="model.shipment">
         <ion-list-header>
-            {{ model.shipment.name }} {{ model.shipment.carrier }} {{ model.shipmentTotalWeight }}kg <nextApp [withArgs]="false" [thing]="model.shipment" item-right>dns
+            {{ model.shipment.name }} {{ model.shipment.carrier }} {{ model.shipment.max_weight }} {{ model.shipmentTotalWeight }}kg <nextApp [withArgs]="false" [thing]="model.shipment" item-right>dns
                 nextapp</nextApp>
         </ion-list-header>
 

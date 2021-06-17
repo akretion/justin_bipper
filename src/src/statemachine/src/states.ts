@@ -3,7 +3,11 @@ export class Shipment {
   packs: Array<Pack> = [];
   name = 'WH/OUT102';
   carrier = '';
+<<<<<<< HEAD
   export_label_warning = false;
+=======
+  max_weight = 0;
+>>>>>>> trying to add max_weight in shipment
   products = [];
   picking_id = 0;
   partial_allowed = false;
@@ -60,6 +64,9 @@ export class Shipment {
             return Promise.reject('poids null');
         },
         (args) => {
+          let max_weight = parseFloat(args.max_weight);
+        },
+        (args) => {
           if(!args.packs.every(pack => pack.shipment == args.packs[0].shipment))
             return Promise.reject('All the packs are not from the same shipment');
         },
@@ -86,11 +93,13 @@ export class Shipment {
           ).then(() => {
             // create a new pack and colise it
             let weight = parseFloat(args.weight);
-            return newPack.coliser(weight, products).then(
+            let max_weight = parseFloat(args.max_weight);
+            return newPack.coliser(weight, products, max_weight).then(
               () => this.setPack(newPack)
             );
           });
-        }
+        },
+        (args) => this.max_weight = parseFloat(args.max_weight),
       ]}
     ]);
 
@@ -165,8 +174,8 @@ export class Shipment {
   charger() {
 //    this.stateMachine.go('');
   }
-  group(weight, packs, newPack) {
-    return this.stateMachine.go('group', { packs: packs, weight: weight, newPack: newPack});
+  group(weight, packs, newPack, max_weight) {
+    return this.stateMachine.go('group', { packs: packs, weight: weight, newPack: newPack, max_weight:max_weight});
   }
   nextSteps() {
     var stateAction = this.statesAction.find((s) => s.name == this.stateMachine.state );
