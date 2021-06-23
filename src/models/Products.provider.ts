@@ -120,6 +120,7 @@ export class ProductsProvider {
       ship.name = s.name;
       ship.export_label_warning = s.export_label_warning;
       ship.max_weight = s.max_weight
+      ship.picking_id = s.picking_id
       return updateShip(ship, s);
     }
 
@@ -161,6 +162,7 @@ export class ProductsProvider {
       shipment.packs.push(pack);
       return updatePack(p, pack);
     }
+
     function updatePack(p, pack) {
       pack.stateMachine.state = p.state;
       if (!p.state){
@@ -280,7 +282,8 @@ export class ProductsProvider {
 
   get_carrier(shipment) {
     var payload = {
-      'name': shipment.name
+      'name': shipment.name,
+      'picking_id': shipment.picking_id
     };
     return this.odoo.call('bipper.webservice', 'get_carrier', [payload], {}).then(
       x=>{ console.log('carreiers', x); return x; }
@@ -289,7 +292,7 @@ export class ProductsProvider {
 
   set_carrier(shipment, carrier) {
     var payload = [{
-        name: shipment.name
+        name: shipment.name,
       }, {
         name: carrier.name
     }];
