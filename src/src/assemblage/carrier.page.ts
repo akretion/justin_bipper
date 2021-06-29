@@ -21,6 +21,7 @@ export class CarrierPage {
         carriers => this.carriers = carriers
       );
   }
+
   onChange(carrier) {
     //TODO gerer en cas d'exception
     return this.productsProvider.set_carrier(this.shipment, carrier).then(
@@ -32,6 +33,7 @@ export class CarrierPage {
       () => this.close()
     );
   }
+  
   close() {
     this.view.dismiss(this.shipment);
   }
