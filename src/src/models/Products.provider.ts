@@ -119,6 +119,7 @@ export class ProductsProvider {
       ship.créer();
       ship.name = s.name;
       ship.export_label_warning = s.export_label_warning;
+      ship.country_name = s.country_name;
       ship.picking_id = s.picking_id
       return updateShip(ship, s);
     }
@@ -126,6 +127,7 @@ export class ProductsProvider {
     function updateShip(ship, s) {
       ship.carrier = s.carrier;
       ship.export_label_warning = s.export_label_warning;
+      ship.country_name = s.country_name;
       ship.partial_allowed = s.is_partial;
       return ship;
     }
@@ -282,7 +284,8 @@ export class ProductsProvider {
   get_carrier(shipment) {
     var payload = {
       'name': shipment.name,
-      'picking_id': shipment.picking_id
+      'picking_id': shipment.picking_id,
+      'country_name': shipment.country_name
     };
     return this.odoo.call('bipper.webservice', 'get_carrier', [payload], {}).then(
       x=>{ console.log('carreiers', x); return x; }
