@@ -4,6 +4,7 @@ export class Shipment {
   name = 'WH/OUT102';
   carrier = '';
   export_label_warning = false;
+  country_name = '';
   products = [];
   picking_id = 0;
   partial_allowed = false;
