@@ -144,4 +144,9 @@ export class GroupingPage {
             return prev + cur.weight;
         }, 0)
     }
+
+    weight_limit_exceed(){
+        // check the weigh limit set in odoo delivery.carrier, if not set no restriction
+        return (this.model.weight > this.model.shipment.max_weight) ? true : false;
+        }
 }

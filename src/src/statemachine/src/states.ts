@@ -4,6 +4,7 @@ export class Shipment {
   name = 'WH/OUT102';
   carrier = '';
   export_label_warning = false;
+  max_weight = 0;
   country_name = '';
   products = [];
   picking_id = 0;
@@ -91,7 +92,7 @@ export class Shipment {
               () => this.setPack(newPack)
             );
           });
-        }
+        },
       ]}
     ]);
 

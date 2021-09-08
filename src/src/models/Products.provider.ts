@@ -119,6 +119,7 @@ export class ProductsProvider {
       ship.créer();
       ship.name = s.name;
       ship.export_label_warning = s.export_label_warning;
+      ship.max_weight = s.max_weight
       ship.country_name = s.country_name;
       ship.picking_id = s.picking_id
       return updateShip(ship, s);
