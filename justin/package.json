@@ -8,6 +8,9 @@
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve"
   },
+  "config": {
+    "ionic_www_dir": "static/src/" 
+  },
   "dependencies": {
     "@angular/common": "2.4.10",
     "@angular/compiler": "2.4.10",
