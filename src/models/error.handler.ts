@@ -9,7 +9,7 @@ import {odooService} from '../angular-odoo/odoo';
 @Component({
   selector: 'error-handler',
   template: `
-    <h2>Je gère avec Classe</h2>
+    <h2></h2>
   `,
 })
 export class errorComponent {
@@ -24,11 +24,12 @@ export class errorComponent {
       console.log('erorHandler', x);
       var msgs = {};
       msgs[true as any] = 'Unkown error';
-      if (x.fullTrace.data) {
-        msgs[(x.fullTrace.data.exception_type == "internal_error") as any] = "Error ! " + x.fullTrace.data.message;
-        msgs[(x.fullTrace.data.exception_type == "user_error") as any] = "User Error ! " + x.fullTrace.data.message;
-        msgs[(x.fullTrace.data.exception_type == 'wrong_login') as any] = "Please reconnect";
-        msgs[(x.fullTrace.data.exception_type == 'validation_error') as any] = x.fullTrace.data.message;
+      if (x.title && x.message) {
+        msgs[(x.title == "internal_error") as any] = "Error ! " + x.message;
+        msgs[(x.title == "UserError") as any] = "User Error ! " + x.message;
+        msgs[(x.title == 'wrong_login') as any] = "Wrong credentials, Please reconnect";
+        msgs[(x.title == 'SessionExpired') as any] = "Session Expired. Please reconnect";
+        msgs[(x.title == 'ValidationError') as any] = x.message;        
       } else {
         msgs[(x.message == 'HTTP Error') as any] = "Server is may be down ?";
       }

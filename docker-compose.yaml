@@ -9,9 +9,9 @@ services:
     volumes:
       - ./:/work
       - .npm:/.npm
-      - .config:/.config
-      - .cache:/.cache
-      - .local:/.local
+#      - .config:/.config
+#      - .cache:/.cache
+#      - .local:/.local
     ports:
       - 127.0.0.1:8069:8069
       - 127.0.0.1:8072:8072
