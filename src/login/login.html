@@ -16,14 +16,6 @@
         </ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label floating color="primary">Database</ion-label>
-        <ion-select [(ngModel)]="login.db" #db="ngModel" name="db">
-          <ion-option *ngFor="let db of dbs" value="{{db}}">{{db}}</ion-option>
-        </ion-select>
-      </ion-item>
-
-
       <ion-row responsive-sm>
         <ion-col>
           <button ion-button type="submit" color="primary" block>Login</button>

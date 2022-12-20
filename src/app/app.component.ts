@@ -81,7 +81,6 @@ export class MyApp {
     // if we are already logged in, login page is not loaded
     // so we have to activate deadManSwitch here.
     deadManSwitch.start();
-
     this.appRoutesWithoutLogin = this.appRoutes.filter(p => p.hide != true);
 
     }

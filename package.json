@@ -9,7 +9,7 @@
     "ionic:serve": "ionic-app-scripts serve"
   },
   "config": {
-    "ionic_www_dir": "static/src/" 
+    "ionic_www_dir": "bipper/static/src/"
   },
   "dependencies": {
     "@angular/common": "2.2.1",

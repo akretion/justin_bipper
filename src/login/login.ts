@@ -9,8 +9,7 @@ import { DeadManSwitchService } from '../models/deadManSwitch.Service';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  login: { userpass?: string, db?: string} = {};
-  dbs = [];
+  login: { userpass?: string} = {};
   submitted = false;
   separator = ' ';
   handleError = null;
@@ -22,13 +21,11 @@ export class LoginPage {
       public toastCtrl: ToastController,
       public loadingCtrl: LoadingController) {
     console.log('login page ctrl');
-    var defaultDb = null;
 
     // no need to detect activity on this page.
     deadManSwitch.stop();
 
     this.handleError = (err) => {
-      console.log('yeah ! une erreur', err);
       this.toastCtrl.create({
         message: err.title,
         duration: 3000
@@ -36,32 +33,20 @@ export class LoginPage {
     }
 
     odoo.getSessionInfo()
-    .then( x => defaultDb = x.db)
     .then( () => odoo.isLoggedIn().then(
         isLogged => {
           if (isLogged)
               this.loginSuccess();
           return isLogged
         }
-      )
-    ).then( (isLogged) => {
-      if (!isLogged)
-        return odoo.getDbList().then(
-        x => {
-            console.log('voici les bases', x)
-            this.dbs = x;
-            this.login.db = defaultDb;
-        }
-      )
-    }).then(null, this.handleError);
+      ), this.handleError);
   }
 
   onLogin(form) {
     this.submitted = true;
-    var db = null, login = null, password = null;
+    var login = null, password = null;
 
     if (form.valid) {
-      db = this.login.db;
       let userpass = this.login.userpass;
       if (userpass.indexOf(this.separator) !== -1 ) {
         let splitted = userpass.split(this.separator);
@@ -77,8 +62,8 @@ export class LoginPage {
         duration: 3000
       });
       loader.present();
-      this.odoo.login(db, login, password).then(
-        () => this.loginSuccess()
+      this.odoo.login(login, password).then(
+        (a) => { this.loginSuccess() }
       , this.handleError).then(
         () => loader.dismissAll()
       );

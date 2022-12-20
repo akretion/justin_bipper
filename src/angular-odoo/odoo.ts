@@ -25,10 +25,7 @@ var cookies = (function() {
 
 @Injectable()
 export class odooService {
-	preflightPromise : any;
 	errorInterceptors : any = [];
-	shouldManageSessionId : boolean;
-	shouldUseJsonCall: boolean;
 	context: any;
 	uniq_id_counter: number = 0;
 	constructor(public http: Http) {
@@ -41,28 +38,30 @@ export class odooService {
 	*		reject promise if credentials ko (with {title: wrong_login})
 	*		reject promise in other cases (http issues, server error)
 	*/
-	login(db, login, password) {
+	login(login, password) {
 		var params = {
-			db: db,
 			login: login,
 			password: password
 		};
 		var self = this;
-		return this.sendRequest('/web/session/authenticate', params).then(function(result) {
-			if (!result.uid) {
-				if (self.shouldManageSessionId)
-					cookies.delete_sessionId();
+		return self.http.get('/web/login', {withCredentials: true}).toPromise().then(function (odooLogin) {
+			var body = odooLogin.text();
+			const parser = new DOMParser();
+			var parsed = parser.parseFromString(body, 'text/html');
+			var input = parsed.querySelector('form');
+			var csrf = input["csrf_token"].value;
+			var data = 
+			encodeURIComponent("login") + '=' + encodeURIComponent(login) + '&' +
+			encodeURIComponent("password") + '=' + encodeURIComponent(password) + '&' +
+			encodeURIComponent("csrf_token") + '=' + encodeURIComponent(csrf);
 
-				return Promise.reject({
-					title: 'wrong_login',
-					message:"Username and password don't match",
-					fullTrace: result
-				});
-			}
-			self.context = result.user_context;
-			if (self.shouldManageSessionId)
-				cookies.set_sessionId(result.session_id);
-			return result;
+;
+			return self.sendRequest(odooLogin.url, {},  {
+				'method' : 'POST',
+				'url' : odooLogin.url,
+				'body' : data,
+				'headers': {'Content-Type': 'application/x-www-form-urlencoded'},
+			});
 		});
 	}
 
@@ -71,21 +70,7 @@ export class odooService {
 	* @return promise
 	*/
 	logout() {
-		var self = this;
-		if (self.shouldManageSessionId)
-			cookies.delete_sessionId();
-		return self.getSessionInfo().then(function (r) { //get db from sessionInfo
-			if (r.db)
-				return self.login(r.db, '', '').then(null, function (res) {
-					if (res.title !="wrong_login")
-						return Promise.reject(res);
-				});
-			else
-				return self.sendRequest('/web/session/destroy',{}).then(null,
-					function (err) {
-						console.log('err', err);
-					});
-		});
+		return this.sendRequest('/web/session/destroy',{});
 	}
 
 	/**
@@ -94,11 +79,8 @@ export class odooService {
 	*
 	*/
 	isLoggedIn() {
-		var self = this;
 		return this.getSessionInfo().then(function (result) {
-			if (self.shouldManageSessionId)
-				cookies.set_sessionId(result.session_id);
-			return !!(result.uid);
+			return !!(result.user_id);
 		});
 	}
 	searchRead(model, domain, fields) {
@@ -116,12 +98,7 @@ export class odooService {
 	getServerInfo() {
 		return this.sendRequest('/web/webclient/version_info', {});
 	}
-	getDbList() {
-		if (this.shouldUseJsonCall)
-			return this.callJson('db','list',[]);
-		else
-			return this.sendRequest('/web/database/list', {});
-	}
+	
 	callJson(service, method, args) {
 		var params = {
 			service: service,
@@ -147,11 +124,10 @@ export class odooService {
 	/**
 	* base function
 	*/
-	sendRequest(url, params) {
+	sendRequest(url, params, forceReq=undefined) {
 		console.log('send request', url, params);
 		/** (internal) build request for $http
 		* keep track of uniq_id_counter
-		* add session_id in the request (for Odoo v7 only)
 		*/
 		function buildRequest(url, params) {
 			self.uniq_id_counter += 1;
@@ -159,10 +135,6 @@ export class odooService {
 				'Content-Type': 'application/json',
 			}
 
-			if (self.shouldManageSessionId) {
-				params.session_id = cookies.get_sessionId();
-				headers['X-Openerp-Session-Id'] = cookies.get_sessionId()
-			}
 			var json_data = {
 				jsonrpc: '2.0',
 				method: 'call',
@@ -186,48 +158,58 @@ export class odooService {
 		*		if error : reject with a custom errorObj
 		*/
 		function handleOdooErrors(response) {
-			if (!response.error)
-				return response;
-
-			var error = response.error;
 			var errorObj = {
 				title: '',
 				message:'',
-				fullTrace: error
+				fullTrace: '',
 			};
-
-			if (error.code === 200 && error.message === "Odoo Server Error" && error.data.name === "werkzeug.exceptions.NotFound") {
-				errorObj.title = 'page_not_found';
-				errorObj.message = 'HTTP Error';
-			} else if ( (error.code === 100 && error.message === "Odoo Session Expired") || //v8
-						(error.code === 300 && error.message === "OpenERP WebClient Error" && error.data.debug.match("SessionExpiredException")) //v7
-					) {
-						errorObj.title ='session_expired';
-						cookies.delete_sessionId();
-			} else if ( (error.message === "Odoo Server Error" && /FATAL:  database "(.+)" does not exist/.test(error.data.message))) {
-				errorObj.title = "database_not_found";
-				errorObj.message = error.data.message;
-			} else if ( (error.data.name === "openerp.exceptions.AccessError")) {
-				errorObj.title = 'AccessError';
-				errorObj.message = error.data.message;
-			} else {
-				var split = ("" + error.data.fault_code).split('\n')[0].split(' -- ');
-				if (split.length > 1) {
-					error.type = split.shift();
-					error.data.fault_code = error.data.fault_code.substr(error.type.length + 4);
-				}
-
-				if (error.code === 200 && error.type) {
-					errorObj.title = error.type;
-					errorObj.message = error.data.fault_code.replace(/\n/g, "<br />");
+			var error;
+			var ct = response.headers.get('Content-Type');
+			if (ct.startsWith("text/html")) {
+				var url = new URL(response.url);
+				if(response.status === 200) {
+					if ('/web/login' == url.pathname) {
+						errorObj.title = "Not Logged";
+						errorObj.message = "Not logged";				
+					} else {	
+						//no error
+						return response.text();
+					}
 				} else {
-					errorObj.title = error.message;
-					errorObj.message = error.data.debug.replace(/\n/g, "<br />");
+					errorObj.title = "Unkown Error";
+					errorObj.message = "Mal formatted return from server";	
+				}
+			} else if (ct == "application/json") {
+				error = response.json().error;
+				errorObj["fullTrace"] = error;
+				if (!error) {
+					// no error
+					return response.json().result;
+				}
+				if (error.code == 100) {
+					if (error.data.name === "odoo.http.SessionExpiredException") {
+						errorObj.title ='SessionExpired';
+						errorObj.message = error.data.message;
+						cookies.delete_sessionId();
+					}
+				} else if (error.code == 200) {
+					if (error.data.name === "odoo.exceptions.AccessError") {
+						errorObj.title = 'AccessError';
+						errorObj.message = error.data.message;	
+					} else if (error.data.name === "odoo.exceptions.UserError") {
+						errorObj.title = 'UserError';
+						errorObj.message = error.data.message;
+					} else if (error.data.name === "werkzeug.exceptions.NotFound") {
+						errorObj.title = 'page_not_found';
+						errorObj.message = 'HTTP Error';	
+					}
 				}
 			}
+			console.error(errorObj);
 			self.errorInterceptors.forEach(function (i) {
 				i(errorObj);
 			});
+			console.log("on throw une promise rejected")
 			return Promise.reject(errorObj)
 		}
 
@@ -248,8 +230,13 @@ export class odooService {
 		/**
 		*	(internal) wrapper around $http for handling errors and build request
 		*/
-		function http(url, params) {
-			var req = buildRequest(url, params);
+		function http(url, params, forceReq) {
+			var req;
+			if (forceReq) {
+				req = forceReq;
+			} else {
+				req = buildRequest(url, params);
+			}
 			var headers = new Headers(req.headers);
 			var obj = {
 				url: req.url,
@@ -259,46 +246,12 @@ export class odooService {
 			}
 			var request = new Request(obj);
 			return self.http.request(request)
-				.toPromise().then(res => res.json())
-				.then(handleOdooErrors, handleHttpErrors);
-		}
-
-		/** (internal) determine if session_id shoud be managed by this lib
-		* more info:
-		*	in v7 session_id is returned by the server in the payload
-		*		and it should be added in each request's paylaod.
-		*		it's
-		*
-		*	in v8 session_id is set as a cookie by the server
-		*		therefor the browser send it on each request automatically
-		*   in v9 some api have changed, like db.get_list (see jsonCall)
-		*
-		*	in both case, we keep session_id as a cookie to be compliant with other odoo web clients
-		*
-		*/
-		function preflight() {
-			//preflightPromise is a kind of cache and is set only if the request succeed
-			return self.preflightPromise || http('/web/webclient/version_info', {}).then(function (reason) {
-				self.shouldManageSessionId = (reason.result.server_serie < "8"); //server_serie is string like "7.01"
-				self.shouldUseJsonCall = (reason.result.server_serie >= "9.0");
-				self.preflightPromise = Promise.resolve(); //runonce
-			});
+				.toPromise()
+				.then(handleOdooErrors, handleHttpErrors)
 		}
 
 		var self = this;
-		return preflight().then(function () {
-			return http(url, params).then(function(response) {
-				var subRequests = [];
-				if (response.result.type === "ir.actions.act_proxy") {
-					throw "port me !";
-					/*angular.forEach(response.result.action_list, function(action) {
-						subRequests.push(this.http.post(action['url'], action['params']).toPromise());
-					});
-					return Promise.all(subRequests);*/
-				} else
-					return response.result;
-			});
-		});
+		return http(url, params, forceReq);
 	}
 
 
