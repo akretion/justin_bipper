@@ -179,7 +179,7 @@ export class odooService {
 					errorObj.title = "Unkown Error";
 					errorObj.message = "Mal formatted return from server";	
 				}
-			} else if (ct == "application/json") {
+			} else if (ct.startsWith("application/json")) {
 				error = response.json().error;
 				errorObj["fullTrace"] = error;
 				if (!error) {
