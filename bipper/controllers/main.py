@@ -5,8 +5,8 @@ from odoo import http, registry
 from odoo.http import request
 
 
-class Justin(http.Controller):
+class Bipper(http.Controller):
 
-    @http.route('/justin', type='http', auth="public")
-    def justin(self, **kw):
-        return redirect("/justin/static/src/index.html")
+    @http.route('/bipper', type='http', auth="public")
+    def bipper(self, **kw):
+        return redirect("/bipper/static/src/index.html")
