@@ -199,6 +199,9 @@ export class odooService {
 					} else if (error.data.name === "odoo.exceptions.UserError") {
 						errorObj.title = 'UserError';
 						errorObj.message = error.data.message;
+                    } else if (error.data.name === "odoo.exceptions.ValidationError") {
+                        errorObj.title = 'ValidationError';
+                        errorObj.message = error.data.message;
 					} else if (error.data.name === "werkzeug.exceptions.NotFound") {
 						errorObj.title = 'page_not_found';
 						errorObj.message = 'HTTP Error';	
