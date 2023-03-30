@@ -80,7 +80,7 @@ export class odooService {
 	*/
 	isLoggedIn() {
 		return this.getSessionInfo().then(function (result) {
-			return !!(result.user_id);
+			return !!(result.uid);
 		});
 	}
 	searchRead(model, domain, fields) {
