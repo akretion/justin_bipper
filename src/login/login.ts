@@ -32,14 +32,13 @@ export class LoginPage {
       }).present();
     }
 
-    odoo.getSessionInfo()
-    .then( () => odoo.isLoggedIn().then(
+    odoo.isLoggedIn().then(
         isLogged => {
           if (isLogged)
               this.loginSuccess();
           return isLogged
         }
-      ), this.handleError);
+    , this.handleError);
   }
 
   onLogin(form) {
