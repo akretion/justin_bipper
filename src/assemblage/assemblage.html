@@ -44,6 +44,7 @@
         {{ pack.stateMachine?.state }}
         <span *ngIf="pack.stateMachine?.state == 'stock'">{{ pack.place }}</span>
         <br><small>{{ pack.category }}</small>
+        <br><strong>{{ pack.weight | number:'1.0-1' }} kg</strong>
         <span *ngIf="model.nextStep == 'Assemble' && pack.stateMachine.state != 'transit'">
           <nextApp [thing]="pack" item-right>dns nextapp</nextApp>
         </span>
