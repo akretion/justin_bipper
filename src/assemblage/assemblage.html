@@ -37,9 +37,10 @@
 
      <ion-item *ngFor="let pack of model.shipment.packs">
      <!-- utilité d'avoir les state ? -->
-      <h2>{{ pack.name }}
+      <h2>{{ pack.name }} | {{ pack.weight }} kg
         <span *ngIf="model.packs[pack.name].done" color="primary">√</span>
         <ion-badge *ngIf="model.packs[pack.name].ready == false " color="danger">Not ready</ion-badge>
+       
       </h2>
       <p>
         {{ pack.stateMachine?.state }}
