@@ -44,7 +44,9 @@
 
  <ion-list *ngIf="shipment">
       <ion-list-header>
-        {{ shipment.name }} {{ shipment.carrier }} <nextApp [withArgs]="false" [thing]="shipment" item-right>dns nextapp</nextApp>
+          {{ shipment.name }} {{ shipment.carrier }} <nextApp [withArgs]="false" [thing]="shipment" item-right>dns nextapp</nextApp>
+          <br />
+        <ion-badge *ngIf="shipment.is_express" color="danger">Urgent</ion-badge>
       </ion-list-header>
 
       <ion-item-group>

@@ -4,6 +4,7 @@ export class Shipment {
   name = 'WH/OUT102';
   carrier = '';
   export_label_warning = false;
+  is_express = false;
   max_weight = 0;
   country_name = '';
   products = [];
