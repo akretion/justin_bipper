@@ -119,6 +119,7 @@ export class ProductsProvider {
       ship.créer();
       ship.name = s.name;
       ship.export_label_warning = s.export_label_warning;
+      ship.is_express = s.is_express;
       ship.max_weight = s.max_weight
       ship.country_name = s.country_name;
       ship.picking_id = s.picking_id
@@ -128,6 +129,7 @@ export class ProductsProvider {
     function updateShip(ship, s) {
       ship.carrier = s.carrier;
       ship.export_label_warning = s.export_label_warning;
+      ship.is_express = s.is_express;
       ship.country_name = s.country_name;
       ship.partial_allowed = s.is_partial;
       return ship;
