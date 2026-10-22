@@ -11479,7 +11479,7 @@ var ProductsProvider = (function () {
                 x.forEach(function (s) {
                     var oldShip = _this.shipsLookup.get(s.name);
                     if (oldShip) {
-                        var ship = updateShip(s, oldShip);
+                        var ship = updateShip(oldShip, s);
                     }
                     else {
                         var ship = buildShip(s);
@@ -11514,10 +11514,46 @@ var ProductsProvider = (function () {
                             .forEach(function (kindOfProduct) {
                             kindOfProduct.forEach(function (p, idx) {
                                 var pack = _this.packsLookup.get(p.pack);
-                                var prod = _this.productsLookup.get(p.name)[idx];
-                                updateProduct(p, prod, pack);
+                                var prods = _this.productsLookup.get(p.name);
+                                if (!prods) {
+                                    prods = [];
+                                    _this.productsLookup.set(p.name, prods);
+                                }
+                                var prod = prods[idx];
+                                if (!prod) {
+                                    // a product can appear after the shipment has been
+                                    // loaded: a lot is replaced by the pack it has been
+                                    // packed in, so we can't only rely on known products
+                                    prod = buildProduct(p, pack, ship);
+                                    prods.push(prod);
+                                }
+                                else {
+                                    updateProduct(p, prod, pack);
+                                }
                             });
                         });
+                        // remove products which are not in the lines anymore (their
+                        // name changed for instance) so that they don't block the
+                        // shipment, and clean the lookups too: else scanning their old
+                        // barcode still returns a product which does not exist anymore
+                        // (a lot which is now received as a pack, for instance)
+                        var line_names_1 = s.lines.map(function (l) { return l.name; });
+                        ship.products.filter(function (p) { return line_names_1.indexOf(p.name) == -1; }).forEach(function (p) {
+                            var prods = _this.productsLookup.get(p.name);
+                            if (prods) {
+                                var idx = prods.indexOf(p);
+                                if (idx != -1)
+                                    prods.splice(idx, 1);
+                                if (!prods.length)
+                                    _this.productsLookup.delete(p.name);
+                            }
+                            if (p.pack) {
+                                var idx = p.pack.products.indexOf(p);
+                                if (idx != -1)
+                                    p.pack.products.splice(idx, 1);
+                            }
+                        });
+                        ship.products = ship.products.filter(function (p) { return line_names_1.indexOf(p.name) != -1; });
                     }
                 });
             }, function (err) {

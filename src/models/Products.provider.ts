@@ -52,7 +52,7 @@ export class ProductsProvider {
             s => {
               var oldShip = this.shipsLookup.get(s.name);
               if (oldShip) {
-                var ship = updateShip(s, oldShip);
+                var ship = updateShip(oldShip, s);
               } else {
                 var ship = buildShip(s);
                 this.shipsLookup.set(ship.name, ship)
@@ -91,10 +91,48 @@ export class ProductsProvider {
                 .forEach( (kindOfProduct) => {
                   kindOfProduct.forEach( (p, idx) => {
                     let pack = this.packsLookup.get(p.pack);
-                    let prod = this.productsLookup.get(p.name)[idx];
-                    updateProduct(p, prod, pack);
+                    let prods = this.productsLookup.get(p.name);
+                    if (!prods) {
+                      prods = [];
+                      this.productsLookup.set(p.name, prods);
+                    }
+                    let prod = prods[idx];
+                    if (!prod) {
+                      // a product can appear after the shipment has been
+                      // loaded: a lot is replaced by the pack it has been
+                      // packed in, so we can't only rely on known products
+                      prod = buildProduct(p, pack, ship);
+                      prods.push(prod);
+                    } else {
+                      updateProduct(p, prod, pack);
+                    }
                   });
                 })
+                // remove products which are not in the lines anymore (their
+                // name changed for instance) so that they don't block the
+                // shipment, and clean the lookups too: else scanning their old
+                // barcode still returns a product which does not exist anymore
+                // (a lot which is now received as a pack, for instance)
+                let line_names = s.lines.map(l => l.name);
+                ship.products.filter(
+                  p => line_names.indexOf(p.name) == -1
+                ).forEach( p => {
+                  let prods = this.productsLookup.get(p.name);
+                  if (prods) {
+                    let idx = prods.indexOf(p);
+                    if (idx != -1)
+                      prods.splice(idx, 1);
+                    if (!prods.length)
+                      this.productsLookup.delete(p.name);
+                  }
+                  if (p.pack) {
+                    let idx = p.pack.products.indexOf(p);
+                    if (idx != -1)
+                      p.pack.products.splice(idx, 1);
+                  }
+                });
+                ship.products = ship.products.filter(
+                  p => line_names.indexOf(p.name) != -1);
               }
             });
           }, (err) => {
